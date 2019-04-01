@@ -20,3 +20,8 @@
     *   sudo apt-get install docker-ce docker-ce-cli containerd.io
 *   查看是否安装成功
     *   docker --version
+*   卸载
+    *   sudo apt-get remove docker-ce docker-ce-cli containerd.io
+
+
+
