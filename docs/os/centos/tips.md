@@ -1,5 +1,7 @@
-
-####centos 开启DHCP服务
+---
+title: 常用
+---
+## centos 开启DHCP服务
 *   vim /etc/sysconfig/network-scripts/ifcfg-ens33
     
     把ONBOOT=no, 修改成ONBOOT=yes
@@ -8,7 +10,7 @@
    
     之后， ifconfig查看一下， 是否已经自动获取了IP地址。
     
-####CentOS 7 开放防火墙端口 命令
+## CentOS 7 开放防火墙端口 命令
 *   关闭防火墙
     *   systemctl stop firewalld.service           
         *   停止firewall
@@ -64,35 +66,22 @@
         *   systemctl enable iptables.service #设置防火墙开机启动
     *   最后重启系统使设置生效即可。
 
-####安装rz和sz命令
+## 安装rz和sz命令
 yum install lrzsz  
 
-#本地yum包制作
-
-####收集rpm安装包
-*   要制作本地源，那么首先得需要rpm包,我们知道安装一个glibc.i686
-    可能需要很多其他的依赖的rpm包，如果依赖包过多，
-    我们不大可能通过手动整理的到，所以我们可以通过使用yum安装一次，来获取众多的rpm安装包。
-    yum 是有缓存安装包的功能的，只是默认是不缓存安装包的。
-    *   编辑  vim /etc/yum.conf 文件中, 将文件中的 keepcache=0 改为 keepcache=1,
-     开启缓存功能（ps 收集好了rpm安装包后记得关闭缓存功能哦，否则/var/cache/yum 下会有很多rpm包哦）  
-    *   搜索/var/cache/yum目录下所有的rpm包（
-    之前没开启缓存功能，所有不会有无关的rpm包），将其拷贝至名为glibc的空文件夹下。
-    将glibc 文件夹移动至一个名为localyumsource的空文件夹下。
- 
-#### CentOs rpm安装警告
+##  CentOs rpm安装警告
 *   原因：这是由于yum安装了旧版本的GPG keys造成的
     解决办法：后面加上
      --force --nodeps
      
      
-####新建用户并授权
+## 新建用户并授权
 *   创建一个用户名为：es
     *   adduser es
 *   为这个用户初始化密码，linux会判断密码复杂度，不过可以强行忽略：
     *   passwd es
     
-####开机启动项
+## 开机启动项
 *   使用 systemctl list-unit-files  查看开机启动项 
 
 *   systemctl is-enabled redis.service  是否开机启动

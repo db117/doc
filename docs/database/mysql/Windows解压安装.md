@@ -1,5 +1,5 @@
 ---
-title:Windows解压安装
+title: Windows解压安装
 ---
 # Windows解压安装（5.7，8.0）
 

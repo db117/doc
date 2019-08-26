@@ -1,5 +1,5 @@
 ---
-title:离线安装docker
+title: 离线安装docker
 ---
 
 # rpm离线安装docker17.12

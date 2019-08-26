@@ -1,4 +1,7 @@
-##Linux压缩包安装jdk
+---
+title: Linux tar安装jdk
+---
+## Linux压缩包安装jdk
 *   在要安装的目录解压压缩包
     *   tar -xzvf  jdk***.tar.gz
 *   配置环境变量

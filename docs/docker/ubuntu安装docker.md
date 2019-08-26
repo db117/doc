@@ -1,5 +1,5 @@
 ---
-title:ubuntu安装docker
+title: ubuntu安装docker
 ---
 ## 更新你的apt源
 

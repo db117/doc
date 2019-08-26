@@ -1,4 +1,7 @@
-### 通过系统变量方式实现代理
+---
+title: IP代理
+---
+## 通过系统变量方式实现代理
 
 ```
 System.setProperty("http.proxySet", "true");

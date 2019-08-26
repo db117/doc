@@ -1,4 +1,7 @@
-#### 使用 maven 自动将源码打包并发布
+---
+title: maven
+---
+## 使用maven自动将源码打包并发布
 
 ```
 <!-- Source attach plugin -->

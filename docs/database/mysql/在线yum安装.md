@@ -1,5 +1,5 @@
 ---
-title:在线yum安装
+title: 在线yum安装
 ---
 # 在线yum安装
 

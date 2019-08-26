@@ -1,3 +1,6 @@
+---
+title: spring Bean接口
+---
 ### setBeanName 实现
 
 如果这个 Bean 已经实现了 BeanNameAware 接口,会调用它实现的 setBeanName(String)

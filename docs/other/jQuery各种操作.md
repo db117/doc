@@ -1,4 +1,7 @@
-####jquery 获取div宽度
+---
+title: jQuery各种操作
+---
+## jquery 获取div宽度
 ```
 var content = $(‘div’). width();//只是获取content宽度
 
@@ -9,7 +12,7 @@ var withoutMargin = $(‘div’). outerWidth();//获取content+padding+border的
 var full = $(‘div’). outerWidth(true);//获取content+padding+border+margin的宽度
 ```
 
-####ifarm操作父类
+## ifarm操作父类
 *   子页面获取父页面的id=care的子页面
     *   parent.care.location.reload();
 *   父页面获取id=imp的子页面

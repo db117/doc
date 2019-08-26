@@ -1,5 +1,7 @@
-#springboot 注解整理
-####bean的分类标识
+---
+title: spring boot 注解整理
+---
+## bean的分类标识
 *   @Service: 
     *   注解在类上，表示这是一个业务层bean
 *   @Controller：
@@ -8,13 +10,13 @@
     *   注解在类上，表示这是一个数据访问层bean
 *   @Component： 
     *   注解在类上，表示通用bean
-####bean注入
+## bean注入
 *   @Autowired：
     *   按类型装配
 *   @Resource： 
     *   按名称装配
 
-####配置相关
+## 配置相关
 *   @Configuration：
     *   注解在类上，表示这是一个IOC容器，相当于spring的配置文件，java配置的方式。 IOC容器的配置类
 *   @Bean： 
@@ -41,7 +43,7 @@
 *   @WebFilter
     *   将一个实现了javax.servlet.Filte接口的类定义为过滤器
     
-####控制层
+## 控制层
 *   @RestController 
     *   @RestController 是一个结合了 @ResponseBody 和 @Controller 的注解
 *   @Controller
@@ -60,6 +62,6 @@
     *    params 指定request中必须包含某些参数值 
     *    headers 指定request中必须包含指定的header值
     
-####实体类
+## 实体类
 *   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     *   实体类保存格式转换

@@ -1,4 +1,7 @@
-###windows环境下kafak
+---
+title: kafka
+---
+## windows环境下kafak
 *   启动zookeeper
     *   bin\windows\zookeeper-server-start.bat config\zookeeper.properties
 *   启动kfaka服务

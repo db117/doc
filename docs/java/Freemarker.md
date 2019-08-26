@@ -1,5 +1,7 @@
-#Freemarker
-####防止空指针
+---
+title: Freemarker
+---
+## 防止空指针
 *   ${val!""}
-####时间
+## 时间
 *   ${(***?string("yyyy-MM-dd HH:mm:ss"))!}

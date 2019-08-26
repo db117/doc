@@ -1,5 +1,5 @@
 ---
-title:zabbix
+title: zabbix
 ---
 
 ## 在线安装
