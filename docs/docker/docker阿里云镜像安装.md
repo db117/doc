@@ -1,3 +1,6 @@
+---
+title:docker阿里云镜像安装
+---
 *   配置docker阿里云yum源 (直接执行下面的命令即可)
 ```cat >>/etc/yum.repos.d/docker.repo<<EOF
    [docker-ce-edge]

@@ -1,10 +1,13 @@
-##### 更新你的apt源
+---
+title:ubuntu安装docker
+---
+## 更新你的apt源
 
  ```
  sudo apt-get update
  ```
 
-##### 安装包以允许apt通过HTTPS使用存储库
+## 安装包以允许apt通过HTTPS使用存储库
 
 ```
 sudo apt-get install \
@@ -17,7 +20,7 @@ sudo apt-get install \
 
 
 
-##### 添加Docker的官方GPG密钥
+## 添加Docker的官方GPG密钥
 
 ```
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -27,7 +30,7 @@ sudo apt-key fingerprint 0EBFCD88
 
 
 
-##### 使用以下命令设置稳定存储库
+## 使用以下命令设置稳定存储库
 
 ```
 sudo add-apt-repository \
@@ -40,7 +43,7 @@ sudo add-apt-repository \
 
 
 
-##### 安装docker-ce
+## 安装docker-ce
 
 ```
 sudo apt-get update
@@ -50,7 +53,7 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 
 
 
-##### 查看是否安装成功
+## 查看是否安装成功
 
 ```
 docker --version
@@ -58,7 +61,7 @@ docker --version
 
 
 
-##### 卸载
+## 卸载
 
 ```
 sudo apt-get remove docker-ce docker-ce-cli containerd.io

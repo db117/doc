@@ -1,4 +1,8 @@
-##在线
+---
+title:zabbix
+---
+
+## 在线安装
 *   用MySQL数据库安装存储库(数据库另装)
     *   rpm -i http://repo.zabbix.com/zabbix/3.4/rhel/7/x86_64/zabbix-release-3.4-2.el7.noarch.rpm
 *   安装ZabBix服务器，前端，代理
@@ -23,7 +27,7 @@
 *   然后就可以访问了ip/zabbix
     *   默认帐号密码Admin/zabbix
     
-###修改为中文
+## 修改为中文
 *   打开Zabbix界面，Administrator-Users 选择语言-Chinese(zh_CN)-update 
 *   解决乱码
     *   从Window服务器找到相应的字休复制到zabbix Server服务器上：
@@ -34,14 +38,14 @@
         将里面关于字体设置从graphfont替换成simkai
         *   define('ZBX_GRAPH_FONT_NAME',           'simkai'); // font file name
 
-####关闭selinux
+## 关闭selinux
 *   vim /etc/selinux/config
     *   SELINUX=disabled
 *   setenforce 0
 *   getenforce
 
 
-##docker搭建zabbix
+## docker搭建zabbix
 本次使用docker搭建zabbix的组合是mysql+docker+zabix-server
 *   先安装数据库mysql
 ```

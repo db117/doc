@@ -1,3 +1,6 @@
+---
+title:Ubuntu安装Redis
+---
 ## 设置镜像源
 
 ```
