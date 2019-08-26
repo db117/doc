@@ -1,4 +1,6 @@
-##MySQL函数及用法示例
+---
+title: MySQL函数及用法示例
+---
 ###字符串函数
 *   ascii(str)   
     返回字符串str的第一个字符的ascii值(str是空串时返回0)  
