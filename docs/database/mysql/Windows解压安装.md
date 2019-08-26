@@ -1,5 +1,9 @@
-## Windows解压安装（5.7，8.0）
+---
+title:Windows解压安装
+---
+# Windows解压安装（5.7，8.0）
 
+## 安装
 * 下载mysql
    *    进入官网：https://www.mysql.com/
         单击【Downloads】选项卡
@@ -10,6 +14,7 @@
    压缩包相当于免安装文件，要想使用它，需要配置正确，并通过服务来启动数据库服务。
 * 把压缩包解压到你喜欢的位置
   本示例解压到：D:\mysql-5.7.13-winx64，文件夹下
+## 配置
 * 创建my.ini文件，内容如下：
    ```
    [mysql]
@@ -37,6 +42,8 @@
 * 配置环境变量
   *    添加一个名叫 MYSQL_HOME 的变量。
   *    修改Path变量，在末尾添加 %MYSQL_HOME%\bin 
+  
+## 安装服务
 * 安装mysql服务
   *   以管理员身份运行cmd，进入mysql的bin目录。
   *   初始化数据库文件
@@ -53,6 +60,7 @@
 
   *   net start MySQL
 
+## 修改root密码
 * 修改root密码
   * 输入以下命令，回车，然后输入上面的默认密码：
 
@@ -61,56 +69,3 @@
   * 进入MySQL命令行模式后，输入如下命令，命令中的 new_password 为root账号的新密码，请修改它。
 
   * ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';
-
-### 在线yum安装
-* 下载mysql源安装包
-  *   wget http://dev.mysql.com/get/mysql57-community-release-el7-8.noarch.rpm
-  *   yum localinstall mysql57-community-release-el7-8.noarch.rpm
-* 检查mysql源是否安装成功
-  *   检查mysql源是否安装成功
-  *   可以修改vim /etc/yum.repos.d/mysql-community.repo源，改变默认安装的mysql版本。比如要安装5.6版本，
-  将5.7源的enabled=1改成enabled=0。然后再将5.6源的enabled=0改成enabled=1即可
-* 安装MySQL
-
-  *   yum install mysql-community-server
-* 启动MySQL服务
-
-  *   systemctl start mysqld
-* 开机启动
-  *   systemctl enable mysqld
-  *   systemctl daemon-reload
-* 修改密码策略
-  *   在vim /etc/my.cnf文件添加validate_password_policy配置，指定密码策略
-  *   选择0（LOW），1（MEDIUM），2（STRONG）其中一种，选择2需要提供密码字典文件
-      *    validate_password_policy=0
-  *   如果不需要密码策略，添加my.cnf文件中添加如下配置禁用即可：
-      *   validate_password = off
-* 修改root本地登录密码
-  *   mysql安装完成之后，在/var/log/mysqld.log文件中给root生成了一个默认密码。
-      通过下面的方式找到root默认密码，然后登录mysql进行修改
-      *   grep 'temporary password' /var/log/mysqld.log
-      *   mysql -uroot -p
-      *   ALTER USER 'root'@'localhost' IDENTIFIED BY 'password';
-      *   或者set password for 'root'@'localhost'=password('password'); 
-* 添加远程登录用户
-
-  *    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
-* 配置
-  ```
-  #不需要密码策略
-  validate_password = off  
-  #默认编码       
-  character_set_server=utf8      
-  #连接编码 
-  init_connect='SET NAMES utf8'
-  #忽略大小写(Linux)   
-  lower_case_table_names=1 
-  #最大连接量       
-  max_allowed_packet=50m  
-  #分布式下id        
-  server-id=1     
-  #开启binglog                
-  log-bin=mysql-bin   
-  #binglog格式            
-  binlog_format=MIXED            
-  ```

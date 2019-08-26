@@ -1,5 +1,5 @@
 const utils = {
-    genSidebar: function (title, children = [''], collapsable = true, sidebarDepth = 2) {
+    genSidebar: function (title, children = [''], collapsable = true, sidebarDepth = 3) {
         var arr = [];
         arr.push({
             title,

@@ -1,7 +1,7 @@
 ---
 title: MySQL函数及用法示例
 ---
-###字符串函数
+## 字符串函数
 *   ascii(str)   
     返回字符串str的第一个字符的ascii值(str是空串时返回0)  
     mysql> select ascii('2');  
@@ -247,7 +247,7 @@ mysql> update table_name set blob_column=load_file
 ("/tmp/picture") where id=1;  
  
 
-###数学函数
+## 数学函数
 *   abs(n)  
 返回n的绝对值  
 mysql> select abs(2);    
@@ -445,7 +445,7 @@ mysql> select greatest(34.0,3.0,5.0,767.0);
 mysql> select greatest("b","a","c");    
 　　-> "c"  
 
-###时间函数
+## 时间函数
 *   dayofweek(date)    
 返回日期date是星期几(1=星期天,2=星期一,……7=星期六,odbc标准)  
 mysql> select dayofweek('1998-02-03');    
@@ -714,7 +714,7 @@ mysql> select time_to_sec('22:23:00');
 mysql> select time_to_sec('00:39:38');    
 　　-> 2378 
  
-###转换函数
+## 转换函数
 *   cast
 用法：cast(字段 as 数据类型) [当然是否可以成功转换，还要看数据类型强制转化时注意的问题]
 实例：select cast(a as unsigned) as b from cardserver where order by b desc;
