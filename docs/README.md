@@ -16,6 +16,11 @@ pageClass: custom-page-class
 [CSDN博客](https://blog.csdn.net/weixin_38761297)
 [leetcode](https://leetcode-cn.com/u/db117/)
 
+## 其他
+[腾讯云](https://cloud.tencent.com/)
+[阿里云](https://cn.aliyun.com/)
+[亚马逊云](https://aws.amazon.com/cn/)
+
 ## 学习
 [图灵学院](https://ke.qq.com/course/231516)
 [图灵源码](http://git.jiagouedu.com/user/login)
@@ -23,13 +28,6 @@ pageClass: custom-page-class
 [慕课网](https://www.imooc.com/)
 [菜鸟教程](https://www.runoob.com/)
 [数据结构](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
-
-## 邮箱
-[126](https://mail.126.com/)
-[163](https://mail.163.com/)
-[Gmail](https://mail.google.com/mail)
-[263](https://www.263.net/)
-[qq](https://mail.qq.com/)
 
 ## 工具
 [开源中国在线工具](http://tool.oschina.net/)
@@ -68,3 +66,10 @@ pageClass: custom-page-class
 [spring](http://spring.io/)
 [arthas](https://alibaba.github.io/arthas/index.html)
 [mybatis](https://blog.mybatis.org/)
+
+## 邮箱
+[126](https://mail.126.com/)
+[163](https://mail.163.com/)
+[Gmail](https://mail.google.com/mail)
+[263](https://www.263.net/)
+[qq](https://mail.qq.com/)
