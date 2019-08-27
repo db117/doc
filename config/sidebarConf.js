@@ -9,6 +9,7 @@ const filehelper = require(rootpath + '/util/getFilenames.js');
  * utils.genSidebar('Java基础', filehelper.getFileName(docs+"/Java/Basic/"), false),
  */
 module.exports = {
+    '/': utils.genSidebar('导航', filehelper.getFileName(docs + "/")),
     '/java/': utils.genSidebar('java', filehelper.getFileName(docs + "/java/")),
     '/docker/': utils.genSidebar('docker', filehelper.getFileName(docs + "/docker/")),
     '/os/linux/': utils.genSidebar('linux', filehelper.getFileName(docs + "/os/linux/")),

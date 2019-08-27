@@ -1,5 +1,5 @@
 module.exports = [
-    {text: 'Home', link: '/'},
+    {text: '导航', link: '/'},
     {text: 'java', link: '/java/'},
     {
         text: '系统', items: [
@@ -22,7 +22,7 @@ module.exports = [
         ]
     },
     {text: 'docker', link: '/docker/'},
-    {text: 'other', link: '/other/'},
+    {text: '其他', link: '/other/'},
     {
         text: '更多', items: [
             {text: 'VuePress1.x 官网', link: 'https://v1.vuepress.vuejs.org/zh/'},

@@ -1,32 +1,18 @@
-# doc
+---
+title: 导航
+pageClass: custom-page-class
+---
 
-### docker
+## 搜索
+[百度](https://www.baidu.com/)
+[谷歌](https://www.google.com/)
+[维基百科](https://zh.wikipedia.org)
+[秘迹](https://mijisou.com)
 
-​    记录docker的一些操作
+## 个人站点
+[github](https://github.com/db117)
+[码云](https://gitee.com/db117)
+[CSDN博客](https://blog.csdn.net/weixin_38761297)
+[leetcode](https://leetcode-cn.com/u/db117/)
 
-## 工具
-### git
-​   git简单使用
-
-## java
-​   java里面的一下东西
-
-### linux
-
-​    linux通用的一些操作
-
-### centos
-
-​    centos特有
-
-### Ubuntu
-
-​    Ubuntu，deepin等通用
-
-### mysql
-
-​    mysql安装，操作等细节
-
-### Windows
-
-​    Windows下一下东西
+## 学习
