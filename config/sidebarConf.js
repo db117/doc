@@ -9,7 +9,6 @@ const filehelper = require(rootpath + '/util/getFilenames.js');
  * utils.genSidebar('Java基础', filehelper.getFileName(docs+"/Java/Basic/"), false),
  */
 module.exports = {
-    '/': utils.genSidebar('导航', filehelper.getFileName(docs + "/")),
     '/java/': utils.genSidebar('java', filehelper.getFileName(docs + "/java/")),
     '/docker/': utils.genSidebar('docker', filehelper.getFileName(docs + "/docker/")),
     '/os/linux/': utils.genSidebar('linux', filehelper.getFileName(docs + "/os/linux/")),
@@ -21,7 +20,7 @@ module.exports = {
     '/util/git/': utils.genSidebar('git', filehelper.getFileName(docs + "/util/git/")),
     '/util/nginx/': utils.genSidebar('nginx', filehelper.getFileName(docs + "/util/nginx/")),
     '/other/': utils.genSidebar('其他', filehelper.getFileName(docs + "/other/")),
-
+    '/': utils.genSidebar('导航', filehelper.getFileName(docs + "/")),
 
     // 一定要放在最后！！！
     // 根目录下的 sidebar, 对于所有未匹配到的都会应用该 sidebar

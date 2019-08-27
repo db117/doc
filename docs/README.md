@@ -6,6 +6,7 @@ pageClass: custom-page-class
 ## 搜索
 [百度](https://www.baidu.com/)
 [谷歌](https://www.google.com/)
+[bing](https://cn.bing.com/)
 [维基百科](https://zh.wikipedia.org)
 [秘迹](https://mijisou.com)
 
@@ -16,3 +17,54 @@ pageClass: custom-page-class
 [leetcode](https://leetcode-cn.com/u/db117/)
 
 ## 学习
+[图灵学院](https://ke.qq.com/course/231516)
+[图灵源码](http://git.jiagouedu.com/user/login)
+[慕课网](https://www.imooc.com/)
+[慕课网](https://www.imooc.com/)
+[菜鸟教程](https://www.runoob.com/)
+[数据结构](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
+
+## 邮箱
+[126](https://mail.126.com/)
+[163](https://mail.163.com/)
+[Gmail](https://mail.google.com/mail)
+[263](https://www.263.net/)
+[qq](https://mail.qq.com/)
+
+## 工具
+[开源中国在线工具](http://tool.oschina.net/)
+[极客导航](https://www.jikedaohang.com)
+[油猴脚本](https://greasyfork.org/zh-CN/scripts)
+[百度脑图](https://naotu.baidu.com/)
+[站长工具](http://tool.chinaz.com/)
+[变量名](https://unbug.github.io/codelf/)
+[第七下载](https://www.7down.com/)
+[数据类型转二进制](http://www.binaryconvert.com/index.html)
+[百度翻译](https://fanyi.baidu.com/)
+[idea插件](http://plugins.jetbrains.com/)
+[在线工具](https://www.sojson.com/)
+
+## 资源
+[maven仓库](https://mvnrepository.com/)
+[dockerHub](https://hub.docker.com/)
+[msdn](https://msdn.itellyou.cn/)
+[html素材](http://www.htmlsucai.com)
+
+## 文档
+[石墨文档](https://shimo.im/desktop)
+[processon](https://www.processon.com/)
+[w3school](https://www.w3school.com.cn/)
+[linux文档](http://man.linuxde.net/)
+[redis文档](http://www.redis.cn/commands.html)
+[elasticsearch](https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html)
+
+## 开源软件
+[zTree](http://www.treejs.cn/v3/main.php#_zTreeInfo)
+[mybatis.plus](https://mybatis.plus/)
+[echarts](https://echarts.baidu.com/index.html)
+[layui](https://www.layui.com/)
+[hutool](https://hutool.cn/docs/#/)
+[jsoup](https://jsoup.org/)
+[spring](http://spring.io/)
+[arthas](https://alibaba.github.io/arthas/index.html)
+[mybatis](https://blog.mybatis.org/)
