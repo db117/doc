@@ -6,11 +6,16 @@ script:
   - npm run cname
 deploy:
   provider: pages
+  # Git项目
   repo: db117/db117.github.io
+  # 不清理编译文件
   skip-cleanup: true
+  # 目录
   local_dir: docs/.vuepress/dist
+  # token
   github-token: $github
   keep-history: true
-  email: z351622948@163.com
-  on:
-    branch: master
+  # 用token的邮箱用户名提交
+  committer_from_gh: true
+  # 目标分支
+  target_branch: master
