@@ -66,6 +66,7 @@ pageClass: custom-page-class
 [spring](http://spring.io/)
 [arthas](https://alibaba.github.io/arthas/index.html)
 [mybatis](https://blog.mybatis.org/)
+[travis](https://travis-ci.org)
 
 ## 邮箱
 [126](https://mail.126.com/)
