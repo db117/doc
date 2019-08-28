@@ -6,9 +6,11 @@ script:
   - npm run cname
 deploy:
   provider: pages
+  repo: db117/db117.github.io
   skip-cleanup: true
   local_dir: docs/.vuepress/dist
   github-token: $github
   keep-history: true
+  email: z351622948@163.com
   on:
     branch: master
