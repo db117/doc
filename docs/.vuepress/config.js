@@ -3,7 +3,7 @@ const sidebarConf = require('../../config/sidebarConf.js');
 const headConf = require('../../config/headConf.js');
 
 module.exports = {
-    title: '个人主页',
+    title: '大兵个人主页',
     description: '文档',
     head: headConf,
     themeConfig: {
