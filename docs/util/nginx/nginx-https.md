@@ -1,16 +1,6 @@
-#### docker 启动
-
-```
-sudo docker run --name my-nginx -p 80:80 -p 443:443 --network my_net -v $PWD/conf/nginx.conf:/etc/nginx/nginx.conf:ro -v $PWD/ssl:/ssl -v $PWD/logs:/logs  -d nginx
-
-```
-
-
-
 #### 配置文件
 
 ```
-
 #user  nobody;
 worker_processes  1;
 
@@ -57,12 +47,16 @@ http {
     #
     server {
         listen       443 ssl;
+        # 服务名称
         server_name *.db117.top;
 		
+		# 秘钥
         ssl_certificate      /ssl/fullchain.crt;
         ssl_certificate_key  /ssl/private.key;
 
+		# 回话缓存
 		ssl_session_cache 	 shared:SSL:10m;
+		# 回话超时时间
 		ssl_session_timeout 	10m;
 
         ssl_prefer_server_ciphers  	on;
