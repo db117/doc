@@ -11,7 +11,7 @@
 9. 基于user-agent分流
 10. 日志配置
 
-### **1、配置文件的语法格式：**
+## 1、配置文件的语法格式
 
 先来看一个简单的nginx 配置
 
@@ -52,7 +52,7 @@ http {
                      '$status $body_bytes_sent "$http_referer" '
                      '"$http_user_agent" "$http_x_forwarded_for"';
 
-### 2、配置第一个静态WEB服务
+## 2、配置第一个静态WEB服务
 
 **基础站点演示：**
 
@@ -177,7 +177,7 @@ echo 'deny 192.168.0.132;' >> balck.ip
 include       black.ip;
 ```
 
-### 3、日志配置：
+## 3、日志配置
 
 **日志格式：**
 

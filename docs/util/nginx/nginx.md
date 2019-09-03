@@ -1,11 +1,5 @@
-##windows下nginx使用
-*   停止nginx
-    *   nginx -s stop
-*   重新加载配置文件
-    *   nginx -s reload
-*   退出nginx
-    *   nginx -s quit   
-##配置
+## nginx配置
+
 ~~~
 user nginx nginx ;
 #Nginx用户及组：用户 组。window下不指定

@@ -25,7 +25,8 @@ zlib库用于对HTTP包的内容做gzip格式的压缩，如果我们在nginx.co
 yum -y install make zlib zlib-devel gcc-c++ libtool openssl openssl-devel pcre pcre-devel
 ```
 
-**源码获取：**
+### 源码获取：
+
 nginx 下载页：http://nginx.org/en/download.html 。
 
 ```
@@ -51,7 +52,7 @@ make   & make install 
 ./configure    
 ```
 
-**模块更新：**
+### 模块更新：
 
 ```
 # 添加状态查查看模块
@@ -64,7 +65,7 @@ cp objs/nginx /usr/local/nginx/sbin/
 /usr/local/nginx/sbin/nginx -V
 ```
 
-**控制命令：**
+### 控制命令
 
 ```
 #查看命令帮助

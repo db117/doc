@@ -23,7 +23,8 @@
 | 主要作用       | 屏蔽客户端IP、集中式缓存、解决客户端不能直连服务端的问题。 | 屏蔽服务端内部实现、负载均衡、缓存。 |
 | 应用场景       | 爬虫、翻墙、maven 的nexus 服务                             | Nginx 、Apache负载均衡应用           |
 
-**Nginx代理基本配置**
+## 1.Nginx代理基本配置
+
 Nginx 代理只需要配置 location 中配置proxy_pass 属性即可。其指向代理的服务器地址。
 
 ```
@@ -65,7 +66,7 @@ proxy_temp_file_write_size 64k;
 
 
 
-### 2.负载均衡配置与参数解析
+## 2.负载均衡配置与参数解析
 
 通过proxy_pass 可以把请求代理至后端服务，但是为了实现更高的负载及性能， 我们的后端服务通常是多个， 这个是时候可以通过upstream 模块实现负载均衡。
 
@@ -93,7 +94,7 @@ location / {
 - **max_conns	**允许最大连接数
 - **slow_start	**当节点恢复，不立即加入,而是等待 slow_start	后加入服务对列。
 
-### **3.upstream 负载均衡算法介绍**
+## 3.upstream 负载均衡算法介绍
 
 - **ll+weight： **轮询加权重 (默认)
 - **ip_hash : **基于Hash 计算 ,用于保持session 一至性
