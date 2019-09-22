@@ -69,6 +69,7 @@ pageClass: custom-page-class
 [arthas](https://alibaba.github.io/arthas/index.html)
 [mybatis](https://blog.mybatis.org/)
 [travis](https://travis-ci.org)
+[visualVM](https://visualvm.github.io/?Java_VisualVM)
 
 ## 邮箱
 [126](https://mail.126.com/)
