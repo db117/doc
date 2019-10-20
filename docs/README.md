@@ -30,6 +30,7 @@ pageClass: custom-page-class
 [慕课网](https://www.imooc.com/)
 [菜鸟教程](https://www.runoob.com/)
 [数据结构](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
+[知识星球](https://wx.zsxq.com/)
 
 ## 工具
 [开源中国在线工具](http://tool.oschina.net/)
@@ -43,6 +44,7 @@ pageClass: custom-page-class
 [百度翻译](https://fanyi.baidu.com/)
 [idea插件](http://plugins.jetbrains.com/)
 [在线工具](https://www.sojson.com/)
+[potplayer](https://potplayer.daum.net/?lang=zh_CN)
 
 ## 资源
 [maven仓库](https://mvnrepository.com/)
@@ -53,6 +55,8 @@ pageClass: custom-page-class
 ## 文档
 [石墨文档](https://shimo.im/desktop)
 [processon](https://www.processon.com/)
+[腾讯文档](https://docs.qq.com/desktop)
+[飞书文档](https://www.feishu.cn/space/home/)
 [w3school](https://www.w3school.com.cn/)
 [linux文档](http://man.linuxde.net/)
 [redis文档](http://www.redis.cn/commands.html)
