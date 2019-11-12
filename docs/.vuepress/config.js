@@ -18,5 +18,7 @@ module.exports = {
         nav: navConf,
         sidebar: sidebarConf,
         lastUpdated: '上次更新',
+        // 启用页面滚动效果
+        smoothScroll: true,
     }
 };

@@ -9,6 +9,7 @@ pageClass: custom-page-class
 [bing](https://cn.bing.com/)
 [维基百科](https://zh.wikipedia.org)
 [秘迹](https://mijisou.com)
+[magi]( https://magi.com/)
 [stackoverflow](https://stackoverflow.com)
 
 
@@ -31,8 +32,10 @@ pageClass: custom-page-class
 [菜鸟教程](https://www.runoob.com/)
 [数据结构](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
 [知识星球](https://wx.zsxq.com/)
+[ labuladong 算法]( https://labuladong.gitbook.io/algo/ )
 
 ## 工具
+[彩云翻译]( https://fanyi.caiyunapp.com/#/ )
 [开源中国在线工具](http://tool.oschina.net/)
 [极客导航](https://www.jikedaohang.com)
 [油猴脚本](https://greasyfork.org/zh-CN/scripts)
