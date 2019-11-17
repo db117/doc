@@ -36,7 +36,7 @@ const build = {
         let res = "{";
         fs.readdirSync(docs).forEach(file => {
             if (excludes.indexOf(file) < 0) {
-                let path = `${docs}/${file}/`;
+                let path = `${docs}/${file}`;
 
                 let fileInfo = fs.statSync(path);
                 if (fileInfo.isDirectory()) {
