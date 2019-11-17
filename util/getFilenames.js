@@ -6,9 +6,9 @@
 
 const fs = require('fs');
 // 排除检查的文件
-var excludes = ['.DS_Store'];
+const excludes = ['.DS_Store'];
 
-var filehelper = {
+const fileHelper = {
     getFileName: function (rpath) {
         let filenames = [];
         fs.readdirSync(rpath).forEach(file => {
@@ -16,8 +16,8 @@ var filehelper = {
             if (excludes.indexOf(file) < 0
                 && file.substring(file.length - 2, file.length) === 'md') {
                 fullpath = rpath + "/" + file;
-                var fileinfo = fs.statSync(fullpath);
-                if (fileinfo.isFile()) {
+                let stats = fs.statSync(fullpath);
+                if (stats.isFile()) {
                     if (file === 'README.md') {
                         file = '';
                     } else {
@@ -27,10 +27,9 @@ var filehelper = {
                 }
             }
         });
-        console.log(filenames);
         // 排序
         filenames.sort();
         return filenames;
     }
 };
-module.exports = filehelper;
+module.exports = fileHelper;

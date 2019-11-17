@@ -1,5 +1,5 @@
 ---
-title: 首页
+title: Ubuntu
 ---
-## 介绍
+## Ubuntu
  不知道说啥,以后再写

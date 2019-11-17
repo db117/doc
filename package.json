@@ -12,6 +12,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@vuepress/plugin-back-to-top": "^1.0.0-rc.1",
+    "@vuepress/plugin-google-analytics": "^1.2.0",
     "vuepress": "^1.2.0"
+  },
+  "dependencies": {
+    "yaml-front-matter": "^4.0.0"
   }
 }

@@ -1,5 +1,5 @@
 ---
-title: mysql首页
+title: mysql
 ---
-## 介绍
+## mysql
    mysql的一些文档

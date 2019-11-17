@@ -1,5 +1,5 @@
 ---
-title: centos
+title: 操作系统
 ---
-## centos
+## 操作系统
  不知道说啥,以后再写

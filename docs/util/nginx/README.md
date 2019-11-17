@@ -1,5 +1,5 @@
 ---
 title: Nginx
 ---
-## 介绍
+## Nginx
 nginx文档,记录等

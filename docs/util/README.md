@@ -1,5 +1,5 @@
 ---
-title: centos
+title: 工具
 ---
-## centos
+## 工具
  不知道说啥,以后再写

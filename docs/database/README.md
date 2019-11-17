@@ -1,5 +1,5 @@
 ---
-title: centos
+title: 数据库
 ---
-## centos
+## 数据库
  不知道说啥,以后再写

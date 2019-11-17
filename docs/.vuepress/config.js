@@ -1,6 +1,7 @@
 const navConf = require('../../config/navConf.js');
 const sidebarConf = require('../../config/sidebarConf.js');
 const headConf = require('../../config/headConf.js');
+const build = require("../../config/build.js");
 
 module.exports = {
     title: '大兵个人主页',
@@ -15,10 +16,16 @@ module.exports = {
         editLinkText: '编辑文档！',
         // 编辑文档的所在目录
         docsDir: 'docs',
-        nav: navConf,
-        sidebar: sidebarConf,
+        nav: build.nav(),
+        sidebar: build.sidebar(),
         lastUpdated: '上次更新',
         // 启用页面滚动效果
         smoothScroll: true,
-    }
+    },
+    plugins: [
+        ['@vuepress/back-to-top', true],
+        ['@vuepress/google-analytics', {
+            ga: 'UA-152553432-1'
+        }]
+    ]
 };
