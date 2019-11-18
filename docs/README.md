@@ -48,6 +48,8 @@ pageClass: custom-page-class
 [idea插件](http://plugins.jetbrains.com/)
 [在线工具](https://www.sojson.com/)
 [potplayer](https://potplayer.daum.net/?lang=zh_CN)
+[谷歌分析](https://analytics.google.com/analytics/web)
+[来此加密](https://letsencrypt.osfipin.com/)
 
 ## 资源
 [maven仓库](https://mvnrepository.com/)
