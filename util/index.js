@@ -51,12 +51,15 @@ const utils = {
     },
     // 标题,md文件的title属性
     getTitle: function f(fullPath) {
+        if (!fs.existsSync(fullPath + '/README.md')) {
+            return fullPath.split('/').pop();
+        }
         let buffer = fs.readFileSync(fullPath + '/README.md');
         let front = yamlFront.loadFront(buffer);
         if (front.title) {
             return front.title;
         }
-        return "默认";
+        return fullPath.split('/').pop();
     }
 };
 
