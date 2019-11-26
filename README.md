@@ -1,36 +1,9 @@
-# doc
+# 学习记录
+[![Build Status](https://travis-ci.org/db117/doc.svg?branch=master)](https://travis-ci.org/db117/doc)
 
-### 目录
+> 主要记录一下工作遇到的一下问题,学习到的一下东西
+>
+> 使用Vuepress构建页面
+>
+> 使用 Travis  进行自动部署,并发布到GitHub pages
 
-##### docker
-
-​    记录docker的一些操作
-
-##### git
-
-​    git简单使用
-
-##### java
-
-​    java里面的一下东西
-
-##### linux
-
-​    linux通用的一些操作
-
-###### centos
-
-​    centos特有
-
-###### Ubuntu
-
-​    Ubuntu，deepin等通用
-
-##### mysql
-
-​    mysql安装，操作等细节
-
-##### Windows
-
-​    Windows下一下东西
-​    
