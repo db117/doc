@@ -32,6 +32,7 @@ pageClass: custom-page-class
 [菜鸟教程](https://www.runoob.com/)
 [数据结构](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
 [知识星球](https://wx.zsxq.com/)
+[极客时间](https://time.geekbang.org/)
 [ labuladong 算法]( https://labuladong.gitbook.io/algo/ )
 
 ## 工具
