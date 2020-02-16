@@ -51,6 +51,7 @@ pageClass: custom-page-class
 [potplayer](https://potplayer.daum.net/?lang=zh_CN)
 [谷歌分析](https://analytics.google.com/analytics/web)
 [来此加密](https://letsencrypt.osfipin.com/)
+[typora](https://typora.io/)
 
 ## 资源
 [maven仓库](https://mvnrepository.com/)
