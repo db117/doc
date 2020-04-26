@@ -80,6 +80,7 @@ pageClass: custom-page-class
 [mybatis](https://blog.mybatis.org/)
 [travis](https://travis-ci.org)
 [visualVM](https://visualvm.github.io/?Java_VisualVM)
+[jsoup](https://jsoup.org/)
 
 ## 邮箱
 [126](https://mail.126.com/)
