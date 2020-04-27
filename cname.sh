@@ -4,4 +4,4 @@
 
 set -e
 
-echo 'doc.db117.top' > docs/.vuepress/dist/CNAME
+echo 'db117.top' > docs/.vuepress/dist/CNAME
