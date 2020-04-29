@@ -52,6 +52,7 @@ pageClass: custom-page-class
 [谷歌分析](https://analytics.google.com/analytics/web)
 [来此加密](https://letsencrypt.osfipin.com/)
 [typora](https://typora.io/)
+[ping工具](http://port.ping.pe/)
 
 ## 资源
 [maven仓库](https://mvnrepository.com/)
