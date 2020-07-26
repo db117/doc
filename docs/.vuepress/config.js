@@ -1,5 +1,3 @@
-const navConf = require('../../config/navConf.js');
-const sidebarConf = require('../../config/sidebarConf.js');
 const headConf = require('../../config/headConf.js');
 const build = require("../../config/build.js");
 
