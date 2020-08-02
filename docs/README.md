@@ -23,6 +23,7 @@ pageClass: custom-page-class
 [腾讯云](https://cloud.tencent.com/)
 [阿里云](https://cn.aliyun.com/)
 [亚马逊云](https://aws.amazon.com/cn/)
+[freenom](https://www.freenom.com/)
 
 ## 学习
 [图灵学院](https://ke.qq.com/course/231516)
