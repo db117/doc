@@ -4,7 +4,8 @@ node_js:
 
 before_install:
   # ssh秘钥
-  - openssl aes-256-cbc -K $encrypted_ee4910b28c71_key -iv $encrypted_ee4910b28c71_iv -in gitee_travis_key.enc ~/.ssh/id_rsa -d
+  - openssl aes-256-cbc -K $encrypted_ee4910b28c71_key -iv $encrypted_ee4910b28c71_iv -in gitee_travis_key.enc -out ~/.ssh/id_rsa -d
+  # 设置权限
   - chmod 600 ~/.ssh/id_rsa
 script:
   - npm run docs:build
