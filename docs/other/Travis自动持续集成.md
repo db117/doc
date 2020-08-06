@@ -2,7 +2,7 @@
 title: Travis自动持续集成
 ---
 
-## 使用准备
+#### 使用准备
 
 1. Travis CI 只支持 Github，不支持其他代码托管服务
    1. 拥有 GitHub 帐号
@@ -13,7 +13,7 @@ title: Travis自动持续集成
 
 
 
-## 配置
+#### 配置
 
 Travis 要求项目的根目录下面，必须有一个`.travis.yml`文件。这是配置文件，指定了 Travis 的行为。该文件必须保存在 Github 仓库里面，一旦代码仓库有新的 Commit，Travis 就会去找这个文件，执行里面的命令。
 
@@ -41,7 +41,7 @@ deploy:
   target_branch: master
 ```
 
-## 使用技巧
+#### 使用技巧
 
 - 环境变量
 
@@ -62,4 +62,54 @@ deploy:
       github-token: $github
       ```
 
-      
+
+#### 使用Travis Client
+
+[文档](https://github.com/travis-ci/travis.rb)
+
+```
+# 安装ruby等依赖
+sudo apt-get install ruby-dev libffi-dev make gcc -y
+# 安装Travis
+sudo gem install travis
+# 查看是否安装成功
+travis version
+```
+
+
+
+#### 添加ssh
+
+- 生成秘钥
+
+    ```
+    ssh-keygen -t rsa -b 4096 -C "<your_email>" -f <key_name> -N ''
+    ```
+
+- 把公钥放在需要的地方
+
+- 使用Travis client加密私钥
+
+  ```
+  travis encrypt-file <key_name>
+  # 找到输出的类似的,放到配置文件中
+openssl aes-256-cbc -K $encrypted_XXXXXXXXXXXX_key -iv $encrypted_XXXXXXXXXXXX_iv -in <key_name>.enc -out <key_name> -d
+  
+  ```
+  
+- 修改.travis配置文件
+
+  ```
+  before_install:
+  - openssl aes-256-cbc -K $encrypted_**********_key -iv $encrypted_********_iv
+    -in .travis/<key_name>.enc -out ~/.ssh/<key_name> -d
+  - chmod 600 ~/.ssh/<key_name>
+  - eval $(ssh-agent)
+  - ssh-add ~/.ssh/<key_name>
+  
+# 最后添加
+  addons:
+    ssh_known_hosts:
+    - github.com
+  ```
+  
