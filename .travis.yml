@@ -4,12 +4,11 @@ node_js:
 
 before_install:
 # ssh秘钥
-- openssl aes-256-cbc -K $encrypted_ee4910b28c71_key -iv $encrypted_ee4910b28c71_iv
-  -in .travis/gitee_travis_key.enc -out ~/.ssh/gitee_travis_key -d
+-  openssl aes-256-cbc -K $encrypted_5bb477803181_key -iv $encrypted_5bb477803181_iv -in gitee_deploy_key.enc -out ~/.ssh/gitee_deploy_key -d
 # 设置权限
-- chmod 600 ~/.ssh/gitee_travis_key
+- chmod 600 ~/.ssh/gitee_deploy_key
 - eval $(ssh-agent)
-- ssh-add ~/.ssh/gitee_travis_key
+- ssh-add ~/.ssh/gitee_deploy_key
 script:
   - npm run docs:build
 deploy:
