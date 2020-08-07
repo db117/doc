@@ -54,6 +54,7 @@ pageClass: custom-page-class
 [来此加密](https://letsencrypt.osfipin.com/)
 [typora](https://typora.io/)
 [ping工具](http://port.ping.pe/)
+[bejson工具](https://www.bejson.com/)
 
 ## 资源
 [maven仓库](https://mvnrepository.com/)
