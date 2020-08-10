@@ -60,3 +60,12 @@ File file = resource.getFile();
 
 -verbose:class
 
+### 执行 java class 文件引入jar包
+
+```
+java -classpath jar目录 class文件目录
+
+java -classpath .:lib/* Run 
+```
+
+备注：上面命令中是将当前（Run.class）目录下的lib目录下的所有jar包引入
