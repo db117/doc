@@ -26,7 +26,7 @@ pageClass: custom-page-class
 [freenom](https://www.freenom.com/)
 
 ## 学习
-[图灵源码](http://git.tulingxueyuan.com/user/login)
+[图灵源码](http://git.tulingxueyuan.cn/user/login)
 [图灵学院](https://www.tulingxueyuan.cn/)
 [慕课网](https://www.imooc.com/)
 [菜鸟教程](https://www.runoob.com/)
