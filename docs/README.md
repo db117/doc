@@ -26,9 +26,8 @@ pageClass: custom-page-class
 [freenom](https://www.freenom.com/)
 
 ## 学习
-[图灵学院](https://ke.qq.com/course/231516)
-[图灵源码](http://git.jiagouedu.com/user/login)
-[慕课网](https://www.imooc.com/)
+[图灵源码](http://git.tulingxueyuan.com/user/login)
+[图灵学院](https://www.tulingxueyuan.cn/)
 [慕课网](https://www.imooc.com/)
 [菜鸟教程](https://www.runoob.com/)
 [数据结构](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
@@ -55,6 +54,7 @@ pageClass: custom-page-class
 [typora](https://typora.io/)
 [ping工具](http://port.ping.pe/)
 [bejson工具](https://www.bejson.com/)
+[五百丁](https://www.500d.me/)
 
 ## 资源
 [maven仓库](https://mvnrepository.com/)
