@@ -21,6 +21,8 @@ title: Spring扩展接口
 > 用于以编程方式编写横幅的接口类
 >
 > 在springboot启动时打印横幅
+>
+> 需要在SpringApplication中设置
 
 #### ApplicationRunner
 
@@ -35,12 +37,18 @@ title: Spring扩展接口
 > org.springframework.boot.CommandLineRunner
 >
 > 同ApplicationRunner接口，区别为入参不同
+>
+> 在ApplicationRunner后调用
 
 #### SpringApplicationRunListener
 
 > org.springframework.boot.SpringApplicationRunListener
 >
 > 在springboot启动的各个阶段进行回调
+>
+> 需要在spring.factories中定义
+>
+> 需要有入参为(SpringApplication application,String ... args)的构造函数
 
 #### RestTemplateCustomizer
 
@@ -80,17 +88,25 @@ title: Spring扩展接口
 >
 > 注入org.springframework.context.ApplicationEventPublisher 实现事件推送
 
-#### LifecycleProcessor
-
-> org.springframework.context.LifecycleProcessor
->
-> Spring生命周期开始，结束是调用
-
 #### ApplicationListener
 
 > org.springframework.context.ApplicationListener
 >
 > 监听org.springframework.context.ApplicationEvent 事件
+>
+> spring-boot启动会在特定的时机发布事件
+>
+> org.springframework.boot.web.servlet.context.ServletWebServerInitializedEvent
+>
+> org.springframework.context.event.ContextRefreshedEvent
+>
+> org.springframework.boot.context.event.ApplicationStartedEvent
+>
+> org.springframework.boot.availability.AvailabilityChangeEvent
+>
+> org.springframework.boot.context.event.ApplicationReadyEvent
+>
+> org.springframework.boot.availability.AvailabilityChangeEvent
 
 #### BeanFactoryAware
 
@@ -127,6 +143,8 @@ title: Spring扩展接口
 > org.springframework.beans.factory.SmartInitializingSingleton
 >
 > 当所有单例 bean 都初始化完成以后， 容器会回调该接口的方法 `afterSingletonsInstantiated`。
+>
+> 保证在所有非懒加载的单例bean都加载完成后调用
 
 #### BeanFactoryPostProcessor
 
