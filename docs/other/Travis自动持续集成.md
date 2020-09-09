@@ -107,9 +107,10 @@ openssl aes-256-cbc -K $encrypted_XXXXXXXXXXXX_key -iv $encrypted_XXXXXXXXXXXX_i
   - eval $(ssh-agent)
   - ssh-add ~/.ssh/<key_name>
   
+  ```
 # 最后添加
+  ```
   addons:
     ssh_known_hosts:
-    - github.com
+    - github.com  
   ```
-  
