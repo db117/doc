@@ -92,9 +92,9 @@ travis version
 
   ```
   travis encrypt-file <key_name>
-  # 找到输出的类似的,放到配置文件中
-openssl aes-256-cbc -K $encrypted_XXXXXXXXXXXX_key -iv $encrypted_XXXXXXXXXXXX_iv -in <key_name>.enc -out <key_name> -d
   
+  找到输出的类似的,放到配置文件中
+  openssl aes-256-cbc -K $encrypted_XXXXXXXXXXXX_key -iv     $encrypted_XXXXXXXXXXXX_iv -in <key_name>.enc -out <key_name> -d
   ```
   
 - 修改.travis配置文件
@@ -106,7 +106,6 @@ openssl aes-256-cbc -K $encrypted_XXXXXXXXXXXX_key -iv $encrypted_XXXXXXXXXXXX_i
   - chmod 600 ~/.ssh/<key_name>
   - eval $(ssh-agent)
   - ssh-add ~/.ssh/<key_name>
-  
   ```
 # 最后添加
   ```
