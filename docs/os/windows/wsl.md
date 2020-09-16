@@ -11,3 +11,11 @@ title: wsl
 ```
 netsh winsock reset
 ```
+
+在windows资源管理器打开wsl文件
+
+```
+cd /home
+explorer.exe .
+```
+
