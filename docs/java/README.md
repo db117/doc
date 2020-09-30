@@ -69,3 +69,13 @@ java -classpath .:lib/* Run
 ```
 
 备注：上面命令中是将当前（Run.class）目录下的lib目录下的所有jar包引入
+
+#### 如何找到JAVA_HOME
+
+> 对于Linux和macOS ， 让我们使用 grep：
+>
+> java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home'
+>
+> 对于Windows，让我们使用 findstr：
+>
+> java -XshowSettings:properties -version 2>&1 | findstr "java.home"
