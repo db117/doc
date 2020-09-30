@@ -58,6 +58,7 @@ pageClass: custom-page-class
 
 ## 资源
 [maven仓库](https://mvnrepository.com/)
+[阿里云maven](https://maven.aliyun.com/mvn/guide)
 [dockerHub](https://hub.docker.com/)
 [msdn](https://msdn.itellyou.cn/)
 [html素材](http://www.htmlsucai.com)
