@@ -14,8 +14,8 @@ title: Mac
 ~/.bashrc 
 
 # 编辑环境变量
-vim ./.bash_profile
+vim ~/.bash_profile
 # 生效
-source ./.bash_profile
+source ~/.bash_profile
 ```
 
