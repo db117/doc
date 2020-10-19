@@ -19,3 +19,14 @@ vim ~/.bash_profile
 source ~/.bash_profile
 ```
 
+#### mac上启动springboot项目很慢
+
+- 查看本机的hostname
+
+  `hostname`
+
+- 添加到hosts
+
+  `vim /etc/hosts`
+
+  把查询到的hostname添加到127.0.0.1 后面
