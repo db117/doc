@@ -52,3 +52,22 @@ title: maven
 
 --non-resolvable  只执行当前目录的，不对子目录进行
 
+#### 子项目中排除掉定义在Parent中的插件
+
+```
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-xxx-plugin</artifactId>
+	<executions>
+		<!--加一个execution , phase设置成空-->
+		<execution>
+			<phase/>
+		</execution>
+		<!--加一个有自己id的execution，id随便，其余可以不写-->
+		<execution>
+			<id>myid</id>
+		</execution>
+	</executions>
+</plugin>
+```
+
