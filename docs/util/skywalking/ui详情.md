@@ -1,5 +1,5 @@
 ---
-title：UI详情
+title: UI详情
 ---
 
  ### 栏目
