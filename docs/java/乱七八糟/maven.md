@@ -71,3 +71,9 @@ title: maven
 </plugin>
 ```
 
+#### 跳过checkstyle
+
+```
+-Dcheckstyle.skip
+```
+

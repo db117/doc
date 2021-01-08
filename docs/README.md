@@ -56,6 +56,7 @@ pageClass: custom-page-class
 [bejson工具](https://www.bejson.com/)
 [五百丁](https://www.500d.me/)
 [jwt](https://jwt.io/)
+[motrix](https://motrix.app/)
 
 ## 资源
 [maven仓库](https://mvnrepository.com/)
