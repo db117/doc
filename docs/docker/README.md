@@ -64,13 +64,17 @@ docker update --restart=always xxx
 | –timestamps或-t |        | 显示时间戳                                       |
 | –until          |        | 打印某个时间以前的日志，例如 2013-01-02T13:23:37 |
 
-## # 阿里镜像
+##  镜像
 
-```
-{
-  "registry-mirrors": ["https://mhgp5fet.mirror.aliyuncs.com"]
-}
-```
+*		Docker中国区官方镜像
+   *		https://registry.docker-cn.com
+*		网易
+   *		http://hub-mirror.c.163.com
+*		ustc
+   *		https://docker.mirrors.ustc.edu.cn
+*		中国科技大学
+   *		https://docker.mirrors.ustc.edu.cn
+
 
 ##  docker network 网络
 
