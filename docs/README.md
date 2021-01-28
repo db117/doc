@@ -57,6 +57,7 @@ pageClass: custom-page-class
 [五百丁](https://www.500d.me/)
 [jwt](https://jwt.io/)
 [motrix](https://motrix.app/)
+[在线转换yaml](https://www.toyaml.com/index.html)
 
 ## 资源
 [maven仓库](https://mvnrepository.com/)
