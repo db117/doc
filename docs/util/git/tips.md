@@ -3,6 +3,8 @@ title: Git常用操作
 ---
 ### git记住密码
 
+> ~/.gitconfig 文件中添加或修改
+  
   ```
   [credential] 
   helper = store

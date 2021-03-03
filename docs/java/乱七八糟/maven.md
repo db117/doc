@@ -77,3 +77,9 @@ title: maven
 -Dcheckstyle.skip
 ```
 
+##### 指定环境
+
+```
+-P test
+```
+
