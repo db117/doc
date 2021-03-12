@@ -58,6 +58,7 @@ pageClass: custom-page-class
 [jwt](https://jwt.io/)
 [motrix](https://motrix.app/)
 [在线转换yaml](https://www.toyaml.com/index.html)
+[grok调试](http://grokdebug.herokuapp.com/)
 
 ## 资源
 [maven仓库](https://mvnrepository.com/)
