@@ -76,6 +76,9 @@ pageClass: custom-page-class
 [linux文档](http://man.linuxde.net/)
 [redis文档](http://www.redis.cn/commands.html)
 [elasticsearch](https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html)
+[docker](https://docs.docker.com/engine/reference/commandline/docker/)
+[k8s文档](https://kubernetes.io/zh/docs/home/)
+[kubectl命令行](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
 
 ## 开源软件
 [openjdk](http://openjdk.java.net/)
