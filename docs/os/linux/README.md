@@ -2,4 +2,9 @@
 title: linux
 ---
 ## linux
- 不知道说啥,以后再写
+#### 分析域名
+
+```
+nslookup 域名
+```
+

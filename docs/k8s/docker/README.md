@@ -101,3 +101,9 @@ docker network create my_net
 
 docker network inspect my_net
 
+#### docker批量删除镜像或容器
+
+```
+docker rmi --force $(docker images | grep <过滤> | awk '{print $3}')
+```
+
