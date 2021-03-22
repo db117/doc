@@ -78,3 +78,50 @@ spec:
   - name: my-secret
 ```
 
+#### 污点
+
+* **打上污点**
+
+  > NoSchedule:[K8S](https://www.iyunw.cn/archives/tag/k8s/)node添加这个effecf类型污点，新的不能容忍的pod不能再调度过来，但是老的运行在node上不受影响
+  >
+  > NoExecute：K8Snode添加这个effecf类型污点，新的不能容忍的pod不能调度过来，老的pod也会被驱逐
+  >
+  > PreferNoSchedule：pod会尝试将pod分配到该节点
+
+    ```
+    kubectl taint nodes node1 key=value:NoSchedule
+
+    kubectl taint nodes node1 key=value:NoExecute
+
+    kubectl taint nodes node1 key=value:PreferNoSchedule
+    ```
+  
+* **删除污点**
+
+  * > 加上[-] 
+
+  ```
+    kubectl taint nodes node1 key=value:NoSchedule-
+  
+    kubectl taint nodes node1 key=value:NoExecute-
+  
+    kubectl taint nodes node1 key=value:PreferNoSchedule-
+  ```
+
+  ##### **pod设置容忍**
+
+  ```
+  tolerations:  #containers同级
+  
+      - key: "key1"          #能容忍的污点key
+  
+        operator: "Equal"    #Equal等于表示key=value ， Exists不等于，表示当值不等于下面value正常
+  
+        value: "value1"      #值
+  
+        effect: "NoExecute"  #effect策略，见上面
+  
+        tolerationSeconds: 3600  #原始的pod多久驱逐，注意只有effect: "NoExecute"才能设置，不然报错
+  ```
+
+  
