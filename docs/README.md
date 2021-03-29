@@ -62,6 +62,8 @@ pageClass: custom-page-class
 
 ## 资源
 [maven仓库](https://mvnrepository.com/)
+[华为镜像](https://mirrors.huaweicloud.com/)
+[中科大镜像](http://mirrors.ustc.edu.cn/)
 [阿里云maven](https://maven.aliyun.com/mvn/guide)
 [dockerHub](https://hub.docker.com/)
 [msdn](https://msdn.itellyou.cn/)
