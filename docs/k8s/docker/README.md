@@ -2,21 +2,10 @@
 title: docker
 ---
 ## docker
- 进入容器
-
-```docker container exec -it f0b1c8ab3633 /bin/bash```
-
-- 退出
-
-  exit
-
-  
-
-## 启动容器常用命令
+进入容器
 
 ```
-sudo docker run -d -p 8080:8080 --name homepage --network my_net  --restart=always -v $PWD/logs:/logs homepage 
-
+docker container exec -it 容器id bash
 ```
 
 
@@ -35,7 +24,9 @@ sudo docker run -d -p 8080:8080 --name homepage --network my_net  --restart=alwa
     *   -e MYSQL_ROOT_PASSWORD=123456：
         *   初始化 root 用户的密码。
 
-```docker run -p 3306:3306  --restart=always --name mymysql -v $PWD/conf:/etc/mysql/conf.d -v $PWD/logs:/logs -v $PWD/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7``` 
+```
+docker run -p 3306:3306  --restart=always --name mymysql -v $PWD/conf:/etc/mysql/conf.d -v $PWD/logs:/logs -v $PWD/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7
+```
 
 ##  Docker容器开机自动启动
 
@@ -51,7 +42,11 @@ sudo docker run -d -p 8080:8080 --name homepage --network my_net  --restart=alwa
 
 如果创建时未指定 --restart=always ,可通过update 命令设置
 
-docker update --restart=always xxx
+```
+docker update --restart=always 容器id
+```
+
+
 
 ##  docker logs命令
 
