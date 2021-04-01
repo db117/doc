@@ -1,5 +1,5 @@
 ---
-tilte: privoxy
+title: privoxy
 ---
 
 ### 简介

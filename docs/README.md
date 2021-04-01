@@ -79,6 +79,7 @@ pageClass: custom-page-class
 [docker](https://docs.docker.com/engine/reference/commandline/docker/)
 [k8s文档](https://kubernetes.io/zh/docs/home/)
 [kubectl命令行](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
+[npmjs](https://docs.npmjs.com/)
 
 ## 开源软件
 [openjdk](http://openjdk.java.net/)
