@@ -7,12 +7,12 @@ title: privoxy
 
 ### 安装使用
 > 安装
-```
+```bash
 brew install privoxy
 ```
 
->启动
-```
+>非开机启动启动
+```bash
 sudo /usr/local/sbin/privoxy /usr/local/etc/privoxy/config
 ```
 
@@ -20,3 +20,15 @@ sudo /usr/local/sbin/privoxy /usr/local/etc/privoxy/config
 ```
 forward-socks5   /     127.0.0.1:1080 .
 ```
+
+#### 设置开机启动
+
+> 启动并设置开机启动
+```bash
+brew services start privoxy
+```
+> 停止并取消开机启动
+```bash
+brew services stop privoxy
+```
+
