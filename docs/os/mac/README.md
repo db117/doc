@@ -30,3 +30,21 @@ source ~/.bash_profile
   `vim /etc/hosts`
 
   把查询到的hostname添加到127.0.0.1 后面
+
+#### 隐藏文件
+
+> 快捷键,切换隐藏显示
+
+```
+Command + Shift +.
+```
+
+> 命令行,需要重启finder
+
+```bash
+# 显示隐藏
+defaults write com.apple.finder AppleShowAllFiles -bool true
+# 恢复隐藏
+defaults write com.apple.finder AppleShowAllFiles -bool false
+```
+
