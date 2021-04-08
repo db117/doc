@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs",
-    "cname": "bash cname.sh"
+    "docs:build": "vuepress build docs"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +13,7 @@
   "devDependencies": {
     "@vuepress/plugin-back-to-top": "latest",
     "@vuepress/plugin-google-analytics": "latest",
-    "vuepress": "^1.8.0"
+    "vuepress": "^1.8.2"
   },
   "dependencies": {
     "yaml-front-matter": "latest"
