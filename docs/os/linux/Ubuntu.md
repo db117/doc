@@ -1,5 +1,5 @@
 ---
-title: 安装Chrome
+title: Ubuntu相关
 ---
 
 #### 安装Chrome 
