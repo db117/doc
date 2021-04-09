@@ -12,10 +12,31 @@ jobs:
           npm install
           npm run docs:build
 
-      - name: Deploy
+      - name: Deploy To github pages
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
           branch: master
           folder: docs/.vuepress/dist
           token: ${{secrets.deploy_token}}
           repository-name: db117/db117.github.io
+
+      - name: Private Key
+        env:
+          ACTIONS_PRIVATE_KEY: ${{ secrets.ACTIONS_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$ACTIONS_PRIVATE_KEY" > ~/.ssh/id_rsa 
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan gitee.com >> ~/.ssh/known_hosts      
+
+      - name: Push gitee 
+        run: |
+          cd docs/.vuepress/dist
+          git config user.name "在那遥远的瞬间"
+          git config user.email "z351622948@163.com"
+
+          git init
+          git add .
+          git commit -m "发布pages"
+          git remote add origin git@gitee.com:db117/db117.git
+          git push --force origin master:master
