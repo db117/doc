@@ -1,10 +1,25 @@
 ---
 title: linux
 ---
-## linux
-#### 分析域名
+### nslookup
+
+#### 安装
+
+> Ubuntu
 
 ```
-nslookup 域名
+apt-get install dnsutils
 ```
 
+> Debian
+
+```
+apt-get update
+apt-get install dnsutils
+```
+
+> Fedora / Centos
+
+```
+yum install bind-utils
+```

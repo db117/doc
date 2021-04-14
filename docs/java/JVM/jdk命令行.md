@@ -1,10 +1,10 @@
 ---
-title: JVM调试
+title: jdk命令行工具
 ---
 
-## jps
+### jps
 
-### 参数说明
+#### 参数说明
 
 > -q：只输出进程 ID
 >
@@ -16,7 +16,7 @@ title: JVM调试
 >
 > -V：输出通过flag文件传递到JVM中的参数
 
-### 用例
+#### 用例
 
 1. 无参数：jps
 
@@ -26,13 +26,13 @@ title: JVM调试
 
    显示进程ID	完全的包名，应用主类名，jar的完全路径名 	jvm参数	通过flag文件传递到JVM中的参数
 
-### 原理
+#### 原理
 
-java程序在启动以后，会在java.io.tmpdir指定的目录下，就是临时文件夹里，生成一个类似于hsperfdata_User的文件夹，这个文件夹里（在Linux中为/tmp/hsperfdata_{userName}/），有几个文件，名字就是java进程的pid，因此列出当前运行的java进程，只是把这个目录里的文件名列一下而已。 至于系统的参数什么，就可以解析这几个文件获得。
+> java程序在启动以后，会在java.io.tmpdir指定的目录下，就是临时文件夹里，生成一个类似于hsperfdata_User的文件夹，这个文件夹里（在Linux中为/tmp/hsperfdata_{userName}/），有几个文件，名字就是java进程的pid，因此列出当前运行的java进程，只是把这个目录里的文件名列一下而已。 至于系统的参数什么，就可以解析这几个文件获得。
 
-## Jmap
+### Jmap
 
-#### 参数：
+#### 参数
 
 - **option：** 选项参数。
 - **pid：** 需要打印配置信息的进程ID。

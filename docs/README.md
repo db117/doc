@@ -66,6 +66,7 @@ pageClass: custom-page-class
 [dockerHub](https://hub.docker.com/)
 [msdn](https://msdn.itellyou.cn/)
 [html素材](http://www.htmlsucai.com)
+[homebrew](https://brew.sh/)
 
 ## 文档
 [石墨文档](https://shimo.im/desktop)
