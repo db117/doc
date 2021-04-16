@@ -1,7 +1,7 @@
 ---
 title: Ubuntu相关
 ---
-
+<TOC />
 #### 安装Chrome 
 
 ```

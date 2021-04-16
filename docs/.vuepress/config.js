@@ -21,6 +21,8 @@ module.exports = {
         smoothScroll: true,
     },
     plugins: [
+
+        ['vuepress-plugin-table-of-contents'],
         ['@vuepress/back-to-top', true],
         ['@vuepress/google-analytics', {
             ga: 'UA-152553432-1'
