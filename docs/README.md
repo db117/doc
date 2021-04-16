@@ -29,6 +29,10 @@ pageClass: custom-page-class
 [极客时间](https://time.geekbang.org/)
 [ labuladong 算法]( https://labuladong.gitbook.io/algo/ )
 
+## 论坛
+[v2ex](https://www.v2ex.com/)
+
+
 ## 工具
 [彩云翻译]( https://fanyi.caiyunapp.com/#/ )
 [极客导航](https://www.jikedaohang.com)
