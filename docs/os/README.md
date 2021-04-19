@@ -104,6 +104,24 @@ title: 系统相关
   >
   > [官网](https://www.better365.cn/bab2.html)
 
+- Bartender4
+
+  > 控制mac菜单栏图标展示
+  >
+  > [官网](https://www.macbartender.com/Bartender4/)
+
+- iina
+
+  > macOS 的现代媒体播放器
+  >
+  > [官网](https://iina.io/)
+  >
+  > [github](https://github.com/iina/iina)
+
+- PathFinder
+
+  > mac文件管理
+
 ### Windows
 
 - v2rayN
