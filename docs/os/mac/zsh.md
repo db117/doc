@@ -2,25 +2,35 @@
 title: zsh配置
 ---
 
-### Oh My Zsh
+# Oh My Zsh
 
-> zsh配置
+## 安装
 
 [ohmyzsh](https://github.com/ohmyzsh/ohmyzsh)
 
+| Method    | Command                                                      |
+| --------- | ------------------------------------------------------------ |
+| **curl**  | `sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"` |
+| **wget**  | `sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"` |
+| **fetch** | `sh -c "$(fetch -o - https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"` |
+
+### 配置文件
+
 ```
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+vim ~/.zshrc
 ```
 
 
 
-### 更新
+## 更新
 
 ```
+omz update
+# 已过期
 upgrade_oh_my_zsh
 ```
 
-
+## 插件
 
 ### zsh-autosuggestions
 
