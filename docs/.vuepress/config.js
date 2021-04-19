@@ -20,6 +20,10 @@ module.exports = {
         // 启用页面滚动效果
         smoothScroll: true,
     },
+    markdown: {
+        // 显示行号
+        lineNumbers: true
+    },
     plugins: [
 
         ['vuepress-plugin-table-of-contents'],
