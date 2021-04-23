@@ -2,7 +2,7 @@
 title: Kubectl常用
 ---
 
-###  linux安装
+##  linux安装
 
 *	下载
 	*	最新版本
@@ -22,9 +22,9 @@ title: Kubectl常用
 
 
 
-### 常用命令
+## 常用命令
 
-#### pod
+### pod
 
 * 重启
 
@@ -51,7 +51,7 @@ title: Kubectl常用
        ```
 
 
-#### 命名空间
+## 命名空间
 
 * 创建命名空间
 
@@ -65,7 +65,7 @@ title: Kubectl常用
     kubectl config set-context default --namespace=${work_namespace}
     ```
 
-#### Secret
+## Secret
 
 > 创建docker访问secret
 > 需要在Deployment中指定
@@ -78,7 +78,7 @@ spec:
   - name: my-secret
 ```
 
-#### 污点
+## 污点
 
 * **打上污点**
 
@@ -112,16 +112,11 @@ spec:
 
   ```
   tolerations:  #containers同级
-  
       - key: "key1"          #能容忍的污点key
-  
         operator: "Equal"    #Equal等于表示key=value ， Exists不等于，表示当值不等于下面value正常
-  
         value: "value1"      #值
-  
         effect: "NoExecute"  #effect策略，见上面
-  
         tolerationSeconds: 3600  #原始的pod多久驱逐，注意只有effect: "NoExecute"才能设置，不然报错
   ```
-
+  
   
