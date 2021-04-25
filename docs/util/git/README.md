@@ -27,3 +27,11 @@ title: git
 
 
 
+### 批量pull脚本
+
+> 批量拉取当前目录下的所有git项目
+
+```
+find . -maxdepth 1 -type d -exec sh -c '(cd {} && git pull)' ';'
+```
+
