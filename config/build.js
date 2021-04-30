@@ -6,7 +6,7 @@ const utils = require(rootPath + '/util/index.js');
 const fileUtil = require(rootPath + '/util/getFilenames.js');
 
 // 排除的目录
-let excludes = ['.vuepress'];
+let excludes = ['.vuepress','img'];
 
 const build = {
     // 获取导航栏
@@ -28,7 +28,7 @@ const build = {
                 }
             }
         });
-
+        console.log(res);
         return res;
     },
     // 左侧菜单栏
@@ -66,7 +66,11 @@ const build = {
         });
         // 最后加跟目录(坑了大半天)
         res += `"/": ${JSON.stringify(utils.getFileName(docs))}}`;
-        return JSON.parse(res);
+
+        let ans= JSON.parse(res);
+
+        console.log(ans);
+        return ans;
     },
     // 获取文件夹下的所以文件名称
     group: function (fullPath, path) {

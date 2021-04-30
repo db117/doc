@@ -1,7 +1,7 @@
 const fs = require('fs');
 const yamlFront = require('yaml-front-matter');
 // 排除的目录
-let excludes = ['.vuepress'];
+let excludes = ['.vuepress','img'];
 
 const utils = {
     // 侧边栏
