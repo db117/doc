@@ -3,7 +3,6 @@ const path = require("path");
 const rootPath = path.dirname(__dirname);//执行一次dirname将目录定位到docs的上级目录，也就是博客根目录
 const docs = rootPath + "/docs/";
 const utils = require(rootPath + '/util/index.js');
-const fileUtil = require(rootPath + '/util/getFilenames.js');
 
 // 排除的目录
 let excludes = ['.vuepress','img'];
