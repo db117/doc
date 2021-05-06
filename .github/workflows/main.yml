@@ -30,6 +30,7 @@ jobs:
           ssh-keyscan gitee.com >> ~/.ssh/known_hosts      
 
       - name: Push gitee 
+        continue-on-error: true # 防止步骤失败时作业也会失败
         run: |
           cd docs/.vuepress/dist
           
