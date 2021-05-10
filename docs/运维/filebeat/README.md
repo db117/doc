@@ -2,6 +2,12 @@
 title: filebeat相关
 ---
 
+### 介绍
+
+> 官网 [Filebeat](https://www.elastic.co/guide/en/beats/filebeat/7.12/index.html)
+>
+> github [Beats ](https://github.com/elastic/beats)
+
 ###	收集k8s日志
 
 ```
@@ -28,9 +34,9 @@ title: filebeat相关
                     kubernetes.namespace: "hillinsight"
    
       multiline:
-          pattern: '^\s*(\d{4}|\d{2})\-(\d{2}|[a-zA-Z]{3})\-(\d{2}|\d{4})'   # 指定匹配的表达式（匹配以 2017-11-15 08:04:23:889 时间格式开头的字符串）
-          negate: true                                # 是否匹配到
-          match: after                                # 合并到上一行的末尾, 为了error日志
+          pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'   # 指定匹配的表达式（匹配以 2017-11-15）
+          negate: true                                # 是否未匹配到
+          match: after                                # 合并到上一行的末尾, 为了error等日志
           max_lines: 1000                             # 最大的行数
           timeout: 30s                                # 如果在规定的时候没有新的日志事件就不等待后面的日志
 ```
