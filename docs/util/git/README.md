@@ -35,3 +35,71 @@ title: git
 find . -maxdepth 1 -type d -exec sh -c '(cd {} && git pull)' ';'
 ```
 
+### 当前分支最新的commitid
+
+```
+git rev-parse HEAD
+```
+
+### 查看拥有某个commitId的分支
+
+```
+git branch --contains $COMMIT_ID
+```
+
+### git 对比两个分支差异
+
+#### 显示出branch1和branch2中差异的部分
+
+```
+git diff branch1 branch2 --stat
+```
+
+#### 显示指定文件的详细差异
+
+```
+git diff branch1 branch2 具体文件路径
+```
+
+#### 显示出所有有差异的文件的详细差异
+
+```
+git diff branch1 branch2
+```
+
+#### 查看branch1分支有，而branch2中没有的log
+
+```
+git log branch1 ^branch2
+```
+
+#### 查看branch2中比branch1中多提交了哪些内容
+
+`git log branch1..branch2`
+ **注意，列出来的是两个点后边（此处即dev）多提交的内容。**
+
+#### 不知道谁提交的多谁提交的少，单纯想知道有什么不一样
+
+```
+git log branch1...branch2
+```
+
+### 按照时间来列出两个 commit id 之间的相差数
+
+> git rev-list: Lists commit objects in reverse chronological order（按时间逆向列出 commit 对象的顺序）
+>
+> 所谓时间逆向：第一个 commit id 提交的时间比第二个 commit id 早
+
+找commit-id-1之间的commit-id-2
+
+```
+git rev-list <commit-id-1>..<commit-id-2>
+```
+
+利用这个我们可以对比两个 commit id 谁比较新：
+
+```
+git rev-list <commit-id-1>..<commit-id-2> --count
+```
+
+如果结果大于 0：commit-id-2 比 commit-id-1 新
