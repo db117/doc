@@ -64,30 +64,3 @@ cp objs/nginx /usr/local/nginx/sbin/
 # 查看是否更新成功 显示了 configure 构建参数表示成功
 /usr/local/nginx/sbin/nginx -V
 ```
-
-### 控制命令
-
-```
-#查看命令帮助
-./sbin/nginx -?
-#默认方式启动：
-./sbin/nginx 
-#指定配置文件启动 
-./sbing/nginx -c /tmp/nginx.conf 
-#指定nginx程序目录启动
-./sbin/nginx -p /usr/local/nginx/
-
-#快速停止
-./sbin/nginx -s stop
-#优雅停止
-./sbin/nginx -s quit
-
-# 热装载配置文件 
-./sbin/nginx -s reload
-# 重新打开日志文件
-./sbin/nginx -s reopen
-# 设置全局命令，如下表示设置启动用户为root
-./sbin/nginx -g "user root;"
-
-```
-
