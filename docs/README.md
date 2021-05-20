@@ -45,6 +45,7 @@ pageClass: custom-page-class
 [typora](https://typora.io/)
 [五百丁](https://www.500d.me/)
 [motrix](https://motrix.app/)
+[百度统计](https://tongji.baidu.com/)
 
 
 ## 在线工具
