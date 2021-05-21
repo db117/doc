@@ -26,7 +26,6 @@ title: zabbix
     *   systemctl enable zabbix-server zabbix-agent httpd
 *   然后就可以访问了ip/zabbix
     *   默认帐号密码Admin/zabbix
-    
 ## 修改为中文
 *   打开Zabbix界面，Administrator-Users 选择语言-Chinese(zh_CN)-update 
 *   解决乱码
