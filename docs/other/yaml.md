@@ -34,7 +34,7 @@ title: yaml格式
 
 - omap
 
-- > 键: 值对的有序序列，无重复值。
+  > 键: 值对的有序序列，无重复值。
 
   ```
   # Explicitly typed ordered map (dictionary).
@@ -49,7 +49,7 @@ title: yaml格式
 
 - pairs
 
-- > 键: 值对的有序序列，允许重复。
+  > 键: 值对的有序序列，允许重复。
 
   ```
   # Explicitly typed pairs.
@@ -63,7 +63,7 @@ title: yaml格式
 
 - set
 
-- > 非等值的无序集合。
+  > 非等值的无序集合。
 
   ```
   # Explicitly typed set.
@@ -77,7 +77,7 @@ title: yaml格式
 
 - seq 
 
-- > 表示一个从零开始的连续整数索引的集合。
+  > 表示一个从零开始的连续整数索引的集合。
 
   ```
   Block style: !!seq
@@ -90,7 +90,7 @@ title: yaml格式
 
 - str  
 
-- >  表示 Unicode 字符串,由零个或多个 Unicode 字符组成的序列。
+  >  表示 Unicode 字符串,由零个或多个 Unicode 字符组成的序列。
 
   ```
   Block style: !!str |-
@@ -101,7 +101,7 @@ title: yaml格式
 
 - null  
 
-- > 表示缺少值。
+  > 表示缺少值。
   >
   > null | Null | NULL | ~
 
@@ -112,7 +112,7 @@ title: yaml格式
 
 - bool  
 
-- > 表示一个 true/false 值
+  > 表示一个 true/false 值
   >
   > true | True | TRUE | false | False | FALSE
 
@@ -123,7 +123,7 @@ title: yaml格式
 
 - int
 
-- > 整数
+  > 整数
 
   ```
   negative: !!int -12
@@ -145,7 +145,7 @@ title: yaml格式
 
 - binary
 
-- > 一个由零个或多个八位元组成的序列(8位值)。
+  > 一个由零个或多个八位元组成的序列(8位值)。
 
   ```
   canonical: !!binary "\
@@ -164,7 +164,7 @@ title: yaml格式
 
 - merge
 
-- > 指定一个或多个要与当前映射合并的映射。
+  > 指定一个或多个要与当前映射合并的映射。
 
   ```
   ---
@@ -198,7 +198,7 @@ title: yaml格式
 
 - timestamp
 
-- > 时间
+  > 时间
 
   ```
    匹配:
