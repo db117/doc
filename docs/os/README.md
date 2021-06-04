@@ -129,6 +129,18 @@ title: 系统相关
   > Windows下翻墙软件
   >
   > [github](https://github.com/2dust/v2rayN))
+  
+- wiztree
+
+  > 文件占用分析工具
+  >
+  > [官网](https://wiztreefree.com/)
+
+- spaceSniffer
+
+  > 让您了解文件夹和文件是如何在磁盘上构建的
+  >
+  > [官网](http://www.uderzo.it/main_products/space_sniffer/)
 
 ### linux
 
