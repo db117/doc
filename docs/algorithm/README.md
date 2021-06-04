@@ -19,9 +19,29 @@ int countOne(int n){
   int count = 0;
   while (n != 0){
     count++;
-    n = (n-1) & n;
+    n = (n-1) & n;// 去掉最右边一个1
   }
   return count;
 }
+```
+
+### 不用临时变量交换值
+
+```
+numbers[0] ^= numbers[1];
+numbers[1] ^= numbers[0];
+numbers[0] ^= numbers[1];
+```
+
+### 最后一个1
+
+```
+num&-num
+```
+
+### 去掉最右边一个1
+
+```
+n&(n-1)
 ```
 
