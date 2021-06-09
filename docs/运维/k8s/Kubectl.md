@@ -41,7 +41,7 @@ title: Kubectl常用
   3. 直接删除
        ```
        kubectl delete pod {podname} -n {namespace}
-
+      
        kubectl delete replicaset {rs_name} -n {namespace}
       ```
   4. 没有 yaml 文件，直接使用的 Pod 对象
@@ -51,7 +51,7 @@ title: Kubectl常用
        ```
 
 
-## 命名空间
+### 命名空间
 
 * 创建命名空间
 
@@ -65,7 +65,7 @@ title: Kubectl常用
     kubectl config set-context default --namespace=${work_namespace}
     ```
 
-## Secret
+### Secret
 
 > 创建docker访问secret
 > 需要在Deployment中指定
@@ -78,7 +78,7 @@ spec:
   - name: my-secret
 ```
 
-## 污点
+### 污点
 
 * **打上污点**
 
@@ -90,9 +90,9 @@ spec:
 
     ```
     kubectl taint nodes node1 key=value:NoSchedule
-
+  
     kubectl taint nodes node1 key=value:NoExecute
-
+  
     kubectl taint nodes node1 key=value:PreferNoSchedule
     ```
   
@@ -120,3 +120,12 @@ spec:
   ```
   
   
+
+### 查询配置文件结构
+
+> 不清楚某些配置文件怎么配置的情况下使用
+
+```
+kubectl explain ServiceMonitor.spec.endpoints
+```
+
