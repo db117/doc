@@ -56,3 +56,65 @@ kube_pod_info{job="prometheus"}
 jvm_classes_loaded{environment=~"staging|testing|development"}
 ```
 
+#### 范围向量选择
+
+时间范围
+
+> - `ms` - 毫秒
+> - `s` - 秒
+> - `m` - 分
+> - `h` - 时
+> - `d` - 天
+> - `w` - 周
+> - `y` -年(365天)
+
+实例
+
+```
+# 选择过去 5 分钟内，度量指标名称为 http_requests_total， 标签为 job="prometheus" 的时间序列数据
+http_requests_total{job="prometheus"}[5m]
+
+# 相对于当前时间的前 5 分钟时的时刻, 度量指标名称为 http_requests_total 的时间序列数据
+http_requests_total offset 5m
+
+# 相对于当前时间的前一周时，过去 5 分钟的度量指标名称为 http_requests_total 的速率
+rate(http_requests_total[5m] offset 1w)
+```
+
+## 操作符
+
+### 数学运算符
+
+支持的所有数学运算符如下所示：
+
+- `+`(加法)
+- `-` (减法)
+- `*`(乘法)
+- `/` (除法)
+- `%`(求余)
+- `^` (幂运算)
+
+### 布尔运算符
+
+目前，Prometheus支持以下布尔运算符如下：
+
+- `==` (相等)
+- `!=` (不相等)
+- `>` (大于)
+- `<` (小于)
+- `>=` (大于等于)
+- `<=` (小于)
+
+### 聚合函数
+
+- sum：求和。
+- min：最小值。
+- max：最大值
+- avg：平均值
+- stddev：标准差
+- stdvar：方差
+- count：元素个数
+- count_values：等于某值的元素个数
+- bottomk：最小的 k 个元素
+- topk：最大的 k 个元素
+- quantile：分位数
