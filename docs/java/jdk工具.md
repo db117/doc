@@ -1,10 +1,236 @@
 ---
-title: jdk命令行工具
+title: jdk工具
 ---
 
-### jps
+> 基于 jdk11 
+>
+> [Tools and Commands Reference (oracle.com)](https://docs.oracle.com/en/java/javase/11/tools/tools-and-command-reference.html)
 
-#### 参数说明
+## javac
+
+> 读取 Java 类和接口定义，并将它们编译成字节码和类文件。
+>
+> 还可以在Java源文件和类中处理注释。
+
+**参数**
+
+- --class-path path, -classpath path, -cp path
+
+  > 指定在哪里可以找到用户类文件和注释处理器。这个类路径覆盖了 CLASSPATH 环境变量中的用户类路径。
+
+- **-d** **directory**
+
+  > 设置类文件的输出目录。
+
+- -encoding encoding
+
+  > 指定源文件使用的字符编码,如果没有使用则使用系统默认编码
+
+- -g
+
+  > 生成所有调试信息，包括本地变量。默认情况下，只生成行号和源文件信息。
+
+- -verbose
+
+  > 输出有关编译器正在做什么的消息。消息包括有关加载的每个类和编译的每个源文件的信息。
+
+- -source release
+
+  > 指定接受的源代码版本。
+
+- -target release
+
+  > 为特定的 VM 版本生成类文件。
+
+## javap
+
+> 反汇编一个或多个类文件。
+
+**参数**
+
+- -verbose or -v
+
+  > 打印有关所选类的附加信息。
+
+- -l
+
+  > 打印行和局部变量表。
+
+- -public
+
+  > 只显示公共类和成员。
+
+- -protected
+
+  > 只显示受保护的和公共的类和成员。
+
+- -package
+
+  > 显示除私有的
+
+- -private or -p
+
+  > 显示所有的类和成员
+
+- -c
+
+  > 为类中的每个方法打印反汇编代码
+
+- -s
+
+  > 打印内部类型签名。
+
+- -sysinfo
+
+  > 显示正在处理的类的系统信息(路径、大小、日期、 MD5散列)。
+
+- -constants
+
+  > 显示`static`,`final`常量‘
+
+## javadoc
+
+> 使用 javadoc 工具及其选项从 Java 源文件生成 API 文档的 HTML 页面。
+
+**参数**
+
+> javac 的参数一部分参数可以在 javadoc 中使用
+>
+> - `-bootclasspath`
+> - `--class-path`, `-classpath`, or `-cp`
+> - `--enable-preview`
+> - `-encoding`
+> - `-extdirs`
+> - `--release`
+> - `-source`
+> - `--source-path` or `-sourcepath`
+> - `--system`
+
+- -exclude pkglist
+
+  > 排除包
+
+- -locale name
+
+  > 指定 javadoc 工具生成文档时使用的区域设置。
+
+- -package,-private,-protected,-public
+
+  > 显示指定包访问级别之上的类和成员
+
+- -quiet
+
+  > 关闭消息，以便只显示警告和错误，使其更容易查看。
+
+- --show-members  [protected|public|package|private]
+
+  > 指定记录哪些成员(字段或方法)
+
+- -author
+
+  > 在生成的文档中包含@author 文本。
+
+- -charset name
+
+  > 指定此文档的 HTML 字符集。
+
+- -d directory
+
+  > 指定 javadoc 工具保存生成的 HTML 文件的目标目录。
+
+- -docencoding name
+
+  > 指定生成的 HTML 文件的编码。
+
+- -header html-code
+
+  > 指定放置在每个输出文件顶部的标题文本。
+
+- -footer html-code
+
+  > 指定放置在每个输出文件底部的页脚文本。
+
+- -nocomment
+
+  > 取消整个注释体，包括主要描述和所有标记，并只生成声明。
+
+
+- -nodeprecated
+
+  > 防止在文档中生成任何已弃用的 API。
+- --no-frames
+
+  > 禁止在生成的输出中使用帧。
+- -nohelp
+
+  > 在每个页面输出的顶部和底部的导航栏中省略 HELP 链接。
+- -noindex
+
+  > 从生成的文档中省略索引。缺省情况下生成索引。
+- -nonavbar
+
+  > 防止导航栏、页眉和页脚的生成，这些导航栏、页眉和页脚通常位于生成页的顶部和底部。
+- -nosince
+
+  > 从生成的文档中省略与@Since 标记关联的 Since 部分。
+
+- -notimestamp
+
+  > 取消时间戳，时间戳隐藏在每个页面顶部附近生成的 HTML 中的 HTML 注释中。
+
+- -notree
+
+  > 从生成的文档中省略类和接口层次结构页面
+
+## java
+
+> 可以使用 Java 命令启动 Java 应用程序。
+>
+> 具体查看jvm参数
+
+## jar
+
+> 为类和资源创建存档，并操作或从存档中恢复单个类或资源。
+
+## jlink
+
+## jmod
+
+## jdeps
+
+## jdeprscan
+
+## jshell
+
+## keytool
+
+## jarsigner
+
+## kinit
+
+## klist
+
+## ktab
+
+## rmic
+
+## rmiregistry
+
+## rmid
+
+## serialver
+
+## pack200
+
+## unpack200
+
+## jconsole
+
+## jps
+
+> 查看系统中运行的 java 程序
+
+**参数**
 
 > -q：只输出进程 ID
 >
@@ -16,7 +242,7 @@ title: jdk命令行工具
 >
 > -V：输出通过flag文件传递到JVM中的参数
 
-#### 用例
+**用例**
 
 1. 无参数：jps
 
@@ -26,34 +252,34 @@ title: jdk命令行工具
 
    显示进程ID	完全的包名，应用主类名，jar的完全路径名 	jvm参数	通过flag文件传递到JVM中的参数
 
-#### 原理
+**原理**
 
 > java程序在启动以后，会在java.io.tmpdir指定的目录下，就是临时文件夹里，生成一个类似于hsperfdata_User的文件夹，这个文件夹里（在Linux中为/tmp/hsperfdata_{userName}/），有几个文件，名字就是java进程的pid，因此列出当前运行的java进程，只是把这个目录里的文件名列一下而已。 至于系统的参数什么，就可以解析这几个文件获得。
 
-### Jmap
+## Jmap
 
-#### 参数
+参数
 
-- **option：** 选项参数。
-- **pid：** 需要打印配置信息的进程ID。
-- **executable：** 产生核心dump的Java可执行文件。
-- **core：** 需要打印配置信息的核心文件。
-- **server-id** 可选的唯一id，如果相同的远程主机上运行了多台调试服务器，用此选项参数标识服务器。
-- **remote server IP or hostname** 远程调试服务器的IP地址或主机名。
+- option： 选项参数。
+- pid： 需要打印配置信息的进程ID。
+- executable： 产生核心dump的Java可执行文件。
+- core：需要打印配置信息的核心文件。
+- server-id 可选的唯一id，如果相同的远程主机上运行了多台调试服务器，用此选项参数标识服务器。
+- remote server IP or hostname 远程调试服务器的IP地址或主机名。
 
-#### option
+option
 
-- **no option：** 查看进程的内存映像信息,类似 Solaris pmap 命令。
-- **heap：** 显示Java堆详细信息
-- **histo[:live]：** 显示堆中对象的统计信息
-- **clstats：**打印类加载器信息
-- **finalizerinfo：** 显示在F-Queue队列等待Finalizer线程执行finalizer方法的对象
-- **dump:<dump-options>：**生成堆转储快照
-- **F：** 当-dump没有响应时，使用-dump或者-histo参数. 在这个模式下,live子参数无效.
-- **help：**打印帮助信息
-- **J<flag>：**指定传递给运行jmap的JVM的参数
+- no option： 查看进程的内存映像信息,类似 Solaris pmap 命令。
+- heap： 显示Java堆详细信息
+- histo[:live]： 显示堆中对象的统计信息
+- clstats：打印类加载器信息
+- finalizerinfo： 显示在F-Queue队列等待Finalizer线程执行finalizer方法的对象
+- dump:<dump-options>：生成堆转储快照
+-   F：当-dump没有响应时，使用-dump或者-histo参数. 在这个模式下,live子参数无效.
+-   help：打印帮助信息
+-   J<flag>：指定传递给运行jmap的JVM的参数
 
-### 用例
+用例
 
 * 不带参数
   * 将会打印目标虚拟机中加载的每个共享对象的起始地址、映射大小以及共享对象文件的路径全称
