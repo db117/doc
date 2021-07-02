@@ -274,10 +274,10 @@ option
 - histo[:live]： 显示堆中对象的统计信息
 - clstats：打印类加载器信息
 - finalizerinfo： 显示在F-Queue队列等待Finalizer线程执行finalizer方法的对象
-- dump:<dump-options>：生成堆转储快照
+- dump:[dump-options]：生成堆转储快照
 -   F：当-dump没有响应时，使用-dump或者-histo参数. 在这个模式下,live子参数无效.
 -   help：打印帮助信息
--   J<flag>：指定传递给运行jmap的JVM的参数
+-   J[flag]：指定传递给运行jmap的JVM的参数
 
 用例
 
@@ -296,7 +296,7 @@ option
 * -finalizerinfo
   * 打印等待终结的对象信息
   * Number of objects pending for finalization: 0 说明当前F-QUEUE队列中并没有等待Fializer线程执行final
-* dump:<dump-options>
+* dump:[dump-options]
   * -dump:format=b,file=heapdump.phrof 
   * 以hprof二进制格式转储Java堆到指定filename的文件中。live子选项是可选的。如果指定了live子选项，堆中只有活动的对象会被转储。
   * 可以用**jvisualvm**命令工具导入该dump文件分析
@@ -324,14 +324,14 @@ tid=0x000000001fa9e000 线程id
 nid=0x2d64 线程对应的本地线程标识nid
 runnable 线程状态
 
-### 参数说明：
+**参数说明**
 
 - -l 长列表. 打印关于锁的附加信息,例如属于java.util.concurrent 的 ownable synchronizers列表.
 - -F 当’jstack [-l] pid’没有相应的时候强制打印栈信息
 - -m 打印java和native c/c++框架的所有栈信息.
-- -h | -help 打印帮助信息
+- -h   -help 打印帮助信息
 
-### 线程状态
+线程状态
 
 * **NEW**,未启动的。不会出现在Dump中。
 * **RUNNABLE**,在虚拟机内执行的。运行中状态，可能里面还能看到locked字样，表明它获得了某把锁。
@@ -342,7 +342,7 @@ runnable 线程状态
 
 * **TERMINATED**,已退出的。
 
-### 调用修饰
+**调用修饰**
 
 * locked <地址> 目标：使用synchronized申请对象锁成功,监视器的拥有者。
 * waiting to lock <地址> 目标：使用synchronized申请对象锁未成功,在迚入区等待。
@@ -351,7 +351,7 @@ runnable 线程状态
 
 * parking to wait for <地址> 目标
 
-### 线程动作
+**线程动作**
 
 * runnable:状态一般为RUNNABLE。
 
