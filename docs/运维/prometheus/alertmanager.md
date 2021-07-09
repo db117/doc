@@ -94,15 +94,15 @@ routes:
   [ - <route> ... ]
 ```
 
-### 接收器配置
+### 接收者配置
 
 > 消息接收方
 
 ```
-# 接收器名称,会在路由中使用
+# 接收者名称,会在路由中使用
 name: <string>
 
-# 各种接收器配置
+# 各种接收者配置
 email_configs:
   [ - <email_config>, ... ]
 pagerduty_configs:
