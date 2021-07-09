@@ -2,18 +2,21 @@
 title: gradle
 ---
 ## gradle
- 
+
 
 ### gradle代理
 
   ```
-  #gradle.properties中加入socks5
-  systemProp.socksProxySet=true
-  systemProp.socksProxyHost=127.0.0.1
-  systemProp.socksProxyPort=10808
-  
-  #或者
-  org.gradle.jvmargs=-DsocksProxyHost=127.0.0.1 -DsocksProxyPort=10808
+  # 构建时添加jvm参数
+  # socks
+  -DsocksProxyHost=127.0.0.1 
+  -DsocksProxyPort=7777
+  # http
+  -Dhttp.proxyPort=8080
+  -Dhttp.proxyHost=127.0.0.1
+  # https
+  -Dhttps.proxyPort=8080
+  -Dhttps.proxyHost=127.0.0.1
   ```
 
 ### 跳过测试

@@ -4,7 +4,7 @@ title: alertmanager
 
 > Prometheus 中的报警发送给 alertmanager . 在通过分组,过滤,抑制后发送给不同的通知接收器的列表
 
-<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:525px; height:245px;" src="https://www.processon.com/embed/60e579a51e08530a5074c834"></iframe>
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/60e579a51e08530a5074c834"></iframe>
 
 ## 配置
 
