@@ -6,6 +6,8 @@ title: synchronized
 >
 > `synchronized`内置锁是一种对象锁(锁的是对象而非引用)，作用粒度是对象，可以用来实现对临界资源的同步互斥访问，是可重入的。
 
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/60efe9987d9c0806dcf13836"></iframe>
+
 ### 使用
 
 加锁的方式
@@ -96,7 +98,7 @@ class ObjectMonitor : public CHeapObj<mtInternal> {
 >
 > [源码](https://github.com/openjdk/jdk/blob/e92e2fd4e0bc805d8f7d70f632cce0282eb1809b/src/hotspot/share/oops/markWord.hpp)
 
-
+**32位**
 
 |          | 25bit                | 4bit     | 1bit                       | 2bit     |
 | -------- | -------------------- | -------- | -------------------------- | -------- |
@@ -106,6 +108,17 @@ class ObjectMonitor : public CHeapObj<mtInternal> {
 | 重量级锁 | 指向Monitor的指针    |          |                            | 10       |
 | GC标记   | 空                   |          |                            | 11       |
 | 偏向锁   | 线程ID/Epoch(2bit)   |          | 1                          | 01       |
+
+```
+//  jdk源码注释
+//  32 bits:
+//  --------
+//             hash:25 ------------>| age:4  unused_gap:1  lock:2 (normal object)
+//
+//  64 bits:
+//  --------
+//  unused:25 hash:31 -->| unused_gap:1  age:4  unused_gap:1  lock:2 (normal object)
+```
 
 **对象头分析工具**
 
@@ -118,6 +131,8 @@ class ObjectMonitor : public CHeapObj<mtInternal> {
 ### 锁升级
 
 > 锁的状态总共有四种，无锁状态、偏向锁、轻量级锁和重量级锁。随着锁的竞争，锁可以从偏向锁升级到轻量级锁，再升级的重量级锁，但是锁的升级是单向的，也就是说只能从低到高升级，不会出现锁的降级。
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/60efe8155653bb06f24c1df7"></iframe>
 
 **偏向锁**
 
@@ -135,32 +150,33 @@ class ObjectMonitor : public CHeapObj<mtInternal> {
 
 > 倘若偏向锁失败，虚拟机并不会立即升级为重量级锁，它还会尝试使用一种称为轻量级锁的优化手段(1.6之后加入的)，此时Mark Word 的结构也变为轻量级锁的结构。轻量级锁能够提升程序性能的依据是“对绝大部分的锁，在整个同步周期内都不存在竞争”，注意这是经验数据。需要了解的是，轻量级锁所适应的场景是线程交替执行同步块的场合，如果存在同一时间访问同一锁的场合，就会导致轻量级锁膨胀为重量级锁。
 
-**自旋锁**
-
-轻量级锁失败后，虚拟机为了避免线程真实地在操作系统层面挂起，还会进行一项称为自旋锁的优化手段。这是基于在大多数情况下，线程持有锁的时间都不会太长，如果直接挂起操作系统层面的线程可能会得不偿失，毕竟操作系统实现线程之间的切换时需要从用户态转换到核心态，这个状态之间的转换需要相对比较长的时间，时间成本相对较高，因此自旋锁会假设在不久将来，当前的线程可以获得锁，因此虚拟机会让当前想要获取锁的线程做几个空循环(这也是称为自旋的原因)，一般不会太久，可能是50个循环或100循环，在经过若干次循环后，如果得到锁，就顺利进入临界区。如果还不能获得锁，那就会将线程在操作系统层面挂起，这就是自旋锁的优化方式，这种方式确实也是可以提升效率的。最后没办法也就只能升级为重量级锁了。
-
 **锁消除**
 
-消除锁是虚拟机另外一种锁的优化，这种优化更彻底，Java虚拟机在JIT编译时(可以简单理解为当某段代码即将第一次被执行时进行编译，又称即时编译)，通过对运行上下文的扫描，去除不可能存在共享资源竞争的锁，通过这种方式消除没有必要的锁，可以节省毫无意义的请求锁时间，如下StringBuffer的append是一个同步方法，但是在add方法中的StringBuffer属于一个局部变量，并且不会被其他线程所使用，因此StringBuffer不可能存在共享资源竞争的情景，JVM会自动将其锁消除。**锁消除的依据是逃逸分析的数据支持。**
+> 消除锁是虚拟机另外一种锁的优化，这种优化更彻底，Java虚拟机在JIT编译时(可以简单理解为当某段代码即将第一次被执行时进行编译，又称即时编译)，通过对运行上下文的扫描，去除不可能存在共享资源竞争的锁，通过这种方式消除没有必要的锁，可以节省毫无意义的请求锁时间，如下StringBuffer的append是一个同步方法，但是在add方法中的StringBuffer属于一个局部变量，并且不会被其他线程所使用，因此StringBuffer不可能存在共享资源竞争的情景，JVM会自动将其锁消除。**锁消除的依据是逃逸分析的数据支持。**
 
-锁消除，前提是java必须运行在server模式（server模式会比client模式作更多的优化），同时必须开启逃逸分析
-
-:-XX:+DoEscapeAnalysis 开启逃逸分析
-
--XX:+EliminateLocks 表示开启锁消除。
+- 锁消除，前提是java必须运行在server模式（server模式会比client模式作更多的优化），**同时必须开启逃逸分析**
+- 开启锁消除：-XX:+EliminateLocks
 
 **逃逸分析**
 
 使用逃逸分析，编译器可以对代码做如下优化：
 
-一、同步省略。如果一个对象被发现只能从一个线程被访问到，那么对于这个对象的操作可以不考虑同步。
+- 同步省略。如果一个对象被发现只能从一个线程被访问到，那么对于这个对象的操作可以不考虑同步。
 
-二、将堆分配转化为栈分配。如果一个对象在子程序中被分配，要使指向该对象的指针永远不会逃逸，对象可能是栈分配的候选，而不是堆分配。
+- 将堆分配转化为栈分配。如果一个对象在子程序中被分配，要使指向该对象的指针永远不会逃逸，对象可能是栈分配的候选，而不是堆分配。
 
-三、分离对象或标量替换。有的对象可能不需要作为一个连续的内存结构存在也可以被访问到，那么对象的部分（或全部）可以不存储在内存，而是存储在CPU寄存器中。
+- 分离对象或标量替换。有的对象可能不需要作为一个连续的内存结构存在也可以被访问到，那么对象的部分（或全部）可以不存储在内存，而是存储在CPU寄存器中。
+- 开启逃逸分析， `-XX:+DoEscapeAnalysis` 
+- 从jdk 1.7开始已经默认开启逃逸分析，如需关闭，需要指定`-XX:-DoEscapeAnalysis`
 
-是不是所有的对象和数组都会在堆内存分配空间？
 
-**不一定**
 
-在Java代码运行时，通过JVM参数可指定是否开启逃逸分析， -XX:+DoEscapeAnalysis ： 表示开启逃逸分析 -XX:-DoEscapeAnalysis ： 表示关闭逃逸分析。从jdk 1.7开始已经默认开启逃逸分析，如需关闭，需要指定-XX:-DoEscapeAnalysis
+### wait notify
+
+> 只能在获得同步锁后使用
+>
+> 调用wait后进入 waitSet 队列吗，等待 notify
+
+- 有些情况 WaitSet 的对象会被移动到 EntryList
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/60f555b1637689739c3e5294"></iframe>
