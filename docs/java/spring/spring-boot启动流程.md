@@ -2,6 +2,8 @@
 title: spring-boot启动流程
 ---
 
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/60f69a560e3e74596bab3b71"></iframe>
+
 ### 执行启动类的mian
 
 > 解压后的目录结构
@@ -16,7 +18,6 @@ title: spring-boot启动流程
     └── springframework
         └── boot
             └── loader        # org.springframework.boot.loader包的class文件
-
 ```
 
 > MANIFEST.MF文件主要信息
@@ -59,4 +60,85 @@ org.springframework.boot.loader.LaunchedURLClassLoader#loadClass
   java.lang.ClassLoader#loadClass(java.lang.String, boolean)
 ```
 
-后面待整理
+### 启动类main
+
+> 主要启动流程都在启动类main中。
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/60f6a44be401fd09d480564a"></iframe>
+
+**主要逻辑**
+
+```
+public ConfigurableApplicationContext run(String... args) {
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		// 在真正的 context 初始化完成前使用的 context，主要用来处理事件
+		DefaultBootstrapContext bootstrapContext = createBootstrapContext();
+		ConfigurableApplicationContext context = null;
+		configureHeadlessProperty();
+		// 创建监听器并开始监听
+		SpringApplicationRunListeners listeners = getRunListeners(args);
+		// 发布启动开始事件
+		listeners.starting(bootstrapContext, this.mainApplicationClass);
+		try {
+			ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+			// 加载SpringBoot配置环境
+			ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);
+			configureIgnoreBeanInfo(environment);
+			// 打印横幅
+			Banner printedBanner = printBanner(environment);
+			// 根据项目类型创建不同从 contxt
+			context = createApplicationContext();
+			context.setApplicationStartup(this.applicationStartup);
+			// 设置一下启动类需要的bean，发布事件
+			prepareContext(bootstrapContext, context, environment, listeners, applicationArguments, printedBanner);
+			// 进入spring中进行初始化
+			refreshContext(context);
+			// 在springBoot中为空，为其他框架扩展使用
+			afterRefresh(context, applicationArguments);
+			stopWatch.stop();
+			if (this.logStartupInfo) {
+				new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), stopWatch);
+			}
+			// 发布启动事件
+			listeners.started(context);
+		  // 执行所有 ApplicationRunner CommandLineRunner
+			callRunners(context, applicationArguments);
+		}
+		catch (Throwable ex) {
+			handleRunFailure(context, ex, listeners);
+			throw new IllegalStateException(ex);
+		}
+
+		try {
+			// 发布运行事件
+			listeners.running(context);
+		}
+		catch (Throwable ex) {
+			handleRunFailure(context, ex, null);
+			throw new IllegalStateException(ex);
+		}
+		return context;
+	}
+```
+
+**启动web容器流程**
+
+当项目为 `web` 是 `org.springframework.boot.SpringApplication#createApplicationContext`，会返回 `org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContex`。
+
+其父类中 `org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext#onRefresh`会创建web容器
+
+`onRefresh`会在spring容器启动是执行
+
+```
+org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext#onRefresh
+    // 根据设置返回不同的容器
+    org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext#createWebServer 
+      // 配置 Tomcat 容器
+      org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory#getWebServer 
+				// 创建 Tomcat 容器
+				org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory#getTomcatWebServer 
+						// 启动 Tomcat 容器，并启动异常检测线程。
+						org.springframework.boot.web.embedded.tomcat.TomcatWebServer#initialize
+```
+
