@@ -142,3 +142,22 @@ org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext#
 						org.springframework.boot.web.embedded.tomcat.TomcatWebServer#initialize
 ```
 
+### 自动装配
+
+> 默认大于配置。springboot核心功能。
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/610120817d9c083494ed059a"></iframe>
+
+**EnableAutoConfiguration**
+
+核心注解，开启自动装配。通过`org.springframework.context.annotation.Import`注入 `org.springframework.boot.autoconfigure.AutoConfigurationImportSelector`
+
+**AutoConfigurationImportSelector**
+
+通过 `org.springframework.boot.autoconfigure.AutoConfigurationImportSelector#getCandidateConfigurations`
+
+获取 `META-INF/spring.factories`中定义的类。改接口会在spring初始化是进行装载。
+
+**关闭**
+
+通知设置 `spring.boot.enableautoconfiguration=true`来关闭自动配置
