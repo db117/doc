@@ -9,3 +9,15 @@ title: JVM参数
 ### -XX:-UsePerfData
 
 如果关闭了UsePerfData这个参数，那么jvm启动过程中perf memory都不会被创建，默认情况是是打开的
+
+### -XX:+PrintFlagsFinal
+
+打印最终使用的jvm参数
+
+### -XX:+PrintFlagsInitial 
+
+打印默认参数
+
+### -XX:+PrintCommandLineFlags
+
+打印用户设置的参数
