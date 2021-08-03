@@ -150,7 +150,9 @@ org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext#
 
 **EnableAutoConfiguration**
 
-核心注解，开启自动装配。通过`org.springframework.context.annotation.Import`注入 `org.springframework.boot.autoconfigure.AutoConfigurationImportSelector`
+核心注解，开启自动装配。通过`org.springframework.context.annotation.Import`注入 `org.springframework.boot.autoconfigure.AutoConfigurationImportSelector`，该类实现了 `DeferredImportSelectorSpring`
+
+会在spring解析 `@import`是调用 `getAutoConfigurationEntry`
 
 **AutoConfigurationImportSelector**
 
@@ -162,3 +164,52 @@ org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext#
 
 通知设置 `spring.boot.enableautoconfiguration=true`来关闭自动配置
 
+### 注解
+
+**@Configuration(proxyBeanMethods = false)**
+
+标记了@Configuration Spring底层会给配置创建cglib动态代理。 作用：就是防止每次调用本类的Bean方法而重新创建对 象，Bean是默认单例的
+
+**@Conditional派生注解（Spring注解版原生的@Conditional作用）**
+
+- @ConditionalOnJava 
+  - 系统的java版本是否符合要求
+- @ConditionalOnBean
+  - 容器中存在指定Bean
+- @ConditionalOnMissingBean
+  - 容器中不存在指定Bean
+- @ConditionalOnExpression
+  - 满足SpEL表达式指定
+-  @ConditionalOnClass 
+  - 系统中有指定的类
+-  @ConditionalOnMissingClass 
+  - 系统中没有指定的类 
+- @ConditionalOnSingleCandidate 
+  - 容器中只有一个指定的Bean，或者这个Bean是首选Bean 
+- @ConditionalOnProperty 
+  - 系统中指定的属性是否有指定的值 
+- @ConditionalOnResource 
+  - 类路径下是否存在指定资源文件
+- @ConditionalOnWebApplication 
+  - 当前是web环境 
+- @ConditionalOnNotWebApplication 
+  - 当前不是web环境
+-  @ConditionalOnJndi 
+  - JNDI存在指定项
+- EnableConfigurationProperties
+  - 将配置文件的值和对象绑定起来，并注册到ioc容器中
+
+### 事件
+
+> 在springBoot启动中各个阶段发布不同的事件。
+
+1. `ApplicationStartingEvent`在运行开始时发送，但在进行任何处理之前（侦听器和初始化程序的注册除外）发送。 
+
+2. 在创建上下文之前，将发送`ApplicationEnvironmentPreparedEvent`。
+3. 准备ApplicationContext并调用`ApplicationContextInitializers`之后，将发送`ApplicationContextInitializedEvent`。 
+4. 读取完配置类后发送`ApplicationPreparedEvent`。
+5. 在刷新上下文之后但在调用`ApplicationRunner`和`CommandLineRunner`之前，将发送`ApplicationStartedEvent`。 
+6. 紧随其后发送带有LivenessState.CORRECT的`AvailabilityChangeEvent`，以指示该应用程序被视为处于活动状态。
+7. 在调用任何应用程序和命令行运行程序之后，将发送`ApplicationReadyEvent`。 
+8. 紧随其后发送ReadabilityState.ACCEPTING_TRAFFIC的`AvailabilityChangeEvent`，以指示应用程序已准备就绪，可以 处理请求。
+9. 如果启动时发生异常，则发送`ApplicationFailedEvent`。
