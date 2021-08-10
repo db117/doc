@@ -83,3 +83,16 @@ title: idea相关
 >  Java 类文件的字节码查看器
 >
 > [jclasslib](https://github.com/ingokegel/jclasslib)
+
+### SequenceDiagram
+
+> [SequencePlugin | SequencePlugin for IntelliJ IDEA (vanco.github.io)](https://vanco.github.io/SequencePlugin/)
+>
+> 调用链路自动生成时序图
+
+### Grep Console
+
+> [krasa/GrepConsole: IntelliJ plugin - https://plugins.jetbrains.com/plugin/7125 (github.com)](https://github.com/krasa/GrepConsole)
+>
+> 控制台日志 高亮
+

@@ -66,24 +66,29 @@ org.springframework.boot.loader.LaunchedURLClassLoader#loadClass
 
 <iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/60f6a44be401fd09d480564a"></iframe>
 
-**主要逻辑**
+**run**
 
 ```
 public ConfigurableApplicationContext run(String... args) {
+		// 用来记录当前springboot启动耗时
 		StopWatch stopWatch = new StopWatch();
+		// 就是记录了启动开始时间
 		stopWatch.start();
 		// 在真正的 context 初始化完成前使用的 context，主要用来处理事件
 		DefaultBootstrapContext bootstrapContext = createBootstrapContext();
 		ConfigurableApplicationContext context = null;
+		// 开启了Headless模式：
 		configureHeadlessProperty();
 		// 创建监听器并开始监听
 		SpringApplicationRunListeners listeners = getRunListeners(args);
 		// 发布启动开始事件
 		listeners.starting(bootstrapContext, this.mainApplicationClass);
 		try {
+			// 根据命令行参数 实例化一个ApplicationArguments
 			ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
-			// 加载SpringBoot配置环境
+			// 预初始化环境： 读取环境变量，读取配置文件信息（基于监听器）
 			ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);
+			// 忽略beaninfo的bean
 			configureIgnoreBeanInfo(environment);
 			// 打印横幅
 			Banner printedBanner = printBanner(environment);
@@ -120,6 +125,71 @@ public ConfigurableApplicationContext run(String... args) {
 		}
 		return context;
 	}
+```
+
+**prepareEnvironment**
+
+```
+private ConfigurableEnvironment prepareEnvironment(SpringApplicationRunListeners listeners,
+ApplicationArguments applicationArguments) {
+    // 根据webApplicationType 创建Environment 创建就会读取： java环境变量和系统环境变量
+    ConfigurableEnvironment environment = getOrCreateEnvironment();
+    // 将命令行参数读取环境变量中
+    configureEnvironment(environment, applicationArguments.getSourceArgs());
+    // 将@PropertieSource的配置信息 放在第一位， 因为读取配置文件@PropertieSource优先级是最低的
+    ConfigurationPropertySources.attach(environment);
+    // 发布了ApplicationEnvironmentPreparedEvent 的监听器 读取了全局配置文件
+    listeners.environmentPrepared(environment);
+    // 将所有spring.main 开头的配置信息绑定SpringApplication
+    bindToSpringApplication(environment);
+    if (!this.isCustomEnvironment) {
+    environment = new EnvironmentConverter(getClassLoader()).convertEnvironmentIfNecessary(environment, deduceEnvironmentClass());
+    }
+    //更新PropertySources
+    ConfigurationPropertySources.attach(environment);
+    return environment;
+}
+```
+
+**prepareContext**
+
+```
+private void prepareContext(ConfigurableApplicationContext context, ConfigurableEnvironment environment,
+SpringApplicationRunListeners listeners, ApplicationArguments applicationArguments, Banner printedBanner) {
+      context.setEnvironment(environment);
+      postProcessApplicationContext(context);
+      // 拿到之前读取到所有ApplicationContextInitializer的组件， 循环调用initialize方法
+      applyInitializers(context);
+      // 发布了ApplicationContextInitializedEvent
+      listeners.contextPrepared(context);
+      if (this.logStartupInfo) {
+      logStartupInfo(context.getParent() == null);
+      logStartupProfileInfo(context);
+      }
+      // 获取当前spring上下文beanFactory (负责创建bean)
+      ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
+      beanFactory.registerSingleton("springApplicationArguments", applicationArguments);
+      if (printedBanner != null) {
+      beanFactory.registerSingleton("springBootBanner", printedBanner);
+      }
+      // 在Spring下 如果出现2个重名的bean, 则后读取到的会覆盖前面
+      // 在SpringBoot 在这里设置了不允许覆盖， 当出现2个重名的bean 会抛出异常
+      if (beanFactory instanceof DefaultListableBeanFactory) {
+      ((DefaultListableBeanFactory) beanFactory)
+      .setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
+      }
+      // 设置当前spring容器是不是要将所有的bean设置为懒加载
+      if (this.lazyInitialization) {
+      context.addBeanFactoryPostProcessor(new LazyInitializationBeanFactoryPostProcessor());
+      }
+      // Load the sources
+      Set<Object> sources = getAllSources();
+      Assert.notEmpty(sources, "Sources must not be empty");
+      // 读取主启动类 （因为后续要根据配置类解析配置的所有bean)
+      load(context, sources.toArray(new Object[0]));
+      //4.读取完配置类后发送ApplicationPreparedEvent。
+      listeners.contextLoaded(context);
+}
 ```
 
 **启动web容器流程**
