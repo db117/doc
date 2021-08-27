@@ -30,6 +30,8 @@ pageClass: custom-page-class
 [ labuladong 算法]( https://labuladong.gitbook.io/algo/ )
 [CodeTop企业题库](https://codetop.cc/#/home)
 
+[墨墨背单词](https://www.maimemo.com/)
+
 ## 论坛
 [v2ex](https://www.v2ex.com/)
 
