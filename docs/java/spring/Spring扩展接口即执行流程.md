@@ -27,6 +27,10 @@ title: Spring扩展接口即执行流程
   - 处理`@ImportResource`注解
   - 处理`@Bean`，添加bean
 
+#### InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation
+
+> bean初始化前的操作，主要是生成代理对象
+
 
 
 #### MergedBeanDefinitionPostProcessor#postProcessMergedBeanDefinition
@@ -37,7 +41,7 @@ title: Spring扩展接口即执行流程
 
 #### InstantiationAwareBeanPostProcessor#postProcessAfterInstantiation
 
-> 在实例化之后，赋值属性之前调用，返回false则不进行赋值
+> 在实例化之后，赋值属性之前调用，返回false则不进行后续赋值。
 
 
 
@@ -99,60 +103,3 @@ title: Spring扩展接口即执行流程
   - 注销监听器
 - ScheduledAnnotationBeanPostProcessor
   - 关闭任务
-
-
-
-### Spring-Boot
-
-#### ServletContextInitializer
-
-> org.springframework.boot.web.servlet.ServletContextInitializer
->
-> 用于以编程方式配置Servlet 3.0+{@link ServletContext Context}的接口。与 WebApplicationInitializer 不同的是实现此接口(且不实现 WebApplicationInitializer)的类不会被 SpringServletContainerInitializer 检测到，因此Servlet容器不会自动引导
->
-> 此接口的设计方式类似于ServletContainerInitializer，但其生命周期由Spring管理，而不是Servlet容器
->
-> 在springboot启动web容器后调用
-
-#### Banner
-
-> org.springframework.boot.Banner
->
-> 用于以编程方式编写横幅的接口类
->
-> 在springboot启动时打印横幅
->
-> 需要在SpringApplication中设置
-
-#### ApplicationRunner
-
-> org.springframework.boot.ApplicationRunner
->
-> 在springboot启动完成后调用
->
-> 支持@Order注解
-
-#### CommandLineRunner
-
-> org.springframework.boot.CommandLineRunner
->
-> 同ApplicationRunner接口，区别为入参不同
->
-> 在ApplicationRunner后调用
-
-#### SpringApplicationRunListener
-
-> org.springframework.boot.SpringApplicationRunListener
->
-> 在springboot启动的各个阶段进行回调
->
-> 需要在spring.factories中定义
->
-> 需要有入参为(SpringApplication application,String ... args)的构造函数
-
-#### RestTemplateCustomizer
-
-> org.springframework.boot.web.client.RestTemplateCustomizer
->
-> 配置RestTemplate
-
