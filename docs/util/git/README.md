@@ -32,7 +32,7 @@ title: git
 > 批量拉取当前目录下的所有git项目
 
 ```
-find . -maxdepth 1 -type d -exec sh -c '(cd {} && git pull)' ';'
+find . -maxdepth 1 -type d -exec sh -c '(cd {} && pwd && git pull)' ';'
 ```
 
 ### 当前分支最新的commitid

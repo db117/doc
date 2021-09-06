@@ -16,3 +16,18 @@ title: k8s相关
 kubectl api-resources --verbs=list --namespaced -o name   | xargs -n 1 kubectl get --show-kind --ignore-not-found -l <label>=<value>  -n <命名空间>
 ```
 
+### secret配置tls
+
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tls-name
+  namespace: kuboard   # 需指定命名空间，一个secret只能在一个命名空间生效
+data:
+	# 直接把证书，秘钥base64编码放入即可
+  tls.crt: Base64crt
+  tls.key: Base64key
+type: kubernetes.io/tls
+```
+
