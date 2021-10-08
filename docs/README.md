@@ -29,18 +29,12 @@ pageClass: custom-page-class
 [极客时间](https://time.geekbang.org/)
 [ labuladong 算法]( https://labuladong.gitbook.io/algo/ )
 [CodeTop企业题库](https://codetop.cc/#/home)
-
 [墨墨背单词](https://www.maimemo.com/)
-
-## 论坛
-[v2ex](https://www.v2ex.com/)
-
 
 ## 工具
 [彩云翻译]( https://fanyi.caiyunapp.com/#/ )
 [极客导航](https://www.jikedaohang.com)
 [油猴脚本](https://greasyfork.org/zh-CN/scripts)
-[第七下载](https://www.7down.com/)
 [idea插件](http://plugins.jetbrains.com/)
 [potplayer](https://potplayer.daum.net/?lang=zh_CN)
 [谷歌分析](https://analytics.google.com/analytics/web)
@@ -111,6 +105,9 @@ pageClass: custom-page-class
 [Gmail](https://mail.google.com/mail)
 [263](https://www.263.net/)
 [qq](https://mail.qq.com/)
+
+## 论坛
+[v2ex](https://www.v2ex.com/)
 
 ## 其他
 [腾讯云](https://cloud.tencent.com/)
