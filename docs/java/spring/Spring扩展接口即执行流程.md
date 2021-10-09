@@ -20,12 +20,18 @@ title: Spring扩展接口即执行流程
 
 - **ConfigurationClassPostProcessor**
   - @PropertySource，@PropertySources：添加配置文件
+  
   - @ComponentScan，@ComponentScans：扫描bean
+  
   - @Import：往容器中添加bean
     - 如果实现`ImportSelector`，则添加调用 `selectImports`获取配置类
     - 在处理完`ImportSelector`后处理`DeferredImportSelector`接口。特别是存在`@Conditional`时，要在其他bean都加载完后才能起到相应的作用
+    
   - 处理`@ImportResource`注解
+  
   - 处理`@Bean`，添加bean
+  
+    > Configuration#proxyBeanMethods 为true时，会对说有@bean方法添加代理，直接通过beanFactory获取。即调用该方法时实际只执行一次，多次调用返回的对象是同一个。
 
 #### InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation
 
