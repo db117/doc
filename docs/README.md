@@ -12,7 +12,6 @@ pageClass: custom-page-class
 [magi]( https://magi.com/)
 [stackoverflow](https://stackoverflow.com)
 
-
 ## 个人站点
 [github](https://github.com/db117)
 [码云](https://gitee.com/db117)
@@ -32,33 +31,30 @@ pageClass: custom-page-class
 [墨墨背单词](https://www.maimemo.com/)
 
 ## 工具
-[彩云翻译]( https://fanyi.caiyunapp.com/#/ )
-[极客导航](https://www.jikedaohang.com)
 [油猴脚本](https://greasyfork.org/zh-CN/scripts)
 [idea插件](http://plugins.jetbrains.com/)
 [potplayer](https://potplayer.daum.net/?lang=zh_CN)
-[谷歌分析](https://analytics.google.com/analytics/web)
 [来此加密](https://letsencrypt.osfipin.com/)
 [typora](https://typora.io/)
 [五百丁](https://www.500d.me/)
 [motrix](https://motrix.app/)
-[百度统计](https://tongji.baidu.com/)
 
 
 ## 在线工具
+[彩云翻译]( https://fanyi.caiyunapp.com/#/ )
+[百度翻译](https://fanyi.baidu.com/)
 [oktools](https://oktools.net/)
 [在线转换yaml](https://www.toyaml.com/index.html)
 [grok调试](http://grokdebug.herokuapp.com/)
 [ping工具](http://port.ping.pe/)
 [bejson工具](https://www.bejson.com/)
 [jwt](https://jwt.io/)
-[百度翻译](https://fanyi.baidu.com/)
 [sojson](https://www.sojson.com/)
 [数据类型转二进制](http://www.binaryconvert.com/index.html)
 [站长工具](http://tool.chinaz.com/)
-[变量名](https://unbug.github.io/codelf/)
-[百度脑图](https://naotu.baidu.com/)
+[变量名生成](https://unbug.github.io/codelf/)
 [开源中国在线工具](http://tool.oschina.net/)
+[极客导航](https://www.jikedaohang.com)
 
 ## 资源
 [maven仓库](https://mvnrepository.com/)
@@ -71,10 +67,10 @@ pageClass: custom-page-class
 [homebrew](https://brew.sh/)
 
 ## 文档
-[石墨文档](https://shimo.im/desktop)
 [processon](https://www.processon.com/)
 [腾讯文档](https://docs.qq.com/desktop)
 [飞书文档](https://www.feishu.cn/space/home/)
+[石墨文档](https://shimo.im/desktop)
 [w3school](https://www.w3school.com.cn/)
 [linux文档](http://man.linuxde.net/)
 [redis文档](http://www.redis.cn/commands.html)
@@ -114,3 +110,5 @@ pageClass: custom-page-class
 [阿里云](https://cn.aliyun.com/)
 [亚马逊云](https://aws.amazon.com/cn/)
 [freenom](https://www.freenom.com/)
+[谷歌分析](https://analytics.google.com/analytics/web)
+[百度统计](https://tongji.baidu.com/)
