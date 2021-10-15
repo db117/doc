@@ -79,6 +79,7 @@ pageClass: custom-page-class
 [k8s文档](https://kubernetes.io/zh/docs/home/)
 [kubectl命令行](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
 [npmjs](https://docs.npmjs.com/)
+[Web 开发技术 | MDN (mozilla.org)](https://developer.mozilla.org/zh-CN/docs/Web)
 
 ## 开源软件
 [openjdk](http://openjdk.java.net/)
