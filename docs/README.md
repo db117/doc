@@ -77,6 +77,7 @@ pageClass: custom-page-class
 [elasticsearch](https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html)
 [docker](https://docs.docker.com/engine/reference/commandline/docker/)
 [k8s文档](https://kubernetes.io/zh/docs/home/)
+[NGINX Ingress Controller ](https://kubernetes.github.io/ingress-nginx/)
 [kubectl命令行](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
 [npmjs](https://docs.npmjs.com/)
 [Web 开发技术 | MDN (mozilla.org)](https://developer.mozilla.org/zh-CN/docs/Web)
