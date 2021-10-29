@@ -2,6 +2,10 @@
 title: git
 ---
 
+### 简介
+
+> [Git (git-scm.com)](http://git-scm.com/)
+
 ### git记住密码
 
 > ~/.gitconfig 文件中添加或修改
