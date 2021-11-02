@@ -1,14 +1,7 @@
 ---
 title: git命令
 ---
-## 新建代码库
-*   在当前目录新建一个Git代码库
-    *   git init
-*   新建一个目录，将其初始化为Git代码库
-    *   git init [project-name]
-*   下载一个项目和它的整个代码历史
-    *   git clone [url]
-## 配置
+### 配置
     Git的设置文件为.gitconfig，它可以在用户主目录下（全局配置），
     也可以在项目目录下（项目配置）。
 
@@ -19,7 +12,7 @@ title: git命令
 *   设置提交代码时的用户信息
     *   git config [--global] user.name "[name]"
     *   git config [--global] user.email "[email address]"
-## 增加/删除/修改文件
+### 增加/删除/修改文件
 *   查看状态
     *   git status        
 *   查看变更内容
@@ -39,7 +32,7 @@ title: git命令
     *   git rm --cached [file]
 *   改名文件，并且将这个改名放入暂存区
     *   git mv [file-original] [file-renamed]
-## 代码提交
+### 代码提交
 *   提交暂存区到仓库区
     *   git commit -m [message]
 *   提交暂存区的指定文件到仓库区
@@ -53,7 +46,7 @@ title: git命令
     *   git commit --amend -m [message]
 *   重做上一次commit，并包括指定文件的新变化
     *   git commit --amend [file1] [file2] ...
-## 分支
+### 分支
 *   显示所有本地分支
     *    git branch                   
 *    列出所有远程分支
@@ -83,7 +76,7 @@ title: git命令
     *    git rebase <branch>       
 *    选择一个commit，合并进当前分支
     *    git cherry-pick [commit]
-## 标签
+### 标签
 *   列出所有本地标签
     *   git tag   
 *   基于最新提交创建标签                       
@@ -100,7 +93,7 @@ title: git命令
     *   git push [remote] --tags
 *   新建一个分支，指向某个tag
     *   git checkout -b [branch] [tag]
-## 查看信息
+### 查看信息
 *   显示有变更的文件
     *   git status
 *   显示当前分支的版本历史
@@ -142,7 +135,7 @@ title: git命令
     *   git show [commit]:[filename]
 *   显示当前分支的最近几次提交
     *   git reflog
-## 远程操作
+### 远程操作
 *   下载远程仓库的所有变动
     *   git fetch [remote]
 *   取回远程仓库的变化，并与本地分支合并
@@ -163,7 +156,7 @@ title: git命令
     *   git push <remote> :<branch/tag-name> 
 *   上传所有标签 
     *   git push --tags                       
-## 撤销
+### 撤销
 *   撤销工作目录中所有未提交文件的修改内容
     *   git reset --hard HEAD    
 *   撤销指定的未提交文件的修改内容  
@@ -194,7 +187,17 @@ title: git命令
 *   暂时将未提交的变化移除，稍后再移入
     *   git stash
     *   git stash pop
-## 其他
+### 清理
+
+#### clean
+
+- `git clean -n`：告诉你哪些文件会被删除，并不会真正删除
+- `git clean -f`：删除未在`.gitignore`中定义的文件
+- `git clean -df`：删除未追踪的文件的目录
+- `git clean -xdf`：删除未追踪的文件和目录，不管有没有在`.gitignore`中排除
+
+### 其他
+
 *   生成一个可供发布的压缩包
     *    git archive
 
