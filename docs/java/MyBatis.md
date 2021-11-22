@@ -2,7 +2,15 @@
 title: MyBatis
 ---
 
-<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:525px; height:245px;" src="https://www.processon.com/embed/6194d85463768938bc8f076e"></iframe>
+### 流程图
+
+- MyBatis 整体执行流程图
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/6194d85463768938bc8f076e"></iframe>
+
+- MyBatis 整合 Spring 流程图
+
+  <iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/6197805563768938bc95b5c1"></iframe>
 
 ### 主要组件
 
