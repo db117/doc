@@ -53,3 +53,47 @@ title: MyBatis
   > 拦截器,可以在创建时拦截Executor，ParameterHandler，ResultSetHandler，StatementHandler。
   >
   > 先通过`@Signature`进行筛选过滤然后通过 jdk 动态代理，一层层的包装实现装饰器模式。
+
+- MapperProxy
+
+  > mapper 代理对象的`InvocationHandler`接口，所有 mapper 实际都走这个类。
+
+- MapperMethod
+
+  > 正在干活的类，通过`org.apache.ibatis.binding.MapperMethod#execute`来执行数据库操作。
+
+- Configuration
+
+  > 核心配置类，包含几乎所有东西。
+
+- MappedStatement
+
+  > 对应所有 mapper 方法，保存有执行语句，返回值处理器等信息。
+
+- MapperRegistry
+
+  > 注册 mapper，通过`org.apache.ibatis.builder.annotation.MapperAnnotationBuilder#parse`解析 mapper 接口，通过`org.apache.ibatis.builder.annotation.MapperAnnotationBuilder#parseStatement`解析各种注解。生成 mapper 代理对象。
+
+### 整合 Spring
+
+#### 主要组件
+
+- MapperScannerRegistrar
+
+  > 通过`@MapperScans`注入，向 Spring 容器中注册`MapperScannerConfigurer`
+
+- MapperScannerConfigurer
+
+  > 通过`ClassPathMapperScanner#doScan`扫描`@MapperScans`中设置的包，并向 Spring 容器中注册`MapperFactoryBean`，并设置其`autowireMode`为`AUTOWIRE_BY_TYPE`
+
+- MapperFactoryBean
+
+  > 所有 mqpper 都会包装成这个类注入到 Spring 容器中。通过属性`mapperInterface`执行实际 mapper。通过`AUTOWIRE_BY_TYPE`在创建是自动注入`SqlSessionTemplate`。在 Spring 获取对象时通过`MapperProxyFactory#newInstance`创建代理对象。
+
+- SqlSessionTemplate
+
+  > 通过内部类`SqlSessionInterceptor#invoke`生成代理对象。适配 Spring 的事务管理。
+
+- SqlSessionFactoryBean
+
+  > 核心配置类，需要自行注入到 spring 容器中。在 Spring 创建对象时，调用`SqlSessionFactoryBean#buildSqlSessionFactory加载一系列配置，并配置plugin，TypeHandler,二级缓存等信息，扫描并通过`XMLMapperBuilder`加载所有 mapper
