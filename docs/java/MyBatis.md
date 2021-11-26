@@ -60,7 +60,7 @@ title: MyBatis
 
 - MapperMethod
 
-  > 正在干活的类，通过`org.apache.ibatis.binding.MapperMethod#execute`来执行数据库操作。
+  > 真正干活的类，通过`org.apache.ibatis.binding.MapperMethod#execute`来执行数据库操作。
 
 - Configuration
 
