@@ -6,6 +6,8 @@ title: 线程池
 
 <iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/619f50e40e3e743d103b520d"></iframe>
 
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/61a48efa1efad425fd73dce4"></iframe>
+
 ### 关键属性
 
 - ctl
@@ -141,3 +143,9 @@ title: 线程池
 - take：获取任务，获取不到无限等待。在当前线程不用回收是，线程池通过该方法获取任务。
 - poll：获取任务，获取不到超时等待。在当前线程可以被回收是，通过该方法获取任务。
 - offer：添加任务。设置`ScheduledFutureTask#heapIndex`，**并唤醒一个线程获取任务**。
+
+#### 主要函数
+
+- decorateTask：可以通过子类来修改运行的任务。
+- delayedExecute：延时执行任务。
+- schedule：添加任务，把任务都包装成`RunnableScheduledFuture`放入到延时队列中。
