@@ -76,3 +76,37 @@ title: AbstractQueuedSynchronizer相关
 - 支持多个等待条件
 - 可判断获取锁状态，`isLocked`
 - 需要开发者在 finally 中释放锁。`synchronized`会自动释放。
+
+#### ReentrantLock流程图
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/61a9d9b10791293428031a40"></iframe>
+
+
+
+
+
+## Condition
+
+> 条件队列，在`ReentrantLock`和`ReentrantReadWriteLock`中使用。
+>
+> 条件队列仅仅是一个等待队列，获取锁的流程还是在阻塞队列的流程中，即通过子类实现的方法中。
+>
+> `await` 就是把添加 `node` 节点到条件队列中去，`signal` 就是把 `node` 节点从条件队列移入到等待队列中。
+
+#### 条件等待队列流程图
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/61a9f25f63768928167810f6"></iframe>
+
+
+
+## Semaphore
+
+> 用来控制同时访问特定资源的线程数量，通过协调各个线程，以保证合理的使用资源。
+>
+> 常见于限流，资源池等。
+>
+> 是 aqs 的一个简单实现。
+
+#### 信号量流程图
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/61add0830791296ac4dcf645"></iframe>
