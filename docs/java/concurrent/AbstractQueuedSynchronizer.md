@@ -136,4 +136,21 @@ title: AbstractQueuedSynchronizer相关
 
 ## CyclicBarrier
 
-> 翻译为循环屏障或回环栅栏。通过它可以实现让一组线程等待至某个状态（屏障点）之后再全部同 时执行。叫做回环是因为当所有等待线程都被释放以后，CyclicBarrier可以被重用。
+> 翻译为循环屏障或回环栅栏。通过它可以实现让一组线程等待至某个状态（屏障点）之后再全部同时执行。叫做回环是因为当所有等待线程都被释放以后，CyclicBarrier可以被**重用**。
+
+#### 主要属性
+
+- lock：除`getParties`外所有操作都需要持有该锁
+- trip：等待条件，除最后一个任务外都会`trip.await()`进行等待
+- parties：等待的线程数量
+- barrierCommand：最后一个到达的线程会执行该任务（有的话），执行完才放行
+- Generation：屏障实例，每一次都是一个新的。
+- count：剩余需要阻塞的线程数量
+
+#### 循环屏障流程图
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/61aec9dd0e3e74014814eb94"></iframe>
+
+------
+
+## ReentrantReadWriteLock
