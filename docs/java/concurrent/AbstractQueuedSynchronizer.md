@@ -2,6 +2,10 @@
 title: AbstractQueuedSynchronizer相关
 ---
 
+[TOC]
+
+
+
 ## AbstractQueuedSynchronizer
 
 > java.util.concurrent包中的大多数同步器实现都是围绕着共同的基础行为，比如等待队列、条件队列、独占获取、共享获取等，而这些行为的抽象就是基于 AbstractQueuedSynchronizer（简称AQS）实现的，AQS是一个抽象同步框架，可以用来实现一个依赖状态的同步器。
@@ -49,6 +53,10 @@ title: AbstractQueuedSynchronizer相关
 - thread：节点代表的线程
 - nextWaiter：等待队列
 
+#### 节点状态变更流程图
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/61b076ac0791297e6083896a"></iframe>
+
 #### 同步等待队列
 
 > AQS当中的同步等待队列也称CLH队列，CLH队列是Craig、Landin、Hagersten三人发明
@@ -58,6 +66,16 @@ title: AbstractQueuedSynchronizer相关
 #### 条件等待队列
 
 > 调用`await()`的时候会释放锁，然后线程会加入到条件队列，调用 `signal()`唤醒的时候会把条件队列中的线程节点移动到同步队列中，等待再次获得锁
+
+
+
+#### PROPAGATE状态理解
+
+> http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/src/main/java/util/concurrent/locks/AbstractQueuedSynchronizer.java?r1=1.73&r2=1.74
+>
+> 简单说就是为了解决 bug 添加的。
+>
+> jdk17 把这个状态给删了。
 
 ------
 
@@ -154,3 +172,23 @@ title: AbstractQueuedSynchronizer相关
 ------
 
 ## ReentrantReadWriteLock
+
+> 读写锁，适合读多写少的场景
+>
+> 使用 Sync ( 实际是 AQS )的 int 类型的 state 来表示同步状态，维护着一对读写锁，如果要用一个变量维护多种状态，需要采用“按位切割使用”的方式来维护这个变量，将其切分为两部分：高16为表示读，低16为表示写。
+
+#### 特点
+
+- 读写互斥
+- 写写互斥
+- 可重入
+- 支持公平与非公平
+- 支持条件队列
+- 提供一下锁状态监控api
+- 读锁不支持等待队列
+- 重入不能升级，持有读锁的情况下去获取写锁会导致获取永久等待
+- 可支持锁降级，在获取写锁时获取读锁、然后释放写锁，则降级为读锁
+
+#### 读写锁流程图
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/61af0642e0b34d775429161c"></iframe>
