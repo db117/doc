@@ -35,6 +35,7 @@ pageClass: custom-page-class
 
 ## 工具
 [油猴脚本](https://greasyfork.org/zh-CN/scripts)
+[sleazyfork](https://sleazyfork.org/zh-CN/scripts)
 [idea插件](http://plugins.jetbrains.com/)
 [potplayer](https://potplayer.daum.net/?lang=zh_CN)
 [来此加密](https://letsencrypt.osfipin.com/)
