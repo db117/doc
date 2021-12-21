@@ -43,6 +43,8 @@ title: Spring扩展接口即执行流程
 
 > 主要作用是修改BeanDefinition
 
+- `com.alibaba.cloud.sentinel.custom.SentinelBeanPostProcessor`：处理 @SentinelRestTemplate，在RestTemplate中添加拦截器
+
 
 
 #### InstantiationAwareBeanPostProcessor#postProcessAfterInstantiation
@@ -109,3 +111,11 @@ title: Spring扩展接口即执行流程
   - 注销监听器
 - ScheduledAnnotationBeanPostProcessor
   - 关闭任务
+
+
+
+#### org.springframework.beans.factory.SmartInitializingSingleton#afterSingletonsInstantiated
+
+> 会在所有非延迟加载单例 bean 加载完成后调用
+
+- `com.alibaba.cloud.sentinel.custom.SentinelDataSourceHandler`：处理 sentinel 数据源
