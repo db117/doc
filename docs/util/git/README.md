@@ -14,6 +14,7 @@ title: git
   [credential] 
   helper = store
   ```
+------
 
 ### 解决Git中fatal: refusing to merge unrelated histories
 
@@ -22,12 +23,16 @@ title: git
 > `git merge master --allow-unrelated-histories`
 > push,pull同理
 
+------
+
 ### windows下git报错 warning: Clone succeeded, but checkout failed.
 
 
 >`git config core.longpaths true`
 >Git的文件名限制为4096个字符，但在Windows上使用msys编译Git时除外。它使用Windows API的较早版本，文件名限制为260个字符。
 >（对所有项目都避免--system或--global标记）
+
+------
 
 
 
@@ -50,6 +55,8 @@ git rev-parse HEAD
 ```
 git branch --contains $COMMIT_ID
 ```
+
+------
 
 ### git 对比两个分支差异
 
@@ -107,3 +114,13 @@ git rev-list <commit-id-1>..<commit-id-2> --count
 ```
 
 如果结果大于 0：commit-id-2 比 commit-id-1 新
+
+------
+
+### 修改 commit 信息
+
+#### 最后一次提交时间
+
+```
+GIT_COMMITTER_DATE="2021-12-12T12:27:07" git commit --amend --date="2021-12-12T12:27:07"
+```
