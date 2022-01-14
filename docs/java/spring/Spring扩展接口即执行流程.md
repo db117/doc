@@ -61,17 +61,11 @@ title: Spring扩展接口即执行流程
   - 注入`@Autowired`,`@Value`属性
   - 处理`javax.inject.Inject`注解
 
-#### BeanNameAware
+#### Aware
 
-> 设置BeanName
+> 设置各种对象
 
-#### BeanClassLoaderAware
 
-> 设置ClassLoader
-
-#### BeanFactoryAware
-
-> 设置BeanFactory
 
 #### BeanPostProcessor#postProcessBeforeInitialization
 
@@ -92,7 +86,7 @@ title: Spring扩展接口即执行流程
 
 > 初始化后调用
 
-- AbstractAdvisingBeanPostProcessor
+- **AbstractAdvisingBeanPostProcessor**
   - 实现aop功能，生成代理对象
 - ApplicationListenerDetector
   - 如果当前类是监听器，则添加监听器到applicationContext
@@ -119,3 +113,11 @@ title: Spring扩展接口即执行流程
 > 会在所有非延迟加载单例 bean 加载完成后调用
 
 - `com.alibaba.cloud.sentinel.custom.SentinelDataSourceHandler`：处理 sentinel 数据源
+
+- `org.springframework.context.event.EventListenerMethodProcessor`
+
+  > 处理`org.springframework.context.event.EventListener`。
+
+#### **ApplicationListener** 
+
+> 监听 spring 发送的事件。可以在 spring，spring-boot 各个阶段进行调用。
