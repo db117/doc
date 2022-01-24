@@ -74,7 +74,9 @@ title: maven
 #### 跳过checkstyle
 
 ```
--Dcheckstyle.skip
+ <properties>
+        <checkstyle.skip>true</checkstyle.skip>
+ </properties>
 ```
 
 ##### 指定环境
