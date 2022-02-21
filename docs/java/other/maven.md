@@ -85,3 +85,9 @@ title: maven
 -P test
 ```
 
+#### 使用Maven运行main 方法
+
+> [mojohaus/exec-maven-plugin: Exec Maven Plugin (github.com)](https://github.com/mojohaus/exec-maven-plugin)
+>
+> [Exec Maven Plugin – Introduction (mojohaus.org)](https://www.mojohaus.org/exec-maven-plugin/)
+
