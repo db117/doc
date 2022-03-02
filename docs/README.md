@@ -29,7 +29,7 @@ pageClass: custom-page-class
 [数据结构](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
 [知识星球](https://wx.zsxq.com/)
 [极客时间](https://time.geekbang.org/)
-[ labuladong 算法]( https://labuladong.gitbook.io/algo/ )
+[ labuladong 算法]( https://labuladong.gitee.io/algo/)
 [CodeTop企业题库](https://codetop.cc/#/home)
 [墨墨背单词](https://www.maimemo.com/)
 
