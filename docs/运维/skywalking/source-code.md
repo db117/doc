@@ -29,3 +29,12 @@ title: 源码分析
 
 ```
 
+#### 流程图
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/621347b66376897c8c8308a3"></iframe>
+
+#### 主要类
+
+- org.apache.skywalking.apm.agent.core.conf.Config
+
+> ​	所有配置都在这个类中。

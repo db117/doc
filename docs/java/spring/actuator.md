@@ -16,6 +16,38 @@ title: Spring Boot - Actuator
 
 
 
+## 默认接口
+
+### Spring-boot
+
+> url/actuator/+具体接口
+
+- beans  ：显示所有 bean
+- conditions ：显示所有condition
+- configprops : 显示所有`@ConfigurationProperties`
+- env :  显示所有ConfigurableEnvironment
+- health :  监控接口
+- info ：应用信息
+- metrics ：所有生效的统计指标
+- mappings ： 显示所有的`@RequestMapping`
+- scheduledtasks ： 显示所有的`@Scheduled`
+- threaddump :  dump 当前线程
+- [POST]shutdown ： 关闭应用
+
+### spring-cloud-gateway
+
+> url/actuator/gateway/+具体接口
+>
+> 直接调用`url/actuator/gateway`会显示所有接口
+
+- routes : 路由
+- globalfilters ：GlobalFilter
+- routefilters ：GatewayFilter
+- refresh :  清除路由器缓存
+- [GET] routes/{id} : 通过路由 id 获取路由详细信息
+- [POST] routes/{id_route_to_create} : 创建路由
+- [DELETE] routes/{id_route_to_delete} : 删除路由
+
 ## 常用接口
 
 ### Kubernetes Probes
