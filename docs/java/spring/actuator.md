@@ -21,6 +21,8 @@ title: Spring Boot - Actuator
 ### Spring-boot
 
 > url/actuator/+具体接口
+>
+> 直接调用`url/actuator`会展示可用接口
 
 - beans  ：显示所有 bean
 - conditions ：显示所有condition
