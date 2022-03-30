@@ -1,5 +1,5 @@
 ---
-title： byte-buddy 简单使用
+title: byte-buddy 简单使用
 ---
 
 > [Byte Buddy - runtime code generation for the Java virtual machine](https：//bytebuddy.net/#/tutorial)
