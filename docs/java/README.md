@@ -43,10 +43,11 @@ TypeUtils.compatibleWithJavaBean = true;
 properties中都是以name=value这样的k-v字符串对形式保存的。
 在写properties文件时,如果value非常长,看起来是非常不方便的，可以用\来换行(最后一行不需要\)，如下 :
 
+```
 sonar.exclude=a.java \
-                     	  b.java \
-                     
+b.java \                     
 这里的坑就是\必须是每行的**最后一个字符**！
+```
 
 ## spring boot获取resource目录下文件
 
@@ -58,9 +59,7 @@ File file = resource.getFile();
 
 
 
--verbose:class
-
-### 执行 java class 文件引入jar包
+#### 执行 java class 文件引入jar包
 
 ```
 java -classpath jar目录 class文件目录
@@ -79,3 +78,21 @@ java -classpath .:lib/* Run
 > 对于Windows，让我们使用 findstr：
 >
 > java -XshowSettings:properties -version 2>&1 | findstr "java.home"
+
+#### 通过系统变量方式实现代理
+
+```
+System.setProperty("http.proxySet", "true");
+System.setProperty("http.proxyHost", "127.0.0.1");
+System.setProperty("http.proxyPort", "" + "7777");
+```
+
+所以请求都使用这个代理
+
+针对https
+
+```
+System.setProperty("https.proxyHost", "127.0.0.1");
+System.setProperty("https.proxyPort", "7777");
+```
+

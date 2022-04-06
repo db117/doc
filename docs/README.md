@@ -90,6 +90,7 @@ pageClass: custom-page-class
 [Web 开发技术 | MDN (mozilla.org)](https://developer.mozilla.org/zh-CN/docs/Web)
 [ Microsoft Docs](https://docs.microsoft.com/zh-cn/)
 [Java Documentation (oracle.com)](https://docs.oracle.com/en/java/index.html)
+[SQL-99 Complete, Really — SQL 99 (crate.io)](https://crate.io/docs/sql-99/en/latest/index.html)
 
 ## 开源软件
 
