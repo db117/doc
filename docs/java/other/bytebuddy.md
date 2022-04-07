@@ -2,9 +2,9 @@
 title: byte-buddy 简单使用
 ---
 
-> [Byte Buddy - runtime code generation for the Java virtual machine](https：//bytebuddy.net/#/tutorial)
+> [Byte Buddy - runtime code generation for the Java virtual machine](https://bytebuddy.net/#/tutorial)
 >
-> [raphw/byte-buddy： Runtime code generation for the Java virtual machine. (github.com)](https：//github.com/raphw/byte-buddy)
+> [raphw/byte-buddy： Runtime code generation for the Java virtual machine. (github.com)](https://github.com/raphw/byte-buddy)
 >
 > Byte Buddy是致力于解决字节码操作和 instrumentation API 的复杂性的开源框架。Byte Buddy 所声称的目标是将显式的字节码操作隐藏在一个类型安全的领域特定语言背后。通过使用 Byte Buddy，任何熟悉 Java 编程语言的人都有望非常容易地进行字节码操作。
 
