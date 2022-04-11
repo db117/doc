@@ -1,6 +1,30 @@
 ---
 title: maven
 ---
+## 备忘单
+
+```
+#	打包跳过编译失败
+mvn clean package -DskipTests --fail-never
+
+# 编译时测试失败不阻断
+mvn clean package -Dmaven.test.failure.ignore=true 
+
+# 打包是不编译测试代码,也不执行
+mvn clean package -Dmaven.test.skip=true  
+
+# 编译测试类,但不运行
+mvn clean package  -DskipTests 
+
+# 只执行当前目录的，不对子目录进行
+mvn clean package --non-resolvable
+
+# 指定环境
+mvn clean package -P test
+```
+
+## 其他
+
 #### 使用maven自动将源码打包并发布
 
 ```
@@ -21,17 +45,7 @@ title: maven
 
 注意：在多项目构建中，将source-plugin置于顶层或parent的pom中并不会发挥作用，必须置于具体项目的pom中。
 
-#### 编译时测试失败不阻断
-
- -Dmaven.test.failure.ignore=true 
-
-#### 打包是不编译测试代码,也不执行
-
- -Dmaven.test.skip=true   
-
-#### 编译测试类,但不运行
-
- -DskipTests 
+  
 
 #### 版本号范围写法
 
@@ -47,10 +61,6 @@ title: maven
 | [1.0,2.0]     | 1.0 <= x <= 2.0                                              |
 | (,1.0],[1.2,) | x <= 1.0 或 x >= 1.2。多个集是逗号分隔的                     |
 | (,1.1),(1.1,) | x ！ = 1.1                                                   |
-
-#### 不进行递归执行
-
---non-resolvable  只执行当前目录的，不对子目录进行
 
 #### 子项目中排除掉定义在Parent中的插件
 
@@ -77,12 +87,6 @@ title: maven
  <properties>
         <checkstyle.skip>true</checkstyle.skip>
  </properties>
-```
-
-##### 指定环境
-
-```
--P test
 ```
 
 #### 使用Maven运行main 方法
