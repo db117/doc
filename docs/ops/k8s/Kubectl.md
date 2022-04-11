@@ -20,6 +20,35 @@ title: Kubectl常用
 * 配置
 > 配置文件位置 ~/kube/config 
 
+------
+
+
+
+## Kubectl 自动补全
+
+### BASH
+
+```bash
+source <(kubectl completion bash) # 在 bash 中设置当前 shell 的自动补全，要先安装 bash-completion 包。
+echo "source <(kubectl completion bash)" >> ~/.bashrc # 在您的 bash shell 中永久的添加自动补全
+```
+
+您还可以为 `kubectl` 使用一个速记别名，该别名也可以与 completion 一起使用：
+
+```bash
+alias k=kubectl
+complete -F __start_kubectl k
+```
+
+### ZSH
+
+```bash
+source <(kubectl completion zsh)  # 在 zsh 中设置当前 shell 的自动补全
+echo "[[ $commands[kubectl] ]] && source <(kubectl completion zsh)" >> ~/.zshrc # 在您的 zsh shell 中永久的添加自动补全
+```
+
+------
+
 
 
 ## 常用命令
@@ -41,7 +70,7 @@ title: Kubectl常用
   3. 直接删除
        ```
        kubectl delete pod {podname} -n {namespace}
-      
+          
        kubectl delete replicaset {rs_name} -n {namespace}
       ```
   4. 没有 yaml 文件，直接使用的 Pod 对象
