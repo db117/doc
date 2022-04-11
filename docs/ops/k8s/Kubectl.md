@@ -53,47 +53,6 @@ echo "[[ $commands[kubectl] ]] && source <(kubectl completion zsh)" >> ~/.zshrc 
 
 ## 常用命令
 
-### pod
-
-* 重启
-
-  1. 强制替换Pod 
-       ```
-       kubectl replace --force -f xxxx.yaml
-       ```
-
-  2. 调整副本来重启
-       ```
-       kubectl scale deployment {deployment} --replicas=0 -n {namespace}
-       kubectl scale deployment {deployment} --replicas=1 -n {namespace}
-       ```
-  3. 直接删除
-       ```
-       kubectl delete pod {podname} -n {namespace}
-          
-       kubectl delete replicaset {rs_name} -n {namespace}
-      ```
-  4. 没有 yaml 文件，直接使用的 Pod 对象
-
-       ```
-       kubectl get pod {podname} -n {namespace} -o yaml | kubectl replace --force -f -
-       ```
-
-
-### 命名空间
-
-* 创建命名空间
-
-    ```
-    kubectl create namespace test-env 
-    ```
-
-* 设置默认命名空间
-
-    ```
-    kubectl config set-context default --namespace=${work_namespace}
-    ```
-
 ### Secret
 
 > 创建docker访问secret
@@ -149,12 +108,3 @@ spec:
   ```
   
   
-
-### 查询配置文件结构
-
-> 不清楚某些配置文件怎么配置的情况下使用
-
-```
-kubectl explain ServiceMonitor.spec.endpoints
-```
-

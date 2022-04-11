@@ -51,6 +51,17 @@ kubectl get pods --sort-by=.metadata.name
 
 
 
+## 命名空间
+
+```
+# 创建命名空间
+kubectl create namespace test-env 
+# 设置默认命名空间
+kubectl config set-context default --namespace=${work_namespace}
+```
+
+
+
 ## 创建对象
 
 Kubernetes 配置可以用 YAML 或 JSON 定义。可以使用的文件扩展名有 `.yaml`、`.yml` 和 `.json`。
