@@ -11,7 +11,7 @@ title: jackson常见操作
 ```
 // 对象
 POJO result = MAPPER.readerFor(POJO.class).readValue(p);
-POJO result = objectReader.readValue(source, POJO.class);
+POJO result = MAPPER.readValue(source, POJO.class);
 
 public enum ABC { A, B, C; }
 // 数组
