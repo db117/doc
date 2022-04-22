@@ -1,6 +1,48 @@
 ---
 title: linux
 ---
+## 备忘单
+
+### 权限
+
+```
+# 将文件 file1.txt 设为所有人皆可读取
+chmod ugo+r file1.txt
+chmod a+r file1.txt
+chmod 444 file1.txt
+
+# 将目前目录下的所有文件与子目录皆设为任何人可读取
+chmod -R a+r *
+```
+
+### 进程
+
+```
+# 查看进程
+# 显示当前系统进程的列表 
+ps ax
+# 显示当前系统进程详细列表以及进程用户
+ps aux 
+# 过滤具体进程（XXX为进程名称）
+ps ax|grep XXX | grep -v grep
+
+# 获取进程id
+ps -A |grep "cmdname" | grep -v grep| awk '{print $1}'
+pgrep "cmdname"
+
+# 杀进程
+kill PID
+# 强制杀进程
+kill -9 PID 
+
+# 杀掉所有匹配的进程进程
+# 先检查一下，在 kill
+ps -A |grep "cmdname"| grep -v grep | awk '{print $1}'
+ps -A |grep "cmdname"| grep -v grep | awk '{print $1}'| while read s;do kill $s;done
+```
+
+
+
 ### nslookup
 
 #### 安装
