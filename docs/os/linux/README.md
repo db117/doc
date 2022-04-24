@@ -41,6 +41,41 @@ ps -A |grep "cmdname"| grep -v grep | awk '{print $1}'
 ps -A |grep "cmdname"| grep -v grep | awk '{print $1}'| while read s;do kill $s;done
 ```
 
+### 文件
+
+```
+# 批量删除空文件
+find . -type f -empty -delete
+find . -type f -size 0 -delete
+```
+
+
+
+### 字符串变量操作
+
+> 特殊符合使用`\`进行转义
+
+- 替换第一个匹配到的文本`${<源文本>/<需要替换的文本>/<替换后的文本>}`
+- 替换所有匹配的文本`${<源文本>//<需要替换的文本>/<替换后的文本>}`
+- 删除变量中第一个匹配的字符串`${<源文本>/<需要删除的文本>}`
+- 删除变量中所有匹配的字符串`${<源文本>//<需要删除的文本>}`
+
+
+
+### BASE64
+
+```
+编码
+base64 a  > b
+
+解码
+base -d a > b
+```
+
+
+
+------
+
 
 
 ### nslookup
@@ -65,6 +100,10 @@ apt-get install dnsutils
 ```
 yum install bind-utils
 ```
+
+------
+
+
 
 ### 文件的组织
 
