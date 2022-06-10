@@ -47,6 +47,47 @@ ps -A |grep "cmdname"| grep -v grep | awk '{print $1}'| while read s;do kill $s;
 # 批量删除空文件
 find . -type f -empty -delete
 find . -type f -size 0 -delete
+
+## 解压文件 #####
+# 压缩文件 file1 和目录 dir2 到 test.tar.gz
+tar -zcvf test.tar.gz file1 dir2
+# 解压 test.tar.gz（将 c 换成 x 即可）
+tar -zxvf test.tar.gz
+# 列出压缩文件的内容
+tar -ztvf test.tar.gz 
+# 使用 -d 选项手动指定解压缩位置
+unzip -d /tmp/ ana.zip
+
+```
+
+### 文本
+
+```
+# 显示文本内容
+cat <file>  				# 一次性显示完
+head -20 <file>			# 显示开头 20 行文本
+tail -n3 <file>			# 显示最后 3 行文本
+tail -n10 <file>		# 显示最后 10 行文本，并监听文件
+
+# 浏览文本
+less -N <file> 			# 开始浏览文本
+# 搜索
+  /字符串：向下搜索
+  ?字符串：向上搜索
+  n：重复前一个搜索（与 / 或 ? 有关）
+  N：反向重复前一个搜索（与 / 或 ? 有关）
+# 向前翻页
+  y 向前滚动一行
+  u 向前滚动半页
+  b 向上翻一页
+# 向后翻页
+	回车键 滚动一行
+	d 向后翻半页
+	空格键 滚动一页
+h 显示帮助界面
+Q 退出less 命令
+
+
 ```
 
 
