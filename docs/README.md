@@ -96,7 +96,7 @@ pageClass: custom-page-class
 
 [openjdk](http://openjdk.java.net/)
 [zTree](http://www.treejs.cn/v3/main.php#_zTreeInfo)
-[mybatis.plus](https://mybatis.plus/)
+[mybatis.plus](https://www.mybatis-plus.com/)
 [echarts](https://echarts.baidu.com/index.html)
 [layui](https://www.layui.com/)
 [hutool](https://hutool.cn/docs/#/)
