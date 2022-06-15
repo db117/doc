@@ -60,14 +60,17 @@ unzip -d /tmp/ ana.zip
 
 ```
 
-### 文本
+### 文本浏览
 
 ```
 # 显示文本内容
-cat <file>  				# 一次性显示完
-head -20 <file>			# 显示开头 20 行文本
-tail -n3 <file>			# 显示最后 3 行文本
-tail -n10 <file>		# 显示最后 10 行文本，并监听文件
+cat <file>  					# 一次性显示完
+head -20 <file>				# 显示开头 20 行文本
+tail -n3 <file>				# 显示最后 3 行文本
+tail -n10 <file>			# 显示最后 10 行文本，并监听文件
+sed -n '3,7p' <file>	# 指定读取某个文件的第3-7行
+sed -n '3,$p' <file>	# 指定读取某个文件第 3 行到最后一行，$代表最后一行
+
 
 # 浏览文本
 less -N <file> 			# 开始浏览文本
@@ -88,6 +91,82 @@ h 显示帮助界面
 Q 退出less 命令
 
 
+```
+
+#### 文本搜索
+
+```
+# 搜索某个文件中，包含某个关键词的内容
+grep root /etc/passwd
+# 搜索某个文件中，以某个关键词开头的内容
+grep ^root /etc/passwd
+# 展示匹配行的前后若干行（B：前 A：后 C： 前后）
+grep -C1 leo passwd
+# 搜索多个文件中，包含某个关键词的内容
+grep root /etc/passwd /etc/shadow
+# 搜索多个文件中，包含某个关键词的内容，不显示文件名称
+grep -h root /etc/passwd /etc/shadow
+# 输出在某个文件中，包含某个关键词行的数量
+grep -c root /etc/passwd /etc/shadow
+# 搜索某个文件中，不包含某个关键词的内容
+grep -v nologin /etc/passwd
+# 搜索某个文件中，精准匹配到某个关键词的内容（搜索词应与整行内容完全一样才会显示，有别于一般搜索）
+grep -x cdrom anaconda-ks.cfg
+# 搜索某个文件中，空行的数量
+grep -c ^$ anaconda-ks.cfg 
+
+```
+
+#### 文本编辑
+
+```
+# sed 可以接在管道上，也可以在后面指定文件
+# sed 添加 -i 可以直接修改文件
+# 删除所有行
+sed 'd'
+# 删除第2行
+sed '2d'
+# 删除第2~5行
+sed '2,5d'
+# 删除第3到最后一行，$代表最后一行
+sed '3,$d'
+# 删除空行
+sed '/^$/d'
+
+
+# 替换第二个 test 为 trial
+sed 's/test/trial/2'
+# 替换所有 test 为 trial
+sed 's/test/trial/g'
+# -n 选项会禁止 sed 输出，但 p 标记会输出修改过的行，将二者匹配使用的效果就是只输出被替换命令修改过的行
+sed -n 's/test/trial/p' 
+# 将处理后的结果保存到指定文件中
+sed 's/test/trial/w test.txt' 
+# 将第2到5行替换为一行字符串"No 2~5 lines"
+sed '2,5c No 2~5 lines'
+
+# 插入多行数据只需对要插入或附加的文本中的每一行末尾（除最后一行）添加反斜线即可
+# 在第三行插入数据，即第三行和第二行中间
+sed '3i\
+> This is an inserted line.'
+# 在第三行追加数据，即第三行和第四行中间
+sed '3a\
+> This is an appended line.'
+# 把第三行数据替换掉
+sed '3c\
+> This is a changed line of text.'
+# 把 data.txt 文件内容插入到第三行后面
+sed '3r data.txt'
+# 把 data.txt 文件内容插入到数据流尾部
+sed '$r data.txt'
+# 可以添加一个完全为空的空行
+sed '4 a \\'
+# 可以添加两个完全为空的空行
+sed '4 a \\n'
+
+# 替换字符
+# 把 1 替换成 7,2 替换成 8,3 替换成 9
+sed 'y/123/789/'
 ```
 
 
