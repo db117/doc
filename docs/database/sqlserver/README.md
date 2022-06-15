@@ -54,3 +54,11 @@ FROM table_name
 FOR JSON
 ```
 
+#### 多行数据合成一行
+
+```
+SELECT STUFF(( SELECT <拼接的字符串> FROM <表> FOR XML PATH('') ),1,1,'')
+-- 如下
+SELECT STUFF(( SELECT ','+t.cstaffname FROM #staff  t FOR XML PATH('') ),1,1,'')
+```
+
