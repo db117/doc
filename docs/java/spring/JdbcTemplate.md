@@ -24,7 +24,7 @@ long l = template.query("SELECT AGE FROM CUSTMR WHERE ID IN (:ids)", params, Lon
 
 MapSqlParameterSource params = new MapSqlParameterSource();
 params.addValue("ids", Arrays.asList(3, 4));
-template.queryForObject(sql, params, Integer.class);
+template.queryForObject("SELECT AGE FROM CUSTMR WHERE ID IN (:ids)", params, Integer.class);
 ```
 
 ##### 简单对象保存
