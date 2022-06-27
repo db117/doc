@@ -62,3 +62,10 @@ SELECT STUFF(( SELECT <拼接的字符串> FROM <表> FOR XML PATH('') ),1,1,'')
 SELECT STUFF(( SELECT ','+t.cstaffname FROM #staff  t FOR XML PATH('') ),1,1,'')
 ```
 
+#### 当 IDENTITY_INSERT 设置为 OFF 时,不能向表中的标识列插入显式值
+
+```
+在执行 SQL 前添加
+set identity_insert tableName（表名） ON
+```
+

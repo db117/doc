@@ -179,6 +179,30 @@ stack demo.MathGame primeFactors '#cost>5'
 | isReturn  | 辅助判断标记，当前的方法调用以正常返回的形式结束。           |
 
 ```
+# 查看第一个参数
+watch com.taobao.container.Test test "params[0]"
+# 查看第一个参数的size
+watch com.taobao.container.Test test "params[0].size()"
+# 按条件过滤，第一个参数 name 为 null 的数据
+watch com.taobao.container.Test test "params[0].{? #this.name == null }" -x 2
+# 过滤后统计，第一个参数 age 大于 10 的数量
+watch com.taobao.container.Test test "params[0].{? #this.age > 10 }.size()" -x 2
+# 判断字符串相等
+watch com.demo.Test test 'params[0]=="xyz"'
+# 判断long型
+watch com.demo.Test test 'params[0]==123456789L'
+# 子表达式求值
+watch com.taobao.container.Test test "params[0].{? #this.age > 10 }.size().(#this > 20 ? #this - 10 : #this + 10)" -x 2
+# 选择第一个满足条件
+watch com.taobao.container.Test test "params[0].{^ #this.name != null}" -x 2
+# 选择最后一个满足条件
+watch com.taobao.container.Test test "params[0].{^ #this.name != null}.size()" -x 2
 
+# 使用新版本中的getstatic命令，通过-c指定classloader，可以查看任意static变量，同时支持ognl表达式处理
+getstatic com.alibaba.arthas.Test n 'entrySet().iterator.{? #this.key.name()=="STOP"}'
+
+# 使用OGNL表达式获取spring bean 时，bean 的字段值显示是null，但调用字段的get方法显示有值
+ognl  '#springContext=@com.utils.SpringContextUtils@applicationContext,
+#bean=#springContext.getBean("beanName")'.CGLIB$CALLBACK_0.advised.targetSource.target ` -c 11531931 -x 2
 ```
 
