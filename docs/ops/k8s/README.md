@@ -2,6 +2,16 @@
 title: k8s相关
 ---
 
+### 文档
+
+[Kubernetes 文档 | Kubernetes](https://kubernetes.io/zh-cn/docs/home/)
+
+[kubectl 备忘单 | Kubernetes](https://kubernetes.io/zh-cn/docs/reference/kubectl/cheatsheet/)
+
+[Kubectl 命令参考](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
+
+[Kubernetes (github.com)](https://github.com/kubernetes)
+
 ### 知识点思维导图
 
 <iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:525px; height:745px;" src="https://www.processon.com/embed/62d140ca5653bb2b401e5e8a"></iframe>
