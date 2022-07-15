@@ -2,6 +2,10 @@
 title: k8s相关
 ---
 
+### 知识点思维导图
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:525px; height:745px;" src="https://www.processon.com/embed/62d140ca5653bb2b401e5e8a"></iframe>
+
 ### 服务之间访问
 
 >通过 **<服务名称>.<命名空间>.svc.cluster.local**  即可访问

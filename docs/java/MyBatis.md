@@ -97,3 +97,8 @@ title: MyBatis
 - SqlSessionFactoryBean
 
   > 核心配置类，需要自行注入到 spring 容器中。在 Spring 创建对象时，调用`SqlSessionFactoryBean#buildSqlSessionFactory加载一系列配置，并配置plugin，TypeHandler,二级缓存等信息，扫描并通过`XMLMapperBuilder`加载所有 mapper
+
+### 小细节
+
+- xml 特殊字符，可以使用 `<![CDATA[ ]]>`包起来
+

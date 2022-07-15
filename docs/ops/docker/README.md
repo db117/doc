@@ -2,32 +2,26 @@
 title: docker
 ---
 # docker
-## 常用操作
-
-### 进入容器
+## 备忘单
 
 ```
+# 进入容器
 docker container exec -it 容器id bash
-```
 
-
-
-### 批量删除镜像或容器
-
-```
+# 批量删除镜像或容器
 docker rmi --force $(docker images | grep <过滤> | awk '{print $3}')
-```
-
-### 清理镜像
-
-```
 # 清理所有没有正在使用的镜像
 docker system prune -a
 # 删除所有未使用的容器、网络、图像(没有tag的和未引用的)
 docker system prune
+
+# 当前正在运行的 Docker 容器的进程号（PID）
+docker inspect --format '{{ .State.Pid }}'  4ddf4638572d
 ```
 
 
+
+## 常用操作
 
 ###  容器开机自动启动
 
@@ -99,7 +93,6 @@ docker run -p 3306:3306  --restart=always --name mymysql -v $PWD/conf:/etc/mysql
     https://docker.mirrors.ustc.edu.cn
    
      
-
 
 ##  network 网络
 

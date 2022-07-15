@@ -69,3 +69,9 @@ SELECT STUFF(( SELECT ','+t.cstaffname FROM #staff  t FOR XML PATH('') ),1,1,'')
 set identity_insert tableName（表名） ON
 ```
 
+#### 获取数据库时区与 utc 时区小时差
+
+```
+select datediff(hour,getutcdate(),getdate());
+```
+
