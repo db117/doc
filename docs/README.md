@@ -20,8 +20,8 @@ pageClass: custom-page-class
 [magi]( https://magi.com/)
 [stackoverflow](https://stackoverflow.com)
 
-
 ## 学习
+
 [图灵源码](http://git.tulingxueyuan.cn/user/login)
 [图灵学院](https://www.tulingxueyuan.cn/)
 [慕课网](https://www.imooc.com/)
@@ -32,6 +32,8 @@ pageClass: custom-page-class
 [ labuladong 算法]( https://labuladong.gitee.io/algo/)
 [CodeTop企业题库](https://codetop.cc/#/home)
 [墨墨背单词](https://www.maimemo.com/)
+[leetcode rating ](https://zerotrac.github.io/leetcode_problem_rating/#/)
+[Leetcode Rating Predictor](https://lcpredictor.herokuapp.com/)
 
 ## 工具
 [油猴脚本](https://greasyfork.org/zh-CN/scripts)
