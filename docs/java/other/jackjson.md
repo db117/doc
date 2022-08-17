@@ -182,7 +182,10 @@ writer.writeValueAsString(new Foo());
   - 指定序列化实现
 
 - @JsonNaming
-  - 知道命名策略
+  - 字段命名策略
+- @JsonAutoDetect
+  - 在序列化与反序列化时的字段可见性
+
 
 
 
