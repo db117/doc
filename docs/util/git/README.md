@@ -124,3 +124,14 @@ git rev-list <commit-id-1>..<commit-id-2> --count
 ```
 GIT_COMMITTER_DATE="2021-12-12T12:27:07" git commit --amend --date="2021-12-12T12:27:07"
 ```
+
+
+
+### git tag不能显示所有tags
+
+git pull不能默认将所有的tags拉下来。
+
+```
+git fetch --tags
+```
+
