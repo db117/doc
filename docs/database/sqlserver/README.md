@@ -75,3 +75,26 @@ set identity_insert tableName（表名） ON
 select datediff(hour,getutcdate(),getdate());
 ```
 
+#### 删除重复行
+
+此脚本按给定顺序执行以下操作：
+
+- 使用 `ROW_NUMBER` 函数根据 `key_value`（可能是以逗号分隔的一列或多列）对数据进行分区。
+- 删除所有收到大于 1 的 `DupRank` 值的记录。 此值指定记录是重复项。
+
+由于 `(SELECT NULL)` 表达式的原因，脚本不会根据任何条件对分区数据进行排序。 如果删除重复项的逻辑需要根据其他列的排序顺序选择要删除和保留的记录，则可以使用 ORDER BY 表达式来执行此操作。
+
+```
+DELETE T
+FROM
+(
+SELECT *
+, DupRank = ROW_NUMBER() OVER (
+              PARTITION BY key_value
+              ORDER BY (SELECT NULL)
+            )
+FROM original_table
+) AS T
+WHERE DupRank > 1
+```
+
