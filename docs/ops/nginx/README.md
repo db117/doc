@@ -4,7 +4,7 @@ title: Nginx
 # Nginx
 > [官网]([nginx news](http://nginx.org/))
 
-## 文件位置
+### 文件位置
 
 ```
 # Nginx配置文件
@@ -34,7 +34,7 @@ title: Nginx
 
 
 
-## 常用命令
+### 常用命令
 
 1. `systemctl` 系统命令
    	 
@@ -101,4 +101,17 @@ title: Nginx
    ```
 
    
+
+### 分析日志
+
+```
+# 截取日志并统计每天访问次数
+awk '{print substr($4,2,11)}' access.log | sort | uniq -c
+
+# uv 用户（IP）访问数量
+awk '{print $1}' access.log | sort | uniq | wc -l
+
+# 分析出请求最多请求路径
+awk '{print $7}' access.log | sort | uniq -c | sort -rn | head -n 3
+```
 
