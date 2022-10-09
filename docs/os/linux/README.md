@@ -39,6 +39,11 @@ kill -9 PID
 # 先检查一下，在 kill
 ps -A |grep "cmdname"| grep -v grep | awk '{print $1}'
 ps -A |grep "cmdname"| grep -v grep | awk '{print $1}'| while read s;do kill $s;done
+
+# 杀掉所有匹配的进程进程（通过参数匹配）
+# 一定要先检查一下，在 kill
+ps -ef |grep "cmdname args"| grep -v grep | awk '{print $2}'
+ps -ef |grep "cmdname args"| grep -v grep | awk '{print $2}'| while read s;do kill $s;done
 ```
 
 ### 文件
