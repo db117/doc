@@ -102,3 +102,19 @@ $pwd/etc/supervisord.conf
   ```
   supervisorctl pid all
   ```
+
+- 重载修改、新添加的配置文件
+
+  > 有时候只改动了某个配置文件，只想重载这个配置文件然后重启，不影响其他配置文件
+
+  ```
+  supervisorctl update
+  ```
+
+  > 新添加了一个配置文件，此时update命令没用了，要用reread命令。然后再update重启
+
+  ```
+  supervisorctl reread
+  ```
+
+  
