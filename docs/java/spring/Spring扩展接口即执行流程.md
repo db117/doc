@@ -47,6 +47,10 @@ title: Spring扩展接口即执行流程
 
 
 
+#### BeanFactoryPostProcessor#postProcessBeanFactory
+
+> 所有的 bean 定义都已经加载，但是没有被实例化。用来修改 bean 定义或者提前实例化
+
 #### InstantiationAwareBeanPostProcessor#postProcessAfterInstantiation
 
 > 在实例化之后，赋值属性之前调用，返回false则不进行后续赋值。
