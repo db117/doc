@@ -33,6 +33,18 @@ title: Spring扩展接口即执行流程
   
     > Configuration#proxyBeanMethods 为true时，会对说有@bean方法添加代理，直接通过beanFactory获取。即调用该方法时实际只执行一次，多次调用返回的对象是同一个。
 
+
+
+#### BeanFactoryPostProcessor#postProcessBeanFactory
+
+> 所有的 bean 定义都已经加载，但是没有被实例化。用来修改 bean 定义或者提前实例化
+>
+> 在注册 bean 的后置处理器之前调用
+
+
+
+
+
 #### InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation
 
 > bean初始化前的操作，主要是生成代理对象
@@ -46,10 +58,6 @@ title: Spring扩展接口即执行流程
 - `com.alibaba.cloud.sentinel.custom.SentinelBeanPostProcessor`：处理 @SentinelRestTemplate，在RestTemplate中添加拦截器
 
 
-
-#### BeanFactoryPostProcessor#postProcessBeanFactory
-
-> 所有的 bean 定义都已经加载，但是没有被实例化。用来修改 bean 定义或者提前实例化
 
 #### InstantiationAwareBeanPostProcessor#postProcessAfterInstantiation
 
