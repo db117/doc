@@ -34,6 +34,7 @@ pageClass: custom-page-class
 [墨墨背单词](https://www.maimemo.com/)
 [leetcode rating ](https://zerotrac.github.io/leetcode_problem_rating/#/)
 [Leetcode Rating Predictor](https://lcpredictor.herokuapp.com/)
+[LCCN Predictor (lbao.site)](https://lccn.lbao.site/)
 
 ## 工具
 [油猴脚本](https://greasyfork.org/zh-CN/scripts)
