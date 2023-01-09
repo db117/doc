@@ -6,11 +6,15 @@ title: spring-aop
 
 <iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/611f88760e3e745cf8fffbad"></iframe>
 
+### 思维导图
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:275px;" src="https://www.processon.com/embed/63b7d219f27176074bb45725"></iframe>
+
 ## 简介
 
 - **它基于动态代理来实现**。默认地，如果使用接口的，用 JDK 提供的动态代理实现，如果没有接口，使用 CGLIB 实现。
 
-- **Spring 3.2 以后，spring-core 直接就把 CGLIB 和 ASM 的源码包括进来了** 
+- Spring 3.2 以后，spring-core 直接就把 CGLIB 和 ASM 的源码包括进来了 
 
 - Spring 的 IOC 容器和 AOP 都很重要，Spring AOP 需要依赖于 IOC 容器来管理。 
 
