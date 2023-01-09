@@ -4,6 +4,10 @@ title: Spring IOC
 
 ### 思维导图
 
+- Spring 核心概念
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:750px; height:275px;" src="https://www.processon.com/embed/63abaa141e08533e4cd27f7b"></iframe>
+
 - Spring IOC 加载流程
 
 <iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:750px; height:275px;" src="https://www.processon.com/embed/63ad4985597d06494d991a27"></iframe>
