@@ -96,3 +96,13 @@ System.setProperty("https.proxyHost", "127.0.0.1");
 System.setProperty("https.proxyPort", "7777");
 ```
 
+
+
+#### 通过返回值来获取泛型类型
+
+```
+ public static <T> Class<T> a(T... reified) {
+ 	return (Class<T>) reified.getClass().getComponentType();
+ }
+```
+
