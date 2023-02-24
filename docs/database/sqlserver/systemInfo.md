@@ -29,7 +29,7 @@ title: 数据库信息获取
 
 | 列名称                       | 数据类型         | 说明                                                         |
 | :--------------------------- | :--------------- | :----------------------------------------------------------- |
-| <inherited columns>          |                  | 有关此视图所继承的列的列表，请参阅[sys.databases (SQL)](https://docs.microsoft.com/zh-cn/sql/relational-databases/system-catalog-views/sys-objects-transact-sql?view=sql-server-ver15)。 |
+| &lt;inherited columns&gt;          |                  | 有关此视图所继承的列的列表，请参阅[sys.databases (SQL)](https://docs.microsoft.com/zh-cn/sql/relational-databases/system-catalog-views/sys-objects-transact-sql?view=sql-server-ver15)。 |
 | lob_data_space_id            | **int**          | 对于该表，非零值是存放二进制大型对象 (LOB) 数据的数据空间（文件组或分区方案）的 ID。 LOB 数据类型的示例包括 **varbinary (max)**、 **varchar (max)**、 **geography** 或 **xml**。  0 = 该表没有 LOB 数据。 |
 | filestream_data_space_id     | **int**          | FILESTREAM 文件组或包含 FILESTREAM 文件组的分区方案的数据空间 ID。  若要报告 FILESTREAM 文件组的名称，请执行查询 `SELECT FILEGROUP_NAME (filestream_data_space_id) FROM sys.tables` 。  sys.tables 可以按 filestream_data_space_id = data_space_id 与下列视图联接。  -sys.databases. 文件组  -sys.partition_schemes  -sys. 索引  -sys.allocation_units  -sys.fulltext_catalogs  -sys.data_spaces  -sys.destination_data_spaces  -sys.master_files  -sys.database_files  -backupfilegroup (联接 filegroup_id) |
 | max_column_id_used           | **int**          | 此表曾使用的最大列 ID。                                      |
@@ -120,7 +120,7 @@ title: 数据库信息获取
 
 | 列名称                                   | 数据类型        | 说明                                                         |
 | :--------------------------------------- | :-------------- | :----------------------------------------------------------- |
-| **<columns inherited from sys.columns>** |                 | **Sys.identity_columns** 视图返回 **sys.columns** 视图中的所有列。 |
+| **&lt;columns inherited from sys.columns&gt;** |                 | **Sys.identity_columns** 视图返回 **sys.columns** 视图中的所有列。 |
 | **seed_value**                           | **sql_variant** | 该标识列的种子值。 种子值的数据类型与列本身的数据类型相同。  |
 | **increment_value**                      | **sql_variant** | 该标识列的增量值。 种子值的数据类型与列本身的数据类型相同。  |
 | **last_value**                           | **sql_variant** | 为该标识列生成的最后一个值。 种子值的数据类型与列本身的数据类型相同。 |

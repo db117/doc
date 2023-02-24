@@ -24,5 +24,6 @@ hs_err_pid*
 /.idea/
 /node_modules/
 /package-lock.json
-/docs/.vuepress/dist/
+/docs/.vitepress/dist/
 *.DS_Store
+/docs/.vitepress/cache

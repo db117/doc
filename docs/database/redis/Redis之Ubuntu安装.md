@@ -17,9 +17,10 @@ $ sudo apt-get update
 $ sudo apt-get install redis-server
 ```
 
+
 ## 运行
 
-```
+``` 
 $ redis-server --daemonize yes
 ```
 
@@ -29,7 +30,7 @@ Usage: ./redis-server [/path/to/redis.conf] [options]
        ./redis-server - (read config from stdin)
        ./redis-server -v or --version
        ./redis-server -h or --help
-       ./redis-server --test-memory <megabytes>
+       ./redis-server --test-memory &lt;megabytes&gt;
 
 Examples:
        ./redis-server (run the server with default conf)
@@ -40,4 +41,3 @@ Examples:
 
 Sentinel mode:
        ./redis-server /etc/sentinel.conf --sentinel
-

@@ -1,4 +1,4 @@
-module.exports = [
+const head = [
     ['link', {rel: 'icon', href: '/favicon.ico'}],
     ['script', {}, `
             var _hmt = _hmt || [];
@@ -10,3 +10,5 @@ module.exports = [
             })();
         `]
 ];
+
+export default head

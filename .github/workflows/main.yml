@@ -16,7 +16,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
           branch: master
-          folder: docs/.vuepress/dist
+          folder: docs/.vitepress/dist
           token: ${{secrets.deploy_token}}
           repository-name: db117/db117.github.io
 
@@ -32,7 +32,7 @@ jobs:
       - name: Push gitee 
         continue-on-error: true # 防止步骤失败时作业也会失败
         run: |
-          cd docs/.vuepress/dist
+          cd docs/.vitepress/dist
           
           git config --global init.defaultBranch master
           git init

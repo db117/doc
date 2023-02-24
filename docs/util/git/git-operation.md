@@ -73,16 +73,16 @@ title: git命令
 *    合并指定分支到当前分支
     *    git merge [branch]
 *   衍合指定分支到当前分支
-    *    git rebase <branch>       
+    *    `git rebase <branch>`       
 *    选择一个commit，合并进当前分支
     *    git cherry-pick [commit]
 ### 标签
 *   列出所有本地标签
     *   git tag   
 *   基于最新提交创建标签                       
-    *   git tag <tagname>      
+    *   `git tag <tagname>`      
 *   删除标签          
-    *   git tag -d <tagname>         
+    *   `git tag -d <tagname>`   
 *   删除远程tag
     *   git push origin :refs/tags/[tagName]
 *   查看tag信息
@@ -134,9 +134,9 @@ title: git命令
 *   显示某次提交时，某个文件的内容
     *   git show [commit]:[filename]
 *   显示当前分支的最近几次提交
-    *   git reflog
+    *   git reflog  
 ### 远程操作
-*   下载远程仓库的所有变动
+*  下载远程仓库的所有变动
     *   git fetch [remote]
 *   取回远程仓库的变化，并与本地分支合并
     *   git pull [remote] [branch]
@@ -153,16 +153,16 @@ title: git命令
 *   推送所有分支到远程仓库
     *   git push [remote] --all
 *   删除远程分支或标签
-    *   git push <remote> :<branch/tag-name> 
+    *   `git push <remote> :<branch/tag-name>`
 *   上传所有标签 
     *   git push --tags                       
 ### 撤销
 *   撤销工作目录中所有未提交文件的修改内容
     *   git reset --hard HEAD    
 *   撤销指定的未提交文件的修改内容  
-    *   git checkout HEAD <file>
+    *  ` git checkout HEAD <file>`
 *   撤销指定的提交   
-    *   git revert <commit>
+    *   `git revert <commit>`
 *   退回到之前1天的版本         
     *   git log --before="1 days"  
 *   恢复暂存区的指定文件到工作区

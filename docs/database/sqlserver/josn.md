@@ -41,7 +41,7 @@ SET @jsonInfo=N'{
 
   > 从 JSON 字符串中提取标量值。不能获取对象。
   >
-  > JSON_VALUE(<字段或设置的变量>,'<path>')
+  > `JSON_VALUE(<字段或设置的变量>,'<path>')`
 
   ```
   json_value(@jsonInfo,'$')							null
@@ -52,7 +52,7 @@ SET @jsonInfo=N'{
 
   > 从 JSON 字符串中提取对象或数组。不能获取值。
   >
-  > JSON_QUERY(<字段或设置的变量>,'<path>')
+  > `JSON_QUERY(<字段或设置的变量>,'<path>')`
 
   ```
   json_query(@jsonInfo,'$.info.type')  	null
@@ -90,7 +90,7 @@ SET @jsonInfo=N'{
 
   > 对 JSON 文档提供行集视图。
   >
-  > OPENJSON( jsonExpression [ , path ] )  [ <with_clause> ] <with_clause> ::= WITH ( { colName type [ column_path ] [ AS JSON ] } [ ,...n ] )
+  > `OPENJSON( jsonExpression [ , path ] )  [ <with_clause> ] <with_clause> ::= WITH ( { colName type [ column_path ] [ AS JSON ] } [ ,...n ] )`
 
   解析默认为 `key`,`value`,`type`三个属性，下面为 type 的含义。
   
