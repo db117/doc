@@ -13,3 +13,9 @@ title: mysql
 - url 数据源后面添加 `useSSL=false`关闭ssl
 - 升级jdk版本
 
+#### order by 主键
+
+> 当 order by 只有主键时，可以在 select 中出现所有字段。
+>
+> [MySQL :: MySQL 5.7 Reference Manual :: 12.20.3 MySQL Handling of GROUP BY](https://dev.mysql.com/doc/refman/5.7/en/group-by-handling.html)
+
