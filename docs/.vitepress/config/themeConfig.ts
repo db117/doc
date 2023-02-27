@@ -27,13 +27,7 @@ const themeConfig = {
     // 每一个文档右边输出的标题级别
     outline: [2, 6],
     socialLinks: [
-        { icon: 'github', link: 'https://github.com/db117' },
-        {
-          icon: {
-            svg: '<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Dribbble</title><path d="M12...6.38z"/></svg>'
-          },
-          link: '...'
-        }
+        { icon: 'github', link: 'https://github.com/db117' }
       ]
     
 }

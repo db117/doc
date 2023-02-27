@@ -1,5 +1,3 @@
-import slidebar from './config/sliderbar'
-import nav from './config/nav'
 import themeConfig  from './config/themeConfig';
 import head from './config/head'
 
