@@ -7,7 +7,7 @@ const nav = [
 	{ text: 'os', link: '/os/' },
 	{ text: 'other', link: '/other/' },
 	{ text: 'util', link: '/util/' },
-	{ text: '关于我', link: '/other/about' },
+	{ text: '关于我', link: 'https://www.500d.me/cvresume/3244698236/' },
 	{
 		text: '其他网站',
 		items: [

@@ -17,19 +17,29 @@ export const getMsg = path => {
 				// 文件完整路径
 				var fullPath = path_.join(path, item);
 
-				//  console.info(fullPath);
-				//  console.log(title(fullPath))
-
 				return {
 					text: title(fullPath),
 					link: resolve(path, item),
 				}
 			} else {
-				return {
-					text: item.split('.')[0],
-					items: getMsg(resolve(path, item)),// 递归处理文件夹
-					collapsible: true,
+				const file = resolve(path, item, "index.md");
+
+				if (fs.existsSync(file)) {
+
+					return {
+						text: item.split('.')[0],
+						items: getMsg(resolve(path, item)),// 递归处理文件夹
+						link: resolve(path, item, "index"),
+						collapsible: true,
+					}
+				} else {
+					return {
+						text: item.split('.')[0],
+						items: getMsg(resolve(path, item)),// 递归处理文件夹
+						collapsible: true,
+					}
 				}
+
 			}
 		})
 		arr = arr.map(item => {
@@ -58,7 +68,7 @@ function translateDir(path: string) {
  * @returns 
  */
 function filterFile(item: string) {
-	return item.indexOf('.') === -1 || item.endsWith('.md');
+	return item.indexOf('.') === -1 ||( item.endsWith('.md')&&item!="index.md");
 }
 /**
  * 获取文件标题
