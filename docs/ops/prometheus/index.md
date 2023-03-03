@@ -118,7 +118,17 @@ relabel_configs:
 # List of metric relabel configurations.
 metric_relabel_configs:
   [ - <relabel_config> ... ]
+  
+# 动态发现 eureka 中的服务
+eureka_sd_configs:
+  [ - <eureka_sd_config> ... ]
+  
+# 通过 http 接口动态发现的服务
+http_sd_configs:
+  [ - <http_sd_config> ... ]
 ```
+
+
 
 ### rules
 

@@ -1,19 +1,17 @@
 ---
 title: docker
 ---
-# docker
+> [Docker: Accelerated, Containerized Application Development](https://www.docker.com/)
+
 ## 备忘单
+
+常规操作
 
 ```
 # 进入容器
 docker container exec -it 容器id bash
 
-# 批量删除镜像或容器
-docker rmi --force $(docker images | grep <过滤> | awk '{print $3}')
-# 清理所有没有正在使用的镜像
-docker system prune -a
-# 删除所有未使用的容器、网络、图像(没有tag的和未引用的)
-docker system prune
+
 
 # 当前正在运行的 Docker 容器的进程号（PID）
 docker inspect --format '{{ .State.Pid }}'  4ddf4638572d
@@ -21,21 +19,57 @@ docker inspect --format '{{ .State.Pid }}'  4ddf4638572d
 
 
 
-## 常用操作
-
-###  容器开机自动启动
-
-> --restart具体参数值详细信息：
-
-   - no -  容器退出时，不重启容器；
-   - on-failure - 只有在非0状态退出时才从新启动容器；
-   - always - 无论退出状态是如何，都重启容器；
-
-> 如果创建时未指定 --restart=always ,可通过update 命令设置
+删除容器
 
 ```
+# 批量删除镜像或容器
+docker rmi --force $(docker images | grep <过滤> | awk '{print $3}')
+# 清理所有没有正在使用的镜像
+docker system prune -a
+# 删除所有未使用的容器、网络、图像(没有tag的和未引用的)
+docker system prune
+```
+
+
+
+network 网络
+
+```
+# 查看
+podman network ls
+# 创建网络
+docker network create my_net
+# 删除网络
+docker network rm my_net
+# 删除所有未使用的网络
+docker network prune
+# 查看网络内部信息
+docker network inspect my_net
+# 创建容器时指定网络
+--network my_net 
+
+# 将容器连接到网络
+podman network connect my_net mycontainer
+# 验证
+podman inspect --format='{{.NetworkSettings.Networks}}' mycontainer
+```
+
+
+
+容器开机自动启动
+
+```
+# 创建容器添加参数
+# no -  容器退出时，不重启容器；
+# on-failure - 只有在非0状态退出时才从新启动容器；
+# always - 无论退出状态是如何，都重启容器；
+--restart=[no|on-failure|always]
+
+# 如果创建时未指定 --restart=always ,可通过update 命令设置
 docker update --restart=always 容器id
 ```
+
+
 
 
 
@@ -81,7 +115,7 @@ docker run -p 3306:3306  --restart=always --name mymysql -v $PWD/conf:/etc/mysql
 
 
 
-##  镜像
+### 镜像
 
 *		Docker中国区官方镜像
     https://registry.docker-cn.com
@@ -93,28 +127,3 @@ docker run -p 3306:3306  --restart=always --name mymysql -v $PWD/conf:/etc/mysql
     https://docker.mirrors.ustc.edu.cn
    
      
-
-##  network 网络
-
-创建网络
-
-```
-docker network create my_net
-```
-
-
-创建容器时指定网络
-
-```
---network my_net 
-```
-
-创建容器时设置别名
-
-```
---network-alias nginx
-```
-
- 查看网络内部信息
-
-docker network inspect my_net
