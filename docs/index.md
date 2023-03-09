@@ -25,15 +25,24 @@ title: 导航
 &nbsp;[图灵学院](https://www.tulingxueyuan.cn/)
 &nbsp;[慕课网](https://www.imooc.com/)
 &nbsp;[菜鸟教程](https://www.runoob.com/)
-&nbsp;[数据结构](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
 &nbsp;[知识星球](https://wx.zsxq.com/)
 &nbsp;[极客时间](https://time.geekbang.org/)
-&nbsp;[ labuladong 算法]( https://labuladong.gitee.io/algo/)
-&nbsp;[CodeTop企业题库](https://codetop.cc/#/home)
-&nbsp;[墨墨背单词](https://www.maimemo.com/)
+
+
+### 算法
 &nbsp;[leetcode rating ](https://zerotrac.github.io/leetcode_problem_rating/#/)
 &nbsp;[Leetcode Rating Predictor](https://lcpredictor.herokuapp.com/)
 &nbsp;[LCCN Predictor (lbao.site)](https://lccn.lbao.site/)
+&nbsp;[ labuladong 算法]( https://labuladong.gitee.io/algo/)
+&nbsp;[CodeTop企业题库](https://codetop.cc/#/home)
+
+&nbsp;[数据结构和算法动态可视化](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
+&nbsp;[复杂度](http://cooervo.github.io/Algorithms-DataStructures-BigONotation/index.html)
+&nbsp;[数据结构和算法动态可视化 - VisuAlgo](https://visualgo.net/zh)
+
+### 算法竞赛
+&nbsp;[leetcode](https://leetcode-cn.com/u/db117/)
+&nbsp;[codeforces](https://codeforces.com/)
 
 ## 工具
 &nbsp;[油猴脚本](https://greasyfork.org/zh-CN/scripts)
