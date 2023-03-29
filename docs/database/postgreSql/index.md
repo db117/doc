@@ -37,3 +37,21 @@ CREATE UNIQUE INDEX favo_uni_idx
 ON favorites (user_id, menu_id, recipe_id) NULLS NOT DISTINCT;
 ```
 
+#### 复制表结构
+
+`INCLUDING` 关键字后面可以跟多个参数，以指定需要复制的旧表的哪些特性。以下是常用的参数以及它们的含义：
+
+- `ALL`：复制所有特性。
+- `DEFAULTS`：复制默认值。
+- `CONSTRAINTS`：复制所有约束。
+- `INDEXES`：复制所有索引。
+- `TRIGGERS`：复制所有触发器。
+- `STORAGE`：复制存储属性、统计信息和填充因子。
+- `COMMENTS`：复制注释。
+- `STATISTICS`：复制统计信息。
+- `COLLATION`：复制排序规则。
+
+```
+# 复制表 table_name 
+create table if not exists table_name_copy (like table_name including all );
+```
