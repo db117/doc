@@ -2,33 +2,82 @@
 title: 查询语法
 ---
 
+## 备忘单
+
+#### 标签筛选
+
+```
+# 正则匹配 lable
+http_requests_total{env=~"test|dev",method!="GET",application="app.*"}
+# 不匹配某些uri
+http_requests_total{uri!~"/actuator/.*"}
+# 选择所有正则匹配 jvm.* 的数据
+{__name__=~"jvm.*"}
+```
+
+#### 范围数据
+
+```
+# 选择过去 5 分钟内，度量指标名称为 http_requests_total， 标签为 job="prometheus" 的时间序列数据
+http_requests_total{job="prometheus"}[5m]
+
+# 相对于当前时间的前 5 分钟时的时刻, 度量指标名称为 http_requests_total 的时间序列数据
+http_requests_total offset 5m
+
+# 相对于当前时间的前一周时，过去 5 分钟的度量指标名称为 http_requests_total 的速率
+rate(http_requests_total[5m] offset 1w)
+
+# 指定时间戳的数据
+http_server_requests_seconds_max @ 1679550911
+
+# 指定时间戳筛选并统计数据
+sum(http_server_requests_seconds_max{method="GET"} @ 1679550911)
+
+# 指定时间戳时间段筛选并统计数据
+rate(http_server_requests_seconds_max[5m] @ 1679550911)
+```
+
 ## 基础操作
 
-> **Prometheus的查询表达式可以分为四种数据类型：**
-> **instant vector** 瞬时向量 - 它是指在同一时刻，抓取的所有度量指标数据。这些度量指标数据的key都是相同的，也即相同的时间戳；
-> **range vector** 范围向量 - 它是指在任何一个时间范围内，抓取的所有度量指标数据；
-> **scalar** 标量 - 一个简单的浮点值，标量浮点值可以直接写成形式；
-> **string** 字符串 - 字符串可以用单引号、双引号或者反引号表示；
+### 数据类型
 
-### 浮点文本
+- **Instant vector** 
 
-> 标量浮点值可以以文字整数或浮点数的格式写入
+  - 一组时间序列，包含每个时间序列的单个样本，所有样本共享相同的时间戳
+  - 当前时间戳下所有不同`label`的数据
 
-```
-[-+]?(
-      [0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?
-    | 0[xX][0-9a-fA-F]+
-    | [nN][aA][nN]
-    | [iI][nN][fF]
-)
+- **Range vector** - a set of time series containing a range of data points over time for each time series
 
-23
--2.43
-3.4e-9
-0x8f
--Inf
-NaN
-```
+  - 一组时间序列，包含每个时间序列随时间变化的一系列数据点
+  - 相当于多组**Instant vector** 
+
+- **Scalar** 
+
+  - 一个浮点数
+
+  - 标量浮点值可以以文字整数或浮点数的格式写入
+
+    ```
+    [-+]?(
+          [0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?
+        | 0[xX][0-9a-fA-F]+
+        | [nN][aA][nN]
+        | [iI][nN][fF]
+    )
+    # Examples
+    23
+    -2.43
+    3.4e-9
+    0x8f
+    -Inf
+    NaN
+    ```
+
+    
+
+- **String** 
+
+  - 不支持
 
 
 

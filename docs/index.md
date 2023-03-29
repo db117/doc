@@ -106,7 +106,7 @@ title: 导航
 
 &nbsp;[openjdk](http://openjdk.java.net/)
 &nbsp;[zTree](http://www.treejs.cn/v3/main.php#_zTreeInfo)
-&nbsp;[mybatis.plus](https://www.mybatis-plus.com/)
+&nbsp;[mybatis.plus]https://baomidou.com/)
 &nbsp;[echarts](https://echarts.baidu.com/index.html)
 &nbsp;[layui](https://www.layui.com/)
 &nbsp;[hutool](https://hutool.cn/docs/#/)
