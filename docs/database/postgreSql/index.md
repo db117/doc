@@ -55,3 +55,11 @@ ON favorites (user_id, menu_id, recipe_id) NULLS NOT DISTINCT;
 # 复制表 table_name 
 create table if not exists table_name_copy (like table_name including all );
 ```
+
+#### 查看当前用户是否有某个角色
+
+```
+# 查看当前用户是否有 pg_monitor 角色
+SELECT pg_has_role(current_user, 'pg_monitor', 'member');
+```
+
