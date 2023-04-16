@@ -33,6 +33,7 @@ title: 导航
 &nbsp;[leetcode rating ](https://zerotrac.github.io/leetcode_problem_rating/#/)
 &nbsp;[Leetcode Rating Predictor](https://lcpredictor.herokuapp.com/)
 &nbsp;[LCCN Predictor (lbao.site)](https://lccn.lbao.site/)
+&nbsp;[lc-rating](https://huxulm.github.io/lc-rating/)
 &nbsp;[ labuladong 算法]( https://labuladong.gitee.io/algo/)
 &nbsp;[CodeTop企业题库](https://codetop.cc/#/home)
 
