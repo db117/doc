@@ -14,6 +14,14 @@ FROM pg_catalog.pg_statio_user_tables
 ORDER BY pg_relation_size(relid) desc;
 ```
 
+当前数据库表数据行数
+
+```
+SELECT schemaname, relname, n_live_tup total
+FROM pg_stat_user_tables
+order by total desc;
+```
+
 
 
 ### 数据库视图

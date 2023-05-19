@@ -11,6 +11,18 @@ chmod ugo+r file1.txt
 chmod a+r file1.txt
 chmod 444 file1.txt
 
+# 文件file的所有者增加读和运行的权限
+chmod u+rx file 
+# 文件file的群组用户增加读的权限
+chmod g+r file 
+#文件file的其它用户移除读的权限
+chmod o-r file 
+# 文件file的群组用户增加读的权限，其它用户移除读的权限
+chmod g+r o-r file 
+# 文件file的所有用户增加运行的权限
+chmod +x file 
+#文件file的所有者分配读写和执行的权限，群组其它用户分配读的权限，其他用户没有任何权限
+chmod u=rwx,g=r,o=- file
 # 将目前目录下的所有文件与子目录皆设为任何人可读取
 chmod -R a+r *
 ```
@@ -20,14 +32,20 @@ chmod -R a+r *
 ```
 # 查看进程
 # 显示当前系统进程的列表 
-ps ax
+ps -ax
 # 显示当前系统进程详细列表以及进程用户
-ps aux 
+ps -aux 
 # 过滤具体进程（XXX为进程名称）
-ps ax|grep XXX | grep -v grep
+ps -ax|grep XXX | grep -v grep
+# 按 CPU 使用降序排列
+ps -aux --sort -pcpu
+# 表示按内存使用降序排列
+ps -aux --sort -pmem 
+# 以树形结构显示进程
+ps -axjf 
 
 # 获取进程id
-ps -A |grep "cmdname" | grep -v grep| awk '{print $1}'
+ps -A | grep "cmdname" | grep -v grep| awk '{print $1}'
 pgrep "cmdname"
 
 # 杀进程
@@ -49,14 +67,27 @@ ps -ef |grep "cmdname args"| grep -v grep | awk '{print $2}'| while read s;do ki
 # 一定要先检查一下，在 kill
 ps -C java -o pid,cmd |grep "cmdname args"| grep -v grep | awk '{print $1}'
 ps -C java -o pid,cmd |grep "cmdname args"| grep -v grep | awk '{print $1}'| while read s;do kill $s;done
+
+# 查询 java 命令的执行文件地址
+which java
 ```
+
+
 
 ### 文件
 
 ```
+# 当前文件夹大小
+du -sh
+# 当前文件夹以及子文件夹大小
+du -h
+
 # 批量删除空文件
 find . -type f -empty -delete
 find . -type f -size 0 -delete
+
+# 近 7天内访问过的.txt结尾的文件
+find -name "*.txt" -atime -7 
 
 ## 解压文件 #####
 # 压缩文件 file1 和目录 dir2 到 test.tar.gz
@@ -70,7 +101,7 @@ unzip -d /tmp/ ana.zip
 
 ```
 
-### 文本浏览
+#### 文本浏览
 
 ```
 # 显示文本内容
