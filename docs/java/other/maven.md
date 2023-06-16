@@ -23,6 +23,21 @@ mvn clean package --non-resolvable
 mvn clean package -P test
 ```
 
+pom配置
+
+```
+ 
+ <properties>
+		 <!--跳过checkstyle-->
+        <checkstyle.skip>true</checkstyle.skip>
+        <!--使用时间-->
+         <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd'T'HH-mm-ss</maven.build.timestamp.format>
+ </properties>
+```
+
+
+
 ## 其他
 
 #### 使用maven自动将源码打包并发布
@@ -45,7 +60,81 @@ mvn clean package -P test
 
 注意：在多项目构建中，将source-plugin置于顶层或parent的pom中并不会发挥作用，必须置于具体项目的pom中。
 
-  
+------
+
+
+
+####  获取git信息
+
+> 使用插件 [git-commit-id/git-commit-id-maven-plugin](https://github.com/git-commit-id/git-commit-id-maven-plugin)
+>
+> 5.0 开始不支持`jdk1.8`了，而且变了 `groupId`和 `artifactId`。
+
+
+
+```
+			<plugin>
+<!--                <groupId>pl.project13.maven</groupId>-->
+<!--                <artifactId>git-commit-id-plugin</artifactId>-->
+<!--                <version>4.0.5</version>-->
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>5.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <dateFormat>yyyyMMdd-HHmmss</dateFormat>
+                    <prefix>git</prefix>
+                    <verbose>true</verbose>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
+                    </generateGitPropertiesFilename>
+                </configuration>
+            </plugin>
+```
+
+
+
+默认的参数
+
+```
+git.tags=${git.tags}
+git.branch=${git.branch}
+git.local.branch.ahead=${git.local.branch.ahead}
+git.local.branch.behind=${git.local.branch.behind}
+git.dirty=${git.dirty}
+git.remote.origin.url=${git.remote.origin.url}
+  git.commit.id=${git.commit.id}
+  OR (depends on commitIdGenerationMode)
+  git.commit.id.full=${git.commit.id.full}
+git.commit.id.abbrev=${git.commit.id.abbrev}
+git.commit.id.describe=${git.commit.id.describe}
+git.commit.id.describe-short=${git.commit.id.describe-short}
+git.commit.user.name=${git.commit.user.name}
+git.commit.user.email=${git.commit.user.email}
+git.commit.message.full=${git.commit.message.full}
+git.commit.message.short=${git.commit.message.short}
+git.commit.time=${git.commit.time}
+git.closest.tag.name=${git.closest.tag.name}
+git.closest.tag.commit.count=${git.closest.tag.commit.count}
+
+git.build.user.name=${git.build.user.name}
+git.build.user.email=${git.build.user.email}
+git.build.time=${git.build.time}
+git.build.host=${git.build.host}
+git.build.version=${git.build.version}
+git.build.number=${git.build.number}
+git.build.number.unique=${git.build.number.unique}
+```
+
+------
+
+
 
 #### 版本号范围写法
 
@@ -61,6 +150,10 @@ mvn clean package -P test
 | [1.0,2.0]     | 1.0 <= x <= 2.0                                              |
 | (,1.0],[1.2,) | x <= 1.0 或 x >= 1.2。多个集是逗号分隔的                     |
 | (,1.1),(1.1,) | x ！ = 1.1                                                   |
+
+------
+
+
 
 #### 子项目中排除掉定义在Parent中的插件
 
@@ -81,13 +174,7 @@ mvn clean package -P test
 </plugin>
 ```
 
-#### 跳过checkstyle
-
-```
- <properties>
-        <checkstyle.skip>true</checkstyle.skip>
- </properties>
-```
+#### 
 
 #### 使用Maven运行main 方法
 
