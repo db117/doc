@@ -135,3 +135,11 @@ git pull不能默认将所有的tags拉下来。
 git fetch --tags
 ```
 
+
+
+#### 提示安全目录问题
+
+```
+git config --global --add safe.directory "*"
+```
+
