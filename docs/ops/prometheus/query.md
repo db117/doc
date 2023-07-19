@@ -37,6 +37,15 @@ sum(http_server_requests_seconds_max{method="GET"} @ 1679550911)
 rate(http_server_requests_seconds_max[5m] @ 1679550911)
 ```
 
+#### 特殊操作
+
+```
+# 当某个值不支持时不为null
+count(flink_jobmanager_job_uptime{job_name='name'}) or vector(-1)
+```
+
+
+
 ## 基础操作
 
 ### 数据类型
