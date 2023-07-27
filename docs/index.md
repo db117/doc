@@ -76,6 +76,7 @@ title: 导航
 ## 博客
 &nbsp;[一树一溪-mysql](https://www.bigspring.cn/)
 &nbsp;[小林coding](https://xiaolincoding.com/)
+&nbsp;[廖雪峰的官方网站 (liaoxuefeng.com)](https://www.liaoxuefeng.com/)
 
 
 ## 资源
@@ -127,6 +128,7 @@ title: 导航
 
 ## 论坛
 &nbsp;[v2ex](https://www.v2ex.com/)
+&nbsp;[SegmentFault 思否](https://segmentfault.com/)
 
 ## 其他
 &nbsp;[腾讯云](https://cloud.tencent.com/)

@@ -210,6 +210,22 @@ sed '4 a \\n'
 sed 'y/123/789/'
 ```
 
+#### 其他
+
+```
+# 打印全部环境变量
+env 
+# 打印指定变量
+echo $env_name
+# 设置变量
+export VARIABLE_NAME=value
+
+# 全局变量
+/etc/environment
+```
+
+
+
 #### 文本处理 awk
 
 **常用参数：**
