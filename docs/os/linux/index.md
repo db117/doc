@@ -98,6 +98,8 @@ tar -zxvf test.tar.gz
 tar -ztvf test.tar.gz 
 # 使用 -d 选项手动指定解压缩位置
 unzip -d /tmp/ ana.zip
+# 把 tar.gz 解压缩为 tar
+gzip -d file.tar.gz
 
 ```
 
