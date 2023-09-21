@@ -281,6 +281,70 @@ seq 9 | sed 'H;g' | awk -v RS='' '{for(i=1;i<=NF;i++)printf("%dx%d=%d%s", i, NR,
 
 
 
+
+
+### 系统参数
+
+#### ulimit
+
+> /etc/security/limits.conf
+>
+> 限制应用打开的文件数量
+>
+> 配置格式如下:
+> `<domain> <type> <item> <value>`
+>
+> <domain> 指定的用户或者组，可以使用通配符 * % 等
+> <type> 有soft，hard和-，soft指的是当前系统生效的设置值，软限制也可以理解为警告值。
+> hard表名系统中所能设定的最大值。soft的限制不能比hard限制高，用-表名同时设置了soft和hard的值。
+> <item> 设置项的名称
+> <value> 设置项的值
+
+可配置项
+
+```
+# - core - limits the core file size (KB)    限制内核文件的大小。
+# - data - max data size (KB)    最大数据大小
+# - fsize - maximum filesize (KB)    最大文件大小
+# - memlock - max locked-in-memory address space (KB)    最大锁定内存地址空间
+# - nofile - max number of open file descriptors 最大打开的文件数(以文件描叙符，file descripter计数) 
+# - rss - max resident set size (KB) 最大持久设置大小
+# - stack - max stack size (KB) 最大栈大小
+# - cpu - max CPU time (MIN)    最多CPU占用时间，单位为MIN分钟
+# - nproc - max number of processes 进程的最大数目
+# - as - address space limit (KB) 地址空间限制 
+# - maxlogins - max number of logins for this user    此用户允许登录的最大数目
+# - maxsyslogins - max number of logins on the system    系统最大同时在线用户数
+# - priority - the priority to run user process with    运行用户进程的优先级
+# - locks - max number of file locks the user can hold    用户可以持有的文件锁的最大数量
+# - sigpending - max number of pending signals
+# - msgqueue - max memory used by POSIX message queues (bytes)
+# - nice - max nice priority allowed to raise to values: [-20, 19] max nice优先级允许提升到值
+# - rtprio - max realtime pr iority
+```
+
+
+
+临时修改
+
+```
+# 调整最大限制数量
+ulimit -HSn 65536
+# 移除限制
+ulimit -c unlimited
+```
+
+永久修改，完后需要重新登录
+
+```
+* soft nofile 65536
+* hard nofile 65536
+```
+
+------
+
+
+
 ### 字符串变量操作
 
 > 特殊符合使用`\`进行转义
