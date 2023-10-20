@@ -294,11 +294,11 @@ seq 9 | sed 'H;g' | awk -v RS='' '{for(i=1;i<=NF;i++)printf("%dx%d=%d%s", i, NR,
 > 配置格式如下:
 > `<domain> <type> <item> <value>`
 >
-> <domain> 指定的用户或者组，可以使用通配符 * % 等
-> <type> 有soft，hard和-，soft指的是当前系统生效的设置值，软限制也可以理解为警告值。
+> `<domain>` 指定的用户或者组，可以使用通配符 * % 等
+> `<type>` 有soft，hard和-，soft指的是当前系统生效的设置值，软限制也可以理解为警告值。
 > hard表名系统中所能设定的最大值。soft的限制不能比hard限制高，用-表名同时设置了soft和hard的值。
-> <item> 设置项的名称
-> <value> 设置项的值
+> `<item>` 设置项的名称
+> `<value>` 设置项的值
 
 可配置项
 
@@ -322,8 +322,6 @@ seq 9 | sed 'H;g' | awk -v RS='' '{for(i=1;i<=NF;i++)printf("%dx%d=%d%s", i, NR,
 # - nice - max nice priority allowed to raise to values: [-20, 19] max nice优先级允许提升到值
 # - rtprio - max realtime pr iority
 ```
-
-
 
 临时修改
 
@@ -500,4 +498,3 @@ yum install bind-utils
 - **/run**：
 
   > 是一个临时文件系统，存储系统启动以来的信息。当系统重启时，这个目录下的文件应该被删掉或清除。如果你的系统上有 /var/run 目录，应该让它指向 run。
-

@@ -13,10 +13,10 @@
   "license": "ISC",
   "devDependencies": {
     "flexsearch": "^0.7.31",
-    "markdown-it": "^13.0.1",
-    "vitepress": "^1.0.0-alpha.47",
-    "vitepress-plugin-search": "^1.0.4-alpha.19",
-    "vue": "^3.2.47"
+    "markdown-it": "^13.0.2",
+    "vitepress": "^1.0.0-rc.22",
+    "vitepress-plugin-search": "^1.0.4-alpha.20",
+    "vue": "^3.3.4"
   },
   "dependencies": {
     "front-matter": "^4.0.2"
