@@ -29,6 +29,7 @@ title: 导航
 &nbsp;[javaguide](https://javaguide.cn/)
 &nbsp;[小林coding](https://xiaolincoding.com/)
 &nbsp;[CS-Notes](https://cyc2018.xyz/)
+&nbsp;[bugstack 虫洞栈](https://bugstack.cn/)
 
 ### 算法
 &nbsp;[leetcode rating ](https://zerotrac.github.io/leetcode_problem_rating/#/)
