@@ -20,14 +20,15 @@ title: 导航
 &nbsp;[stackoverflow](https://stackoverflow.com)
 
 ## 学习
-
 &nbsp;[图灵源码](http://git.tulingxueyuan.cn/user/login)
 &nbsp;[图灵学院](https://www.tulingxueyuan.cn/)
-&nbsp;[慕课网](https://www.imooc.com/)
-&nbsp;[菜鸟教程](https://www.runoob.com/)
 &nbsp;[知识星球](https://wx.zsxq.com/)
 &nbsp;[极客时间](https://time.geekbang.org/)
-
+&nbsp;[java-design-patterns](https://java-design-patterns.com/zh/)
+&nbsp;[advanced-java](https://doocs.github.io/advanced-java/#/)
+&nbsp;[javaguide](https://javaguide.cn/)
+&nbsp;[小林coding](https://xiaolincoding.com/)
+&nbsp;[CS-Notes](https://cyc2018.xyz/)
 
 ### 算法
 &nbsp;[leetcode rating ](https://zerotrac.github.io/leetcode_problem_rating/#/)
@@ -76,12 +77,10 @@ title: 导航
 
 ## 博客
 &nbsp;[一树一溪-mysql](https://www.bigspring.cn/)
-&nbsp;[小林coding](https://xiaolincoding.com/)
 &nbsp;[廖雪峰的官方网站 (liaoxuefeng.com)](https://www.liaoxuefeng.com/)
 
 
 ## 资源
-
 &nbsp;[maven仓库](https://mvnrepository.com/)
 &nbsp;[华为镜像](https://mirrors.huaweicloud.com/)
 &nbsp;[中科大镜像](http://mirrors.ustc.edu.cn/)
@@ -93,10 +92,6 @@ title: 导航
 &nbsp;[Mac毒 ](https://www.macdo.cn/)
 
 ## 文档
-&nbsp;[processon](https://www.processon.com/)
-&nbsp;[腾讯文档](https://docs.qq.com/desktop)
-&nbsp;[飞书文档](https://www.feishu.cn/space/home/)
-&nbsp;[石墨文档](https://shimo.im/desktop)
 &nbsp;[w3school](https://www.w3school.com.cn/)
 &nbsp;[linux文档](http://man.linuxde.net/)
 &nbsp;[redis文档](http://www.redis.cn/commands.html)
@@ -112,7 +107,6 @@ title: 导航
 &nbsp;[SQL-99 Complete, Really — SQL 99 (crate.io)](https://crate.io/docs/sql-99/en/latest/index.html)
 
 ## 开源软件
-
 &nbsp;[openjdk](http://openjdk.java.net/)
 &nbsp;[zTree](http://www.treejs.cn/v3/main.php#_zTreeInfo)
 &nbsp;[mybatis.plus](https://baomidou.com/)
@@ -132,10 +126,5 @@ title: 导航
 &nbsp;[SegmentFault 思否](https://segmentfault.com/)
 
 ## 其他
-&nbsp;[腾讯云](https://cloud.tencent.com/)
-&nbsp;[阿里云](https://cn.aliyun.com/)
-&nbsp;[亚马逊云](https://aws.amazon.com/cn/)
 &nbsp;[freenom](https://www.freenom.com/)
-&nbsp;[谷歌分析](https://analytics.google.com/analytics/web)
-&nbsp;[百度统计](https://tongji.baidu.com/)
 &nbsp;[Doug Lea's Workstation (oswego.edu)](http://gee.cs.oswego.edu/)
