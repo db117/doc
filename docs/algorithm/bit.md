@@ -108,6 +108,20 @@ for (int sub = s; sub > 0; sub = (sub - 1) & s) {
 for (int s = 0; s < (1 << n); s++) {
     // 处理 s 的逻辑
 }
+```
 
+#### Gosper's Hack
+
+> 枚举在最大 n 个bit位 ,中有 k 个bit为 1 的所有数
+>
+
+```
+int subset = (1 << k) - 1;
+while (subset < (1 << n)) {
+    // do something
+    int lb = subset & -subset;
+    int x = subset + lb;
+    subset = ((subset ^ x) / lb >> 2) | x;
+}
 ```
 
