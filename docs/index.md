@@ -82,6 +82,7 @@ title: 导航
 
 
 ## 资源
+&nbsp;[openjdk](https://jdk.java.net/archive/)
 &nbsp;[maven仓库](https://mvnrepository.com/)
 &nbsp;[华为镜像](https://mirrors.huaweicloud.com/)
 &nbsp;[中科大镜像](http://mirrors.ustc.edu.cn/)
