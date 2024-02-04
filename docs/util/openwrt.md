@@ -103,4 +103,71 @@ LuCI -> Applications
 
 
 
-## 
+## 小主机安装openwrt
+
+### 准备
+
+镜像刷入U盘工具  [Win32 Disk Imager download | SourceForge.net](https://sourceforge.net/projects/win32diskimager/)
+
+openwrt开源项目
+
+> [Releases · coolsnowwolf/lede (github.com)](https://github.com/coolsnowwolf/lede)
+>
+> 
+>
+> [immortalwrt/immortalwrt: An opensource OpenWrt variant for mainland China users. (github.com)](https://github.com/immortalwrt/immortalwrt)
+>
+> 有很多内置的软件源
+
+
+
+#### 安装
+
+- 把镜像刷入到U盘中
+
+- 插入小主机
+
+- 计入 `bios` 中设置 U盘启动
+
+- 使用网线，进入管理界面（默认密码一般为`password`）
+
+- 查找安装硬盘的盘符
+
+  ```
+  fdisk -l
+  ```
+
+- 把U盘中的系统刷入到小主机的硬盘中
+
+  ```
+  dd if=<要写入的镜像.img> of=<需要写入的硬盘,上一步查询出来的>
+  ```
+
+- 拔掉 U 盘，重启就使用硬盘中的系统进入了
+
+#### 旁路由设置
+
+- 在`网络`-`接口`的`常规设置`中给  `LAN` 网络接口设置一个和现有局域网同网段的静态 IP 地址，注意不要和现有设备的 IP 地址冲突
+- 将 LAN 网络接口的`默认网关`设为主路由的 IP 地址
+- 在`高级设置`中找到`使用自定义的 DNS 服务器`设为主路由的 IP 地址
+- 在`DHCP 服务器`中勾选`忽略此接口`
+- 在`网络`-`防火墙`中，关闭`SYN-flood 防御`，点击`保存并应用`
+- 重启
+
+客户端接入
+
+- 设置 IP 为静态
+- 设置 IP 地址为不冲突的路由器网段的地址
+- 设置路由器（网关地址）为旁路由 IP
+- 设置 DNS 为主路由 IP
+
+## app 配置
+
+#### openclash
+
+内核下载
+
+> Dev 内核下载: https://github.com/vernesong/OpenClash/releases/tag/Clash
+> Tun 内核下载: https://github.com/vernesong/OpenClash/releases/tag/TUN-Premium
+> Tun 游戏内核: https://github.com/vernesong/OpenClash/releases/tag/TUN
+
