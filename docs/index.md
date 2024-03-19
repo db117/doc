@@ -30,10 +30,10 @@ title: 导航
 &nbsp;[小林coding](https://xiaolincoding.com/)
 &nbsp;[CS-Notes](https://cyc2018.xyz/)
 &nbsp;[bugstack 虫洞栈](https://bugstack.cn/)
+&nbsp;[Java 全栈知识体系 (pdai.tech)](https://pdai.tech/)
 
 ### 算法
 &nbsp;[leetcode rating ](https://zerotrac.github.io/leetcode_problem_rating/#/)
-&nbsp;[Leetcode Rating Predictor](https://lcpredictor.herokuapp.com/)
 &nbsp;[LCCN Predictor (lbao.site)](https://lccn.lbao.site/)
 &nbsp;[lc-rating](https://huxulm.github.io/lc-rating/)
 &nbsp;[ labuladong 算法]( https://labuladong.gitee.io/algo/)
