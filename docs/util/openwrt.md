@@ -161,7 +161,7 @@ openwrt开源项目
 - 设置路由器（网关地址）为旁路由 IP
 - 设置 DNS 为主路由 IP
 
-## app 配置
+### app 配置
 
 #### openclash
 
@@ -171,3 +171,32 @@ openwrt开源项目
 > Tun 内核下载: https://github.com/vernesong/OpenClash/releases/tag/TUN-Premium
 > Tun 游戏内核: https://github.com/vernesong/OpenClash/releases/tag/TUN
 
+
+
+### overlay分区（软件包）扩容方法
+
+> 参考 [eSir OpenWrt固件/overlay分区（软件包）扩容方法 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/652959325)
+
+- fdisk -l 
+  - 记录磁盘的挂载点的名称  /dev/nvme0n1 (后面要用)
+- opkg install cfdisk
+  - 安装磁盘管理工具
+- cfdisk /dev/nvme0n1
+  - 使用工具进入要扩展的磁盘
+- 选中 Free space ，调到 New 选项，新建分区
+  - 选择分区大小
+- 调到 Write 选项，回车，再输入 yes 回车确认。
+- fdisk -l
+  - 查看新添加的分区
+- mkfs.ext4 /dev/nvme0n1p3(名字根据自己的来)
+  - 格式化新的分区
+- mkdir /mnt/expansion_space 
+  - 新建的目录名称随意，根据自己喜好
+- mount /dev/nvme0n1p3 /mnt/expansion_space/
+  - 挂载之前创建的 nvme0n1p3 分区
+  - 使用 ls -alh /mnt/expansion_space/ 命令检查，有 lost+found 这个目录代表挂载成功
+- cp -r /overlay/* /mnt/expansion_space/ 
+  - 将原 /overlay 分区文件，全部复制到新建空间的挂载目录
+- 进入网页端，添加挂载点
+- 勾选启用挂载点，挂载为overlay，保存应用
+- 重启路由器
