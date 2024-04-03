@@ -224,6 +224,9 @@ export VARIABLE_NAME=value
 
 # 全局变量
 /etc/environment
+
+# 端口占用
+netstat -tunlp | grep 端口号
 ```
 
 
