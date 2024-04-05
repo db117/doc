@@ -28,8 +28,8 @@ title: Spring IOC
 
 - Spring IOC 加载流程
 
-<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:750px; height:275px;" src="https://www.processon.com/embed/610d0cebe0b34d0700157fe0"></iframe>
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:750px; height:275px;" src="https://www.processon.com/embed/65fe8fa243192b2dea1855ac"></iframe>
 
 - Bean 的创建流程
 
-<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:750px; height:275px;" src="https://www.processon.com/embed/61136f166376891eb956d475"></iframe>
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:750px; height:275px;" src="https://www.processon.com/embed/65fecac2be850903c5231e0c"></iframe>

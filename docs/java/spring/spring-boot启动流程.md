@@ -64,7 +64,7 @@ org.springframework.boot.loader.LaunchedURLClassLoader#loadClass
 
 > 主要启动流程都在启动类main中。
 
-<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/60f6a44be401fd09d480564a"></iframe>
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/6602795e878a3f700d429747"></iframe>
 
 **run**
 
@@ -216,7 +216,7 @@ org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext#
 
 > 默认大于配置。springboot核心功能。
 
-<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/610120817d9c083494ed059a"></iframe>
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/66026df9188e2649fda2eefa"></iframe>
 
 **EnableAutoConfiguration**
 
