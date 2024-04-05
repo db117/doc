@@ -45,10 +45,9 @@ title: AbstractQueuedSynchronizer相关
 
 - **waitStatus**：节点状态
   - 0：初始状态，表示当前节点在队列中，等待获取锁
-  - **CANCELLED**：1。表示当前线程被取消
-  - **SIGNAL**：-1。表示当前节点的后续节点需要被唤醒。
-  - **CONDITION**：-2。表示当前节点在等待 condition，即在等待队列中。
-  - **PROPAGATE**：-3。表示后续的共享节点可以继续执行。
+  - **CANCELLED**：0x80000000。表示当前线程被取消
+  - **WAITING**：1。表示当前节点的后续节点需要被唤醒。
+  - **CONDITION**：2。表示当前节点在等待 condition，即在等待队列中。
 - prev：前置节点
 - next：后置节点
 - thread：节点代表的线程
@@ -56,7 +55,11 @@ title: AbstractQueuedSynchronizer相关
 
 #### 节点状态变更流程图
 
-<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/61b076ac0791297e6083896a"></iframe>
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/61b076ac0791297e6083896a"></iframe>
+
+jdk17
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;"  src="https://www.processon.com/embed/660ff9c5a25e0014b9491ef5?cid=660ff9c5a25e0014b9491ef8"></iframe>
 
 #### 同步等待队列
 
@@ -98,6 +101,8 @@ title: AbstractQueuedSynchronizer相关
 
 <iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/61a9d9b10791293428031a40"></iframe>
 
+jdk17
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:245px;" src="https://www.processon.com/embed/660fbe3e6809f87e7d08a31a"></iframe>
 ------
 
 ## Condition
