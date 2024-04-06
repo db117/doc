@@ -61,6 +61,10 @@ jdk17
 
 <iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;"  src="https://www.processon.com/embed/660ff9c5a25e0014b9491ef5?cid=660ff9c5a25e0014b9491ef8"></iframe>
 
+jdk17 获取锁的核心方法
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/6610fd806809f87e7d097eb7"></iframe>
+
 #### 同步等待队列
 
 > AQS当中的同步等待队列也称CLH队列，CLH队列是Craig、Landin、Hagersten三人发明
