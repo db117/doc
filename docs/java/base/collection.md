@@ -595,6 +595,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
 - 底层是基于数组存储元素的
 - 元素按照优选级顺序存储，优先级是通过Comparable的compareTo方法来实现的（自然排序）
 - 其只会堵塞消费者，**不会堵塞生产者，数组会不断扩容**，使用时要谨慎。
+- 在扩容时会先释放锁，保证其他元素可以正常出队，然后使用 CAS 操作确保只有一个线程可以执行扩容逻辑，在扩容结束时会从新获取锁替换数组并复制数据
 - 使用 `contains` `remove`方法需要遍历所有值。
 
 ```
