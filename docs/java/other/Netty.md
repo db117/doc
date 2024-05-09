@@ -24,3 +24,11 @@ title: netty 主要流程
 
 <iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/66168933cb0f485d274d0d3c"></iframe>
 
+### 使用 Netty 的中间件
+
+- Rocketmq
+- Spring WebFlux
+- Spring Cloud Gateway
+- Jraft
+- XXL-Job
+- Redisson
