@@ -49,7 +49,15 @@ pm.environment.set("key", value);
 #### 生成sign
 
 ```javascript
-var accessToken=CryptoJS.MD5(pivateKey+date+JSON.stringify(param.biz_params)).toString();
+
+var crypto=require('crypto-js');
+# md5
+var accessToken=crypto.MD5(s).toString();
+
+# base64
+var btoa= require('btoa');
+var signature=btoa(signatureStr);
+ 
 ```
 
 #### 添加header
