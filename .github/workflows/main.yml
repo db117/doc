@@ -13,7 +13,7 @@ jobs:
           npm run docs:build
 
       - name: Deploy To github pages
-        uses: JamesIves/github-pages-deploy-action@4.1.1
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: master
           folder: docs/.vitepress/dist
