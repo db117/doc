@@ -20,7 +20,6 @@ title: 导航
 &nbsp;[stackoverflow](https://stackoverflow.com)
 
 ## 学习
-&nbsp;[图灵源码](http://git.tulingxueyuan.cn/user/login)
 &nbsp;[图灵学院](https://www.tulingxueyuan.cn/)
 &nbsp;[知识星球](https://wx.zsxq.com/)
 &nbsp;[极客时间](https://time.geekbang.org/)
