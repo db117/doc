@@ -29,6 +29,30 @@ org.mockito.internal.stubbing.defaultanswers.ReturnsEmptyValues#returnValueFor
 
 
 
+#### Mybatis-Plus 测试
+
+> 在使用 Mybatis-Plus 的时候，在使用了lambdaQuery()的时候会报错。
+
+解决 `lambdaQuery()`报错的问题。
+
+```
+ TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), TrafficPackInfo.class); 
+```
+
+解决`@InjectMocks`后`mapper`的问题，`mock`一个`mapper`出来，在反射放进去。
+
+```
+BeanUtil.setFieldValue(service, "baseMapper", baseMapper);
+```
+
+解决`@spy`后`mapper`的问题。
+
+```
+when(spyService.getBaseMapper()).thenReturn(mapper);
+```
+
+
+
 #### 常用api
 
 - mock
@@ -58,7 +82,7 @@ org.mockito.internal.stubbing.defaultanswers.ReturnsEmptyValues#returnValueFor
                     .doReturn(430L, new byte[0], "qix")
                     .when(mock)
                     .objectReturningMethodNoArgs();
-    
+      
             assertThat(mock.objectReturningMethodNoArgs()).isEqualTo("foo");
             assertThat(mock.objectReturningMethodNoArgs()).isEqualTo("bar");
             try {
@@ -66,7 +90,7 @@ org.mockito.internal.stubbing.defaultanswers.ReturnsEmptyValues#returnValueFor
                 fail("exception not raised");
             } catch (RuntimeException expected) {
             }
-    
+      
             assertThat(mock.objectReturningMethodNoArgs()).isEqualTo(430L);
             assertThat(mock.objectReturningMethodNoArgs()).isEqualTo(new byte[0]);
             assertThat(mock.objectReturningMethodNoArgs()).isEqualTo("qix");
@@ -83,10 +107,10 @@ org.mockito.internal.stubbing.defaultanswers.ReturnsEmptyValues#returnValueFor
        doNothing().
        doThrow(new RuntimeException())
        .when(mock).returnVoidMethod();
-    
+          
        // 第一次调用，什么都没有执行
        mock.returnVoidMethod();
-    
+          
        // 第二次抛出异常
        mock.returnVoidMethod();
     ```
@@ -113,10 +137,10 @@ org.mockito.internal.stubbing.defaultanswers.ReturnsEmptyValues#returnValueFor
        verify(mock, after(100)).someMethod();
        // 100ms 内，被调用 1 次
        verify(mock, after(100).times(1)).someMethod();
-    
+          
        // 100ms 内，被调用 2 次
        verify(mock, after(100).times(2)).someMethod();
-    
+          
        // 100ms 内，被调用 0 次
        verify(mock, after(100).never()).someMethod();
     ```
@@ -132,7 +156,7 @@ org.mockito.internal.stubbing.defaultanswers.ReturnsEmptyValues#returnValueFor
        mock.foo();
        verify(mock, after(1000)).foo();
        // 等 1000 ms
-    
+          
        //2.
        mock.foo();
        verify(mock, timeout(1000)).foo();
@@ -179,14 +203,15 @@ org.mockito.internal.stubbing.defaultanswers.ReturnsEmptyValues#returnValueFor
 > 在每一个插桩的方法都有一个栈来保存方法执行的参数，参数捕捉就是直接获取栈顶的数据。
 
 
-
-         @Captor ArgumentCaptor<Person> captor;
+```
+@Captor ArgumentCaptor<Person> captor;
          
-         // when
-         createPerson("Wes", "Williams");
+// when
+createPerson("Wes", "Williams");
             
-        // then
-        ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
-        verify(peopleRepository).save(captor.capture());
-        assertEquals("Wes", captor.getValue().getName());
-        assertEquals("Williams", captor.getValue().getSurname());
+// then
+ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
+verify(peopleRepository).save(captor.capture());
+assertEquals("Wes", captor.getValue().getName());
+assertEquals("Williams", captor.getValue().getSurname());
+```
