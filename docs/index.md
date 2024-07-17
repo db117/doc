@@ -91,6 +91,7 @@ title: 导航
 &nbsp;[html素材](http://www.htmlsucai.com)
 &nbsp;[homebrew](https://brew.sh/)
 &nbsp;[Mac毒 ](https://www.macdo.cn/)
+&nbsp;[镜像 huggingface.co 域名 ](https://hf-mirror.com/)
 
 ## 文档
 &nbsp;[w3school](https://www.w3school.com.cn/)
