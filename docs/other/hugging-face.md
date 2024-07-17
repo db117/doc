@@ -2,7 +2,7 @@
 title: hugging face
 ---
 
-### 链接替换为国内镜像
+### LM-Studio替换为国内镜像
 
 进入安装目录
 
