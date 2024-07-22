@@ -4,7 +4,7 @@ export default {
 
 	'/java/': scanDir('java'),
 	'/os/': scanDir('os'),
-	'/AI/': scanDir('AI'),
+	'/ai/': scanDir('ai'),
 	'/database/': scanDir('database'),
 	'/ops/': scanDir('ops'),
 	'/other/': scanDir('other'),
