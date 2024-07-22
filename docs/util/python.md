@@ -18,3 +18,22 @@ trusted-host = pypi.tuna.tsinghua.edu.cn
 - 中国科学技术大学 : https://pypi.mirrors.ustc.edu.cn/simple
 - 豆瓣：http://pypi.douban.com/simple/
 - 阿里云：http://mirrors.aliyun.com/pypi/simple/
+
+
+
+### poetry 镜像
+
+安装依赖
+
+```
+poetry self add poetry-plugin-pypi-mirror
+```
+
+新建或修改配置文件config.toml，增加如下内容
+(该toml文件路径是：Linux系统在`~/.config/pypoetry/`，Windows在`%APPDATA%\pypoetry\`，Mac在`~/Library/Preferences/pypoetry/`)
+
+```
+[plugins]
+[plugins.pypi_mirror]
+url = "https://mirrors.cloud.tencent.com/pypi/simple/"
+```
