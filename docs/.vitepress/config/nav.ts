@@ -1,6 +1,6 @@
 const nav = [
 	{ text: '首页', link: '/' },
-	{ text: 'AI', link: '/AI/' },
+	{ text: 'AI', link: '/ai/' },
 	{ text: 'database', link: '/database/' },
 	{ text: 'java', link: '/java/' },
 	{ text: 'ops', link: '/ops/' },

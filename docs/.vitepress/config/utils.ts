@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path_ from 'path'
-var fm = require('front-matter')
+import fm from 'front-matter'
 
 const { resolve } = path_
 
@@ -68,7 +68,7 @@ function translateDir(path: string) {
  * @returns 
  */
 function filterFile(item: string) {
-	return item.indexOf('.') === -1 ||( item.endsWith('.md')&&item!="index.md");
+	return item.indexOf('.') === -1 || (item.endsWith('.md') && item != "index.md");
 }
 /**
  * 获取文件标题
