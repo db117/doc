@@ -36,9 +36,47 @@ pom配置
  </properties>
 ```
 
-
+### 
 
 ## 其他
+
+#### 优雅的替换第三方依赖中的类
+
+在项目中需要依赖其他第三方的jar包，但有时需要扩展第三方jar的功能，或者修复依赖中已知还未修复的bug，但碰到过很多种情况，第三方类库中并没有提供对应的扩展点导致无法优雅的使用继承等方法对代码进行改造。
+
+特别是针对与`jar`中还有验签的情况下，直接在**本项目中添加一个限定名一样的类是会报异常的**。
+
+添加`maven-dependency-plugin`，在打包的时候把需要替换jar里面的类（**要排除被替换的类）**copy到当前项目的`classes`中。
+
+```
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-dependency-plugin</artifactId>
+    <executions>
+       <execution>
+          <id>unpack</id>
+          <phase>package</phase>
+          <goals>
+             <goal>unpack</goal>
+          </goals>
+          <configuration>
+             <artifactItems>
+                <artifactItem>
+                   <groupId>com.azure</groupId>
+                   <artifactId>azure-core</artifactId>
+                   <version>1.48.0</version>
+                   <overWrite>false</overWrite>
+                   <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                   <excludes>**/KeyCredentialPolicy.class</excludes>
+                </artifactItem>
+             </artifactItems>
+          </configuration>
+       </execution>
+    </executions>
+</plugin>
+```
+
+
 
 #### 使用maven自动将源码打包并发布
 
@@ -174,7 +212,7 @@ git.build.number.unique=${git.build.number.unique}
 </plugin>
 ```
 
-#### 
+
 
 #### 使用Maven运行main 方法
 

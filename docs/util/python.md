@@ -16,8 +16,8 @@ trusted-host = pypi.tuna.tsinghua.edu.cn
 ### 其他国内镜像源
 
 - 中国科学技术大学 : https://pypi.mirrors.ustc.edu.cn/simple
-- 豆瓣：http://pypi.douban.com/simple/
-- 阿里云：http://mirrors.aliyun.com/pypi/simple/
+- 豆瓣：https://pypi.douban.com/simple/
+- 阿里云：https://mirrors.aliyun.com/pypi/simple/
 
 
 
