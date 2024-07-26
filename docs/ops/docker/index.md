@@ -117,13 +117,32 @@ docker run -p 3306:3306  --restart=always --name mymysql -v $PWD/conf:/etc/mysql
 
 ### 镜像
 
+docker desktop 配置
+
+```
+{
+  "builder": {
+    "gc": {
+      "defaultKeepStorage": "20GB",
+      "enabled": true
+    }
+  },
+  "experimental": false,
+  "registry-mirrors": [
+    "https://registry.docker-cn.com",
+    "https://docker.mirrors.ustc.edu.cn",
+    "http://hub-mirror.c.163.com"
+  ]
+}
+```
+
 *		Docker中国区官方镜像
     https://registry.docker-cn.com
+    
 *		网易
     http://hub-mirror.c.163.com
+    
 *		ustc
     https://docker.mirrors.ustc.edu.cn
-*		中国科技大学
-    https://docker.mirrors.ustc.edu.cn
-   
+    
      
