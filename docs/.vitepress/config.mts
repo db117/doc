@@ -22,6 +22,6 @@ export default defineConfig({
   description: "文档",
   head: head,
   ignoreDeadLinks: true,
-  lastUpdated: true,
+  // lastUpdated: true,
   themeConfig: themeConfig
 })
