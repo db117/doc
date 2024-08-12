@@ -171,3 +171,25 @@ git push origin --force --tags
 
 ```
 
+
+
+#### 只使用某些文件夹
+
+```
+# 1. 克隆仓库，但不检出
+git clone --no-checkout https://github.com/user/repo.git
+
+# 2. 进入仓库目录
+cd repo
+
+# 3. 初始化 sparse-checkout 配置
+git sparse-checkout init --cone
+
+# 4. 设置需要检出的目录路径 (假设是 'folderA')，到这一步已经把文件弄出来了
+git sparse-checkout set folderA
+
+# 5. 更新工作副本
+git checkout main # 或其他分支名
+
+```
+
