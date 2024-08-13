@@ -15,12 +15,9 @@ title: 导航
 &nbsp;[谷歌](https://www.google.com/)
 &nbsp;[bing](https://cn.bing.com/)
 &nbsp;[维基百科](https://zh.wikipedia.org)
-&nbsp;[秘迹](https://mijisou.com)
-&nbsp;[magi]( https://magi.com/)
 &nbsp;[stackoverflow](https://stackoverflow.com)
 
 ## 学习
-&nbsp;[图灵学院](https://www.tulingxueyuan.cn/)
 &nbsp;[知识星球](https://wx.zsxq.com/)
 &nbsp;[极客时间](https://time.geekbang.org/)
 &nbsp;[java-design-patterns](https://java-design-patterns.com/zh/)
@@ -47,10 +44,21 @@ title: 导航
 &nbsp;[leetcode](https://leetcode-cn.com/u/db117/)
 &nbsp;[codeforces](https://codeforces.com/)
 
+## AI
+&nbsp;[Poe](https://poe.com/)
+&nbsp;[ollama](https://ollama.com/)
+&nbsp;[huggingface](https://huggingface.co/)
+&nbsp;[镜像 huggingface ](https://hf-mirror.com/)
+&nbsp;[Berkeley Function Calling Leaderboard (aka Berkeley Tool Calling Leaderboard)](https://gorilla.cs.berkeley.edu/leaderboard.html)
+&nbsp;[langchain](https://python.langchain.com/)
+&nbsp;[Prompt Engineering Guide ](https://www.promptingguide.ai/)
+&nbsp;[Spring AI](https://docs.spring.io/spring-ai/reference/index.html)
+&nbsp;[OpenAI API](https://platform.openai.com/docs/overview)
+
+
 ## 工具
 &nbsp;[油猴脚本](https://greasyfork.org/zh-CN/scripts)
 &nbsp;[sleazyfork](https://sleazyfork.org/zh-CN/scripts)
-&nbsp;[idea插件](http://plugins.jetbrains.com/)
 &nbsp;[potplayer](https://potplayer.daum.net/?lang=zh_CN)
 &nbsp;[来此加密](https://letsencrypt.osfipin.com/)
 &nbsp;[typora](https://typora.io/)
@@ -62,10 +70,7 @@ title: 导航
 &nbsp;[gceasy 分析 GC](https://gceasy.io/)
 &nbsp;[彩云翻译]( https://fanyi.caiyunapp.com/#/ )
 &nbsp;[百度翻译](https://fanyi.baidu.com/)
-&nbsp;[oktools](https://oktools.net/)
 &nbsp;[在线转换yaml](https://www.toyaml.com/index.html)
-&nbsp;[grok调试](http://grokdebug.herokuapp.com/)
-&nbsp;[ping工具](http://port.ping.pe/)
 &nbsp;[bejson工具](https://www.bejson.com/)
 &nbsp;[jwt](https://jwt.io/)
 &nbsp;[sojson](https://www.sojson.com/)
@@ -73,7 +78,6 @@ title: 导航
 &nbsp;[站长工具](http://tool.chinaz.com/)
 &nbsp;[变量名生成](https://unbug.github.io/codelf/)
 &nbsp;[开源中国在线工具](http://tool.oschina.net/)
-&nbsp;[极客导航](https://www.jikedaohang.com)
 
 ## 博客
 &nbsp;[一树一溪-mysql](https://www.bigspring.cn/)
@@ -87,16 +91,12 @@ title: 导航
 &nbsp;[中科大镜像](http://mirrors.ustc.edu.cn/)
 &nbsp;[阿里云maven](https://maven.aliyun.com/mvn/guide)
 &nbsp;[dockerHub](https://hub.docker.com/)
-&nbsp;[msdn](https://msdn.itellyou.cn/)
-&nbsp;[html素材](http://www.htmlsucai.com)
+&nbsp;[msdn](https://next.itellyou.cn)
 &nbsp;[homebrew](https://brew.sh/)
 &nbsp;[Mac毒 ](https://www.macdo.cn/)
-&nbsp;[镜像 huggingface.co 域名 ](https://hf-mirror.com/)
 
 ## 文档
 &nbsp;[w3school](https://www.w3school.com.cn/)
-&nbsp;[linux文档](http://man.linuxde.net/)
-&nbsp;[redis文档](http://www.redis.cn/commands.html)
 &nbsp;[elasticsearch](https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html)
 &nbsp;[docker](https://docs.docker.com/engine/reference/commandline/docker/)
 &nbsp;[k8s文档](https://kubernetes.io/zh/docs/home/)
@@ -104,28 +104,21 @@ title: 导航
 &nbsp;[kubectl命令行](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
 &nbsp;[npmjs](https://docs.npmjs.com/)
 &nbsp;[Web 开发技术 | MDN (mozilla.org)](https://developer.mozilla.org/zh-CN/docs/Web)
-&nbsp;[ Microsoft Docs](https://docs.microsoft.com/zh-cn/)
 &nbsp;[Java Documentation (oracle.com)](https://docs.oracle.com/en/java/index.html)
 &nbsp;[SQL-99 Complete, Really — SQL 99 (crate.io)](https://crate.io/docs/sql-99/en/latest/index.html)
 
 ## 开源软件
 &nbsp;[openjdk](http://openjdk.java.net/)
-&nbsp;[zTree](http://www.treejs.cn/v3/main.php#_zTreeInfo)
 &nbsp;[mybatis.plus](https://baomidou.com/)
-&nbsp;[echarts](https://echarts.baidu.com/index.html)
-&nbsp;[layui](https://www.layui.com/)
+&nbsp;[echarts](https://echarts.js.cn/zh/index.html)
+&nbsp;[layui](https://layui.dev/)
 &nbsp;[hutool](https://hutool.cn/docs/#/)
-&nbsp;[jsoup](https://jsoup.org/)
 &nbsp;[spring](http://spring.io/)
 &nbsp;[arthas](https://alibaba.github.io/arthas/index.html)
 &nbsp;[mybatis](https://blog.mybatis.org/)
 &nbsp;[travis](https://travis-ci.org)
 &nbsp;[visualVM](https://visualvm.github.io/?Java_VisualVM)
-&nbsp;[jsoup](https://jsoup.org/)
 
-## 论坛
-&nbsp;[v2ex](https://www.v2ex.com/)
-&nbsp;[SegmentFault 思否](https://segmentfault.com/)
 
 ## 其他
 &nbsp;[freenom](https://www.freenom.com/)
