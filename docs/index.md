@@ -54,6 +54,8 @@ title: 导航
 &nbsp;[Prompt Engineering Guide ](https://www.promptingguide.ai/)
 &nbsp;[Spring AI](https://docs.spring.io/spring-ai/reference/index.html)
 &nbsp;[OpenAI API](https://platform.openai.com/docs/overview)
+&nbsp;[LangChain4j](https://docs.langchain4j.dev/)
+
 
 
 ## 工具
