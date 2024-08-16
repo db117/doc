@@ -55,6 +55,7 @@ title: 导航
 &nbsp;[Spring AI](https://docs.spring.io/spring-ai/reference/index.html)
 &nbsp;[OpenAI API](https://platform.openai.com/docs/overview)
 &nbsp;[LangChain4j](https://docs.langchain4j.dev/)
+&nbsp;[aishort prompt](https://www.aishort.top/)
 
 
 
