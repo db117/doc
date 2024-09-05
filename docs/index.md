@@ -27,6 +27,7 @@ title: 导航
 &nbsp;[CS-Notes](https://cyc2018.xyz/)
 &nbsp;[bugstack 虫洞栈](https://bugstack.cn/)
 &nbsp;[Java 全栈知识体系 (pdai.tech)](https://pdai.tech/)
+&nbsp;[面试鸭 ](https://www.mianshiya.com/)
 
 ### 算法
 &nbsp;[leetcode rating ](https://zerotrac.github.io/leetcode_problem_rating/#/)
