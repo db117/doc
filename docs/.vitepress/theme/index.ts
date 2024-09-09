@@ -3,7 +3,7 @@ import {h} from 'vue'
 import type {Theme} from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import './style.css'
-import mermaidComponent from "./mermaidComponent.vue"
+
 
 export default {
   extends: DefaultTheme,
@@ -14,6 +14,6 @@ export default {
   },
   enhanceApp({ app, router, siteData }) {
     // ...
-    app.component(mermaidComponent)
+
   }
 } satisfies Theme
