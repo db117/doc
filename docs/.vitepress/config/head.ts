@@ -4,7 +4,7 @@ const head = [
             var _hmt = _hmt || [];
             (function() {
             var hm = document.createElement("script");
-            hm.src = "https://hm.baidu.com/hm.js?61e2d16dac6a568e22f28ee4974c119a";
+            hm.src = "https://hm.baidu.com/hm.js?32d81e1cc669a3aef7da8deccdd959ef";
             var s = document.getElementsByTagName("script")[0]; 
             s.parentNode.insertBefore(hm, s);
             })();

@@ -1,7 +1,7 @@
-import { defineConfig } from 'vitepress'
+import {defineConfig} from 'vitepress'
 import themeConfig from './config/themeConfig';
 import head from './config/head'
-
+import mm from 'markdown-it-diagram'
 
 
 // module.exports = {
@@ -23,5 +23,11 @@ export default defineConfig({
   head: head,
   ignoreDeadLinks: true,
   // lastUpdated: true,
-  themeConfig: themeConfig
+  themeConfig: themeConfig,
+  markdown: {
+    config: (md) => {
+      // 使用更多的 Markdown-it 插件！
+      md.use(mm)
+    }
+  }
 })
