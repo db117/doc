@@ -49,6 +49,18 @@ title: Excel 公式
 =ROUND(F4,2)
 ```
 
+
+
+### 数据引用
+
+```
+# 列转行，行转列
+=TRANSPOSE(A2:A12)
+=IF(TRANSPOSE(sheet1!B2:B12)="","",TRANSPOSE(sheet1!B2:B12))
+```
+
+
+
 #### 引用其他工作表的单元格
 
 1. **使用工作表名称**:
