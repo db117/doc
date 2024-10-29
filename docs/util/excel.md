@@ -7,6 +7,7 @@ title: Excel 公式
 ```
 # 字符串拼接
 =A4 & A5 & “text”
+=CONCAT("","")
 
 
 ```
@@ -57,6 +58,12 @@ title: Excel 公式
 # 列转行，行转列
 =TRANSPOSE(A2:A12)
 =IF(TRANSPOSE(sheet1!B2:B12)="","",TRANSPOSE(sheet1!B2:B12))
+
+# 当前列的某一行
+=INDIRECT(ADDRESS(1,COLUMN()))
+# 当前行的某一列
+=INDIRECT("M"&ROW())
+
 ```
 
 
