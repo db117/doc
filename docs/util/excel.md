@@ -64,6 +64,9 @@ title: Excel 公式
 # 当前行的某一列
 =INDIRECT("M"&ROW())
 
+# 行列转换（放在区域的左上角，拉倒右下角）
+=INDEX($A$1:$C$3, COLUMN(A1), ROW(A1))
+
 ```
 
 
