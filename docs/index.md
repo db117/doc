@@ -62,6 +62,7 @@ title: 导航
 
 ## 工具
 &nbsp;[mermaid live](https://mermaid.live/edit)
+&nbsp;[icraft 架构图](https://icraft.gantcloud.com/editor)
 &nbsp;[油猴脚本](https://greasyfork.org/zh-CN/scripts)
 &nbsp;[sleazyfork](https://sleazyfork.org/zh-CN/scripts)
 &nbsp;[potplayer](https://potplayer.daum.net/?lang=zh_CN)
