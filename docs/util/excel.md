@@ -9,6 +9,12 @@ title: Excel 公式
 =A4 & A5 & “text”
 =CONCAT("","")
 
+# 替换字符串
+=SUBSTITUTE(A1, "1", "")
+# 替换多个字符串
+=SUBSTITUTE(=SUBSTITUTE(A1, "1", ""), "2", "")
+# 替换字符串为特殊符号
+=SUBSTITUTE(A1, """", CHAR(10))
 
 ```
 
