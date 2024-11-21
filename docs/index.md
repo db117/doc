@@ -83,6 +83,7 @@ title: 导航
 &nbsp;[站长工具](http://tool.chinaz.com/)
 &nbsp;[变量名生成](https://unbug.github.io/codelf/)
 &nbsp;[开源中国在线工具](http://tool.oschina.net/)
+&nbsp;[每日更新IP段](https://ispip.clang.cn/)
 
 ## 博客
 &nbsp;[一树一溪-mysql](https://www.bigspring.cn/)

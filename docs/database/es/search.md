@@ -164,6 +164,8 @@ POST _render/template
 
 执行模版
 
+
+
 ```
 GET my-index/_search/template
 {
