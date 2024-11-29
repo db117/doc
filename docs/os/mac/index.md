@@ -47,4 +47,3 @@ defaults write com.apple.finder AppleShowAllFiles -bool true
 # 恢复隐藏
 defaults write com.apple.finder AppleShowAllFiles -bool false
 ```
-

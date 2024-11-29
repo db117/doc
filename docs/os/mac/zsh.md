@@ -70,3 +70,17 @@ upgrade_oh_my_zsh
    plugins=( [plugins...] zsh-syntax-highlighting)
    ```
 
+### 设置代理
+
+```
+alias proxy="
+    export http_proxy=http://127.0.0.1:10809;
+    export https_proxy=http://127.0.0.1:10809;
+    export socks_proxy=socks5://127.0.0.1:10808;
+  "
+alias unproxy="
+    unset http_proxy;
+    unset https_proxy;
+    unset socks_proxy;"
+```
+
