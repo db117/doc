@@ -193,3 +193,28 @@ git checkout main # 或其他分支名
 
 ```
 
+
+
+#### 22 端口不能访问
+
+> 当 22 端口不能用，但是 443 可以用的时候。
+
+```
+# 22 不能用
+ssh -T git@github.com
+# ssh: connect to host github.com port 22: Connection timed out
+
+# 443 能用
+ssh -T -p 443 git@ssh.github.com
+# You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+编辑 `~/.ssh/config`
+
+```
+# Add section below to it
+Host github.com
+  Hostname ssh.github.com
+  Port 443
+```
+
