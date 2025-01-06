@@ -7,6 +7,8 @@ title: gradle
 
 对所有项目生效，在${USER_HOME}/.gradle/下创建init.gradle文件
 
+https://docs.gradle.org/current/userguide/init_scripts.html#sec:using_an_init_script
+
 ```
 allprojects{
     repositories {
@@ -71,15 +73,9 @@ allprojects{
 build -x test
 ```
 
-### lombok
+### 跳过失败
 
 ```
-dependencies {
-	compileOnly 'org.projectlombok:lombok:1.18.20'
-	annotationProcessor 'org.projectlombok:lombok:1.18.20'
-	
-	testCompileOnly 'org.projectlombok:lombok:1.18.20'
-	testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
-}
+build --continue
 ```
 

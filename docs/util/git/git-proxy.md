@@ -14,6 +14,8 @@ git config --global http.proxy 'socks5://127.0.0.1:10800'
 
 ```bash
 git config --global http.<URI>.proxy http://127.0.0.1:8118
+# 取消
+git config --global --unset http.<URI>.proxy
 
 git config --add core.gitproxy '"http://127.0.0.1:7777" for github.com'
 ```

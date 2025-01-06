@@ -100,6 +100,7 @@ title: 导航
 &nbsp;[msdn](https://next.itellyou.cn)
 &nbsp;[homebrew](https://brew.sh/)
 &nbsp;[Mac毒 ](https://www.macdo.cn/)
+&nbsp;[chromeExt](https://www.ilovechrome.com/)
 
 ## 文档
 &nbsp;[w3school](https://www.w3school.com.cn/)
