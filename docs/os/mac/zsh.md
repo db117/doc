@@ -73,14 +73,25 @@ upgrade_oh_my_zsh
 ### 设置代理
 
 ```
+# 开启终端代理
 alias proxy="
     export http_proxy=http://127.0.0.1:10809;
     export https_proxy=http://127.0.0.1:10809;
     export socks_proxy=socks5://127.0.0.1:10808;
   "
+# 关闭终端代理
 alias unproxy="
     unset http_proxy;
     unset https_proxy;
     unset socks_proxy;"
+    
+    
+# 设置代理
+alias pset='networksetup -setwebproxy Wi-Fi 10.168.80.13 10808 && networksetup -setsecurewebproxy Wi-Fi 10.168.80.13 10808 && networksetup -setsocksfirewallproxy Wi-Fi 10.168.80.13 10808'
+# 开启 wifi 代理
+alias psystemon='networksetup -setwebproxystate Wi-Fi on && networksetup -setsecurewebproxystate Wi-Fi on && networksetup -setsocksfirewallproxystate Wi-Fi on'
+# 关闭 wifi 代理
+alias psystemoff='networksetup -setwebproxystate Wi-Fi off && networksetup -setsecurewebproxystate Wi-Fi off && networksetup -setsocksfirewallproxystate Wi-Fi off'
+
 ```
 
