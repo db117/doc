@@ -18,6 +18,9 @@ java -jar arthas-boot.jar
 # 仪表板
 dashboard
 
+# 清空当前屏幕区域
+cls
+
 # 反编译
 jad demo.MathGame
 
@@ -45,6 +48,9 @@ thread -i 1000
 thread -n 3 -i 1000
 # 查看指定状态的线程
 thread --state WAITING
+
+# 查看 JVM 内存信息
+memory
 
 # 查看当前JVM信息
 jvm
@@ -157,6 +163,26 @@ stack demo.MathGame primeFactors
 stack demo.MathGame primeFactors 'params[0]<0' -n 2
 # 据执行时间来过滤
 stack demo.MathGame primeFactors '#cost>5'
+```
+
+#### 其他
+
+```
+# 更新 logger level
+logger --name ROOT --level debug
+指定 classloader 更新 logger level
+logger -c 2a139a55 --name ROOT --level debug
+
+# 获取接口的响应时间
+watch org.springframework.web.servlet.DispatcherServlet doService '{params[0].getRequestURI()+" "+ #cost}'  -n 5  -x 3 '#cost>100'  -f
+# 获取指定header 头的信息
+ watch org.springframework.web.servlet.DispatcherServlet doService '{params[0].getRequestURI()+"  header="+params[1].getHeaders("x-trace-id")}'  -n 10  -x 3  -f
+ 
+# 简单查看 sql 语句
+# watch Connection
+watch java.sql.Connection prepareStatement '{params,throwExp}'  -n 5  -x 3 
+# watch BoundSql(mybatis)
+watch org.apache.ibatis.mapping.BoundSql getSql '{params,returnObj,throwExp}'  -n 5  -x 3 
 ```
 
 
