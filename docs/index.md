@@ -9,6 +9,26 @@ title: 导航
 &nbsp;[leetcode](https://leetcode-cn.com/u/db117/)
 &nbsp;[ProcessOn](https://www.processon.com/u/5aaa7a7ee4b0a84684088ded)
 
+## AI
+
+### chat
+&nbsp;[Poe](https://poe.com/)
+&nbsp;[kimi](https://kimi.moonshot.cn/)
+&nbsp;[通义千问](https://tongyi.aliyun.com/)
+&nbsp;[deepseek](https://www.deepseek.com/)
+
+### AI工具
+&nbsp;[ollama](https://ollama.com/)
+&nbsp;[huggingface](https://huggingface.co/)
+&nbsp;[镜像 huggingface ](https://hf-mirror.com/)
+&nbsp;[Berkeley Function Calling Leaderboard (aka Berkeley Tool Calling Leaderboard)](https://gorilla.cs.berkeley.edu/leaderboard.html)
+&nbsp;[langchain](https://python.langchain.com/)
+&nbsp;[Prompt Engineering Guide ](https://www.promptingguide.ai/)
+&nbsp;[Spring AI](https://docs.spring.io/spring-ai/reference/index.html)
+&nbsp;[OpenAI API](https://platform.openai.com/docs/overview)
+&nbsp;[LangChain4j](https://docs.langchain4j.dev/)
+&nbsp;[aishort prompt](https://www.aishort.top/)
+
 
 ## 搜索
 &nbsp;[百度](https://www.baidu.com/)
@@ -44,19 +64,6 @@ title: 导航
 ### 算法竞赛
 &nbsp;[leetcode](https://leetcode-cn.com/u/db117/)
 &nbsp;[codeforces](https://codeforces.com/)
-
-## AI
-&nbsp;[Poe](https://poe.com/)
-&nbsp;[ollama](https://ollama.com/)
-&nbsp;[huggingface](https://huggingface.co/)
-&nbsp;[镜像 huggingface ](https://hf-mirror.com/)
-&nbsp;[Berkeley Function Calling Leaderboard (aka Berkeley Tool Calling Leaderboard)](https://gorilla.cs.berkeley.edu/leaderboard.html)
-&nbsp;[langchain](https://python.langchain.com/)
-&nbsp;[Prompt Engineering Guide ](https://www.promptingguide.ai/)
-&nbsp;[Spring AI](https://docs.spring.io/spring-ai/reference/index.html)
-&nbsp;[OpenAI API](https://platform.openai.com/docs/overview)
-&nbsp;[LangChain4j](https://docs.langchain4j.dev/)
-&nbsp;[aishort prompt](https://www.aishort.top/)
 
 
 
