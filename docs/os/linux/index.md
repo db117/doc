@@ -157,6 +157,8 @@ grep -v nologin /etc/passwd
 grep -x cdrom anaconda-ks.cfg
 # 搜索某个文件中，空行的数量
 grep -c ^$ anaconda-ks.cfg 
+# 统计某个字符串在文本中出现的次数
+grep -o -i 'error' service.log | wc -l
 
 ```
 
