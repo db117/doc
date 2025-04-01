@@ -91,6 +91,7 @@ title: 导航
 &nbsp;[变量名生成](https://unbug.github.io/codelf/)
 &nbsp;[开源中国在线工具](http://tool.oschina.net/)
 &nbsp;[每日更新IP段](https://ispip.clang.cn/)
+&nbsp;[IP查询](https://iplark.com/)
 
 ## 博客
 &nbsp;[一树一溪-mysql](https://www.bigspring.cn/)
