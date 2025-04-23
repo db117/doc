@@ -22,3 +22,9 @@ title: caffeine
 - `FrequencySketch`频率草图
   - 它的实现原理和布隆过滤器类似，牺牲了部分准确性，但减少了占用内存的大小
   - 使用一个long[] 来记录频率，对结点进行 Hash。对对应的 slot 进行操作
+
+
+
+#### 参考
+
+- https://mp.weixin.qq.com/s/ppsrcOK00T8OoS9fPpeD8w
