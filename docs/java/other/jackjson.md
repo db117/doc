@@ -24,6 +24,11 @@ LinkedHashMap value = MAPPER.readerForMapOf(ABC.class).readValue("{\"key\" : \"B
 // 使用 TypeReference ，来解决泛型
 TypeReference ref = new TypeReference<List<Integer>>() { };
 List<Integer> ans = MAPPER.readValue("",ref);
+
+// 使用 TypeFactory ，来解决泛型
+ JavaType type =MAPPER.getTypeFactory()
+ .constructParametricType(List.class, Integer.class);
+ List<Integer> ans = MAPPER.readValue("",type);
 ```
 
 
@@ -185,7 +190,6 @@ writer.writeValueAsString(new Foo());
   - 字段命名策略
 - @JsonAutoDetect
   - 在序列化与反序列化时的字段可见性
-
 
 
 
