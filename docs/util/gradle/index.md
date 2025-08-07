@@ -5,6 +5,16 @@ title: gradle
 
 ## gradle配置国内镜像
 
+> 对于 gradle 的配置文件。
+>
+> gradle-wrapper.properties
+
+```
+distributionUrl=https\://mirrors.cloud.tencent.com/gradle/gradle-8.8-bin.zip
+```
+
+
+
 对所有项目生效，在${USER_HOME}/.gradle/下创建init.gradle文件
 
 https://docs.gradle.org/current/userguide/init_scripts.html#sec:using_an_init_script
