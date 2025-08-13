@@ -47,3 +47,11 @@ defaults write com.apple.finder AppleShowAllFiles -bool true
 # 恢复隐藏
 defaults write com.apple.finder AppleShowAllFiles -bool false
 ```
+
+#### 重置 dns 缓存
+
+```
+sudo killall -HUP mDNSResponder; 
+sudo dscacheutil -flushcache
+```
+
