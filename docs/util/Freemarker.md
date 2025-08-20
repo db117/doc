@@ -306,6 +306,16 @@ emp["name"]    // 使用方括号
 可以在指定字符串内容的引号前增加r标记,在r标记后的文件将会直接输出.看如下代码:
 ${r"${foo}"}    // 输出 ${foo}
 ${r"C:/foo/bar"}    // 输出 C:/foo/bar
+
+
+# HTML 特殊字符
+${str?html}
+
+# JavaScript 特殊字符
+${str?js_string}
+
+# 不会在这个指令体中间寻找FTL标签
+<#noparse>${str}</#noparse>
 ```
 
 ### 其他
