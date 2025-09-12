@@ -25,7 +25,7 @@ pip3 install --user git-filter-repo
  创建“空壳”目标仓库并克隆
 
 ```bash
-git clone git@github.com:yourorg/NEW_MONO.git
+git clone --bare git@github.com:yourorg/NEW_MONO.git
 ```
 
 
@@ -71,6 +71,13 @@ for idx in "${!REPOS[@]}"; do
   rm -rf "$tmp"
 
 done
+
+# 合并分支
+cd "$MONO_BARE"
+git init
+for idx in "${!REPOS[@]}"; do
+  git merge "${SUB_DIRS[$idx]}-master" --allow-unrelated-histories -m "Merge ${SUB_DIRS[$idx]}"
+done
 ```
 
 
@@ -82,14 +89,5 @@ chmod 777 merge.sh
 ./merge.sh
 ```
 
-执行完成后可以在目标裸仓库中查看分支，然后合并
+执行完成后可以在目标裸仓库中查看分支，然后推送
 
-```
-git branch
-
-git merge legacy/A --allow-unrelated-histories -m "Merge A"
-git merge legacy/B --allow-unrelated-histories -m "Merge B"
-
-# 推送
-git push
-```
