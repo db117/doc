@@ -37,7 +37,17 @@ title: 导航
 &nbsp;[维基百科](https://zh.wikipedia.org)
 &nbsp;[stackoverflow](https://stackoverflow.com)
 
+## 财经
+&nbsp;[美投](https://www.jdbinvesting.com/)
+&nbsp;[雅虎财经](https://finance.yahoo.com/)
+&nbsp;[MacroMicro](https://sc.macromicro.me/)
+&nbsp;[steadyoptions](https://steadyoptions.com/)
+&nbsp;[tradingeconomics](https://tradingeconomics.com/)
+
+
+
 ## 学习
+
 &nbsp;[知识星球](https://wx.zsxq.com/)
 &nbsp;[极客时间](https://time.geekbang.org/)
 &nbsp;[java-design-patterns](https://java-design-patterns.com/zh/)

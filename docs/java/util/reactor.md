@@ -8,7 +8,7 @@ title: Reactor
 
 
 
-## 创建序列
+### 创建序列
 
 ```
 # 生成固定的序列
@@ -42,5 +42,36 @@ Flux.create(sink -> {
 			    sink.next("2");
 			    sink.complete();
 		    });
+```
+
+
+
+### 改变序列
+
+```
+# 1 变 1
+# 直接转换对象
+Flux.map();
+# 强转转换对象，如果不能转就报错
+Flux.cast();
+# 给每一个数据添加一个索引
+Flux.index();
+
+# 1 变 多
+# 把一个元素变成另一个元素序列
+Flux.flatMap();flatMapSequential 
+# 把一个元素变成另一个元素序列（按照顺序来）
+Flux.flatMapSequential(); 
+# 直接消费元素以及一个SynchronousSink。可以做各种操作
+Flux.handle();
+
+
+# 拼接序列
+# 把一个序列加到当前序列前面
+Flux.startWith();
+# 把一个序列加到当前序列后面
+Flux.concatWithValues();
+
+# 聚合序列
 ```
 
