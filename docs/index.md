@@ -29,7 +29,6 @@ title: 导航
 &nbsp;[LangChain4j](https://docs.langchain4j.dev/)
 &nbsp;[aishort prompt](https://www.aishort.top/)
 
-
 ## 搜索
 &nbsp;[百度](https://www.baidu.com/)
 &nbsp;[谷歌](https://www.google.com/)
@@ -43,7 +42,7 @@ title: 导航
 &nbsp;[MacroMicro](https://sc.macromicro.me/)
 &nbsp;[steadyoptions](https://steadyoptions.com/)
 &nbsp;[tradingeconomics](https://tradingeconomics.com/)
-
+&nbsp;[AI trading](https://nof1.ai/)
 
 
 ## 学习
