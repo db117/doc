@@ -12,10 +12,9 @@ title: 导航
 ## AI
 
 ### chat
-&nbsp;[Poe](https://poe.com/)
 &nbsp;[kimi](https://kimi.moonshot.cn/)
-&nbsp;[通义千问](https://tongyi.aliyun.com/)
-&nbsp;[deepseek](https://www.deepseek.com/)
+&nbsp;[chatgpt](https://chatgpt.com/)
+&nbsp;[grok](https://grok.com/)
 
 ### AI工具
 &nbsp;[ollama](https://ollama.com/)
@@ -28,6 +27,16 @@ title: 导航
 &nbsp;[OpenAI API](https://platform.openai.com/docs/overview)
 &nbsp;[LangChain4j](https://docs.langchain4j.dev/)
 &nbsp;[aishort prompt](https://www.aishort.top/)
+&nbsp;[harness-engineering-from-cc-to-ai-coding](https://github.com/ZhangHanDong/harness-engineering-from-cc-to-ai-coding)
+
+
+### AI编程工具
+&nbsp;[find-skills](https://skills.sh/)
+&nbsp;[planning-with-files](https://github.com/othmanadi/planning-with-files)
+&nbsp;[ccstatusline](https://github.com/sirmalloc/ccstatusline/)
+&nbsp;[OpenSpec](https://github.com/Fission-AI/OpenSpec)
+&nbsp;[superpowers](https://github.com/obra/superpowers)
+
 
 ## 搜索
 &nbsp;[百度](https://www.baidu.com/)
