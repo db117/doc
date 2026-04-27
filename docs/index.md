@@ -28,6 +28,7 @@ title: 导航
 &nbsp;[LangChain4j](https://docs.langchain4j.dev/)
 &nbsp;[aishort prompt](https://www.aishort.top/)
 &nbsp;[harness-engineering-from-cc-to-ai-coding](https://github.com/ZhangHanDong/harness-engineering-from-cc-to-ai-coding)
+&nbsp;[hello-agents](hello-agents.datawhale.cc)
 
 
 ### AI编程工具
@@ -37,6 +38,9 @@ title: 导航
 &nbsp;[OpenSpec](https://github.com/Fission-AI/OpenSpec)
 &nbsp;[superpowers](https://github.com/obra/superpowers)
 
+#### 其他
+&nbsp;[AI比价](https://aibijia.org/)
+&nbsp;[性价比WEB3撸毛工具](https://web3chirou.com/)
 
 ## 搜索
 &nbsp;[百度](https://www.baidu.com/)
