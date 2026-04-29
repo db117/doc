@@ -1,41 +1,45 @@
-import fs from 'fs'
-import path_ from 'path'
+import * as fs from 'fs'
+import * as path_ from 'path'
 import fm from 'front-matter'
 
-const { resolve } = path_
+const { relative, resolve } = path_
+const docsRoot = resolve(__dirname, '../..')
 
-export const scanDir = pathName => {
-	const path = resolve(__dirname, `../../${pathName}`)
+export const scanDir = (pathName: string) => {
+	const path = resolve(docsRoot, pathName)
 	return getMsg(path)
 }
 
-export const getMsg = path => {
-	let res = fs.readdirSync(path).filter((item: string) => filterFile(item))
-	if (res) {
-		let arr = res.map(item => {
-			if (String(item).endsWith('.md')) {
+export const getMsg = (path: string) => {
+	const entries = fs.readdirSync(path, { withFileTypes: true })
+		.filter(item => filterFile(item))
+		.sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'))
+
+	if (entries.length) {
+		let arr = entries.map(item => {
+			if (item.isFile() && item.name.endsWith('.md')) {
 				// 文件完整路径
-				var fullPath = path_.join(path, item);
+				const fullPath = path_.join(path, item.name);
 
 				return {
 					text: title(fullPath),
-					link: resolve(path, item),
+					link: resolve(path, item.name),
 				}
 			} else {
-				const file = resolve(path, item, "index.md");
+				const file = resolve(path, item.name, "index.md");
 
 				if (fs.existsSync(file)) {
 
 					return {
-						text: item.split('.')[0],
-						items: getMsg(resolve(path, item)),// 递归处理文件夹
-						link: resolve(path, item, "index"),
+						text: item.name.split('.')[0],
+						items: getMsg(resolve(path, item.name)),// 递归处理文件夹
+						link: resolve(path, item.name, "index"),
 						collapsible: true,
 					}
 				} else {
 					return {
-						text: item.split('.')[0],
-						items: getMsg(resolve(path, item)),// 递归处理文件夹
+						text: item.name.split('.')[0],
+						items: getMsg(resolve(path, item.name)),// 递归处理文件夹
 						collapsible: true,
 					}
 				}
@@ -50,7 +54,7 @@ export const getMsg = path => {
 		})
 		return arr
 	} else {
-		console.warn('无文章')
+		return []
 	}
 }
 
@@ -60,28 +64,29 @@ export const getMsg = path => {
  * @returns
  */
 function translateDir(path: string) {
-	return path.replace(/\\/g, '/').split('docs')[1].split('.')[0]
+	const filePath = relative(docsRoot, path).replace(/\\/g, '/')
+	return `/${filePath.replace(/\.md$/, '')}`
 }
 /**
  * 过滤无效文件
  * @param item 文件名称
  * @returns 
  */
-function filterFile(item: string) {
-	return item.indexOf('.') === -1 || (item.endsWith('.md') && item != "index.md");
+function filterFile(item: fs.Dirent) {
+	return item.isDirectory() || (item.isFile() && item.name.endsWith('.md') && item.name != "index.md");
 }
 /**
  * 获取文件标题
  * @param fullPath 完整文件路径
  * @returns 
  */
-function title(fullPath) {
+function title(fullPath: string) {
 	// 读取文件内容
-	var data = fs.readFileSync(fullPath, 'utf8');
+	const data = fs.readFileSync(fullPath, 'utf8');
 	// 解析 front-matter
-	var content = fm(data)
+	const content = fm<{ title?: string }>(data)
 	// 获取文件头
-	var title = content.attributes.title;
+	const title = content.attributes.title;
 
 	if (title) {
 		return title;

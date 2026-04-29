@@ -1,4 +1,6 @@
-const nav = [
+import type { DefaultTheme } from 'vitepress'
+
+const nav: DefaultTheme.NavItem[] = [
 	{ text: '首页', link: '/' },
 	{ text: 'AI', link: '/ai/' },
 	{ text: 'database', link: '/database/' },

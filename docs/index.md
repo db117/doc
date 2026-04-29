@@ -38,7 +38,7 @@ title: 导航
 &nbsp;[OpenSpec](https://github.com/Fission-AI/OpenSpec)
 &nbsp;[superpowers](https://github.com/obra/superpowers)
 
-#### 其他
+### 其他
 &nbsp;[AI比价](https://aibijia.org/)
 &nbsp;[性价比WEB3撸毛工具](https://web3chirou.com/)
 
@@ -56,6 +56,7 @@ title: 导航
 &nbsp;[steadyoptions](https://steadyoptions.com/)
 &nbsp;[tradingeconomics](https://tradingeconomics.com/)
 &nbsp;[AI trading](https://nof1.ai/)
+&nbsp;[IB Dashboard](https://moneychen.com/)
 
 
 ## 学习
@@ -131,6 +132,7 @@ title: 导航
 &nbsp;[homebrew](https://brew.sh/)
 &nbsp;[Mac毒 ](https://www.macdo.cn/)
 &nbsp;[chromeExt](https://www.ilovechrome.com/)
+&nbsp;[awesome-open-source-mac-apps](https://indiegoodies.com/awesome-open-source-mac-apps)
 
 ## 文档
 &nbsp;[w3school](https://www.w3school.com.cn/)
