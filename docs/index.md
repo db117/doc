@@ -12,7 +12,6 @@ title: 导航
 ## AI
 
 ### chat
-&nbsp;[kimi](https://kimi.moonshot.cn/)
 &nbsp;[chatgpt](https://chatgpt.com/)
 &nbsp;[grok](https://grok.com/)
 
@@ -41,6 +40,7 @@ title: 导航
 ### 其他
 &nbsp;[AI比价](https://aibijia.org/)
 &nbsp;[性价比WEB3撸毛工具](https://web3chirou.com/)
+&nbsp;[newsnow](https://newsnow.busiyi.world/)
 
 ## 搜索
 &nbsp;[百度](https://www.baidu.com/)
