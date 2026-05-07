@@ -1,4 +1,6 @@
-const head = [
+import type { HeadConfig } from 'vitepress'
+
+const head: HeadConfig[] = [
     ['link', {rel: 'icon', href: '/favicon.ico'}],
     ['script', {}, `
             var _hmt = _hmt || [];
