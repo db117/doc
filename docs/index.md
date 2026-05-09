@@ -41,6 +41,8 @@ title: 导航
 &nbsp;[AI比价](https://aibijia.org/)
 &nbsp;[性价比WEB3撸毛工具](https://web3chirou.com/)
 &nbsp;[newsnow](https://newsnow.busiyi.world/)
+&nbsp;[地址生成](https://usaddressgen.com/)
+
 
 ## 搜索
 &nbsp;[百度](https://www.baidu.com/)
