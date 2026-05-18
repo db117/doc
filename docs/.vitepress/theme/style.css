@@ -138,6 +138,19 @@
 }
 
 /**
+ * Embedded diagrams
+ * -------------------------------------------------------------------------- */
+
+.vp-doc iframe[src*="processon.com/embed"] {
+    display: block;
+    width: 100% !important;
+    max-width: 100%;
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 8px;
+    background: var(--vp-c-bg-soft);
+}
+
+/**
  * Homepage navigation
  * -------------------------------------------------------------------------- */
 

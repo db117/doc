@@ -4,7 +4,7 @@ title: PostgreSQL
 
 #### 不存在则插入/存在则更新
 
-```
+```sql
 -- 1、主键id不重复就插入，否则更新
 insert into 表名称 (字段a, 字段b, ...)
             values
@@ -27,7 +27,7 @@ insert into 表名称 (字段a, 字段b, ...)
 
 以前唯一主键对于有 null 都认为是不同的值，在 15 版本中添加了新功能可以解决这个问题。https://www.postgresql.org/docs/15/release-15.html#id-1.11.6.5.5.3.4
 
-```
+```sql
 -- 添加唯一约束
 ALTER TABLE favorites
 ADD CONSTRAINT favo_uni UNIQUE NULLS NOT DISTINCT (user_id, menu_id, recipe_id);
@@ -51,15 +51,14 @@ ON favorites (user_id, menu_id, recipe_id) NULLS NOT DISTINCT;
 - `STATISTICS`：复制统计信息。
 - `COLLATION`：复制排序规则。
 
-```
-# 复制表 table_name 
+```sql
+-- 复制表 table_name
 create table if not exists table_name_copy (like table_name including all );
 ```
 
 #### 查看当前用户是否有某个角色
 
-```
-# 查看当前用户是否有 pg_monitor 角色
+```sql
+-- 查看当前用户是否有 pg_monitor 角色
 SELECT pg_has_role(current_user, 'pg_monitor', 'member');
 ```
-

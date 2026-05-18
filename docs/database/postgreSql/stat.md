@@ -6,7 +6,7 @@ title: 一些常用的状态信息
 
 表存储空间使用情况
 
-```
+```sql
 SELECT schemaname                              as table_schema,
        relname                                    table_name,
        pg_size_pretty(pg_relation_size(relid)) as table_size
@@ -16,7 +16,7 @@ ORDER BY pg_relation_size(relid) desc;
 
 当前数据库表数据行数
 
-```
+```sql
 SELECT schemaname, relname, n_live_tup total
 FROM pg_stat_user_tables
 order by total desc;

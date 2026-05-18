@@ -7,7 +7,7 @@ title: redis
 
 #### 连接服务
 
-```
+```bash
 # 直接输入密码
 redis-cli -h <host> -p <port> -a <password> -n 0（数据库）
 
@@ -23,7 +23,7 @@ quit
 
 #### 锁
 
-```
+```text
 SET <key>  <value> NX EX <max-lock-time>
 ```
 
@@ -31,7 +31,7 @@ SET <key>  <value> NX EX <max-lock-time>
 
 #### 字符串
 
-```
+```text
 
 ```
 
@@ -39,7 +39,7 @@ SET <key>  <value> NX EX <max-lock-time>
 
 #### 删除数据
 
-```
+```bash
 # 使用 UNLINK 异步删除
 # 看需要添加 host port password db
 # ksys
@@ -54,7 +54,7 @@ redis-cli scan 0 match "匹配内容" count 扫描数量 | xargs -t  redis-cli  
 
 [redis如何优雅删除大量的key？_八号码农的博客-CSDN博客_redis 删除多个key](https://blog.csdn.net/wen3qin/article/details/120789060)
 
-```
+```bash
 #!/bin/bash
 #定义变量《根据个人需要填写》
 redis_url=地址
@@ -107,4 +107,3 @@ unset array
     
 done
 ```
-

@@ -8,19 +8,19 @@ title: sqlserver
 
 #### 获取前 n 条数据
 
-```
+```sql
 SELECT TOP(10) *  FROM table_name;  
 ```
 
 #### 获取数据库名称
 
-```
+```sql
 select db_name()
 ```
 
 #### 触发器 mybatis 异常
 
-```
+```sql
 -- 在触发线执行 sql 前加入
 SET NOCOUNT ON;
 
@@ -32,7 +32,7 @@ SET NOCOUNT OFF;
 
 #### 使用 Transact-SQL 语句在结果集内进行浏览
 
-```
+```sql
 -- 定义字段
 declare @au_id char( 11 )
 
@@ -48,7 +48,7 @@ end
 
 #### 使用 FOR JSON 将查询结果格式化为 JSON (SQL Server)
 
-```
+```sql
 SELECT *
 FROM table_name  
 FOR JSON
@@ -56,7 +56,7 @@ FOR JSON
 
 #### 多行数据合成一行
 
-```
+```sql
 SELECT STUFF(( SELECT <拼接的字符串> FROM <表> FOR XML PATH('') ),1,1,'')
 -- 如下
 SELECT STUFF(( SELECT ','+t.cstaffname FROM #staff  t FOR XML PATH('') ),1,1,'')
@@ -64,14 +64,14 @@ SELECT STUFF(( SELECT ','+t.cstaffname FROM #staff  t FOR XML PATH('') ),1,1,'')
 
 #### 当 IDENTITY_INSERT 设置为 OFF 时,不能向表中的标识列插入显式值
 
-```
+```text
 在执行 SQL 前添加
 set identity_insert tableName（表名） ON
 ```
 
 #### 获取数据库时区与 utc 时区小时差
 
-```
+```sql
 select datediff(hour,getutcdate(),getdate());
 ```
 
@@ -84,7 +84,7 @@ select datediff(hour,getutcdate(),getdate());
 
 由于 `(SELECT NULL)` 表达式的原因，脚本不会根据任何条件对分区数据进行排序。 如果删除重复项的逻辑需要根据其他列的排序顺序选择要删除和保留的记录，则可以使用 ORDER BY 表达式来执行此操作。
 
-```
+```sql
 DELETE T
 FROM
 (
@@ -97,4 +97,3 @@ FROM original_table
 ) AS T
 WHERE DupRank > 1
 ```
-
