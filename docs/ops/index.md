@@ -1,20 +1,29 @@
 ---
-title: 运维相关
+title: 运维
 ---
 
-## 运维相关
+# 运维
 
-这里收集日常部署、监控、网关、容器和中间件排查笔记，偏向“遇到问题时能快速复制命令和定位方向”。
+日常部署、容器、网关、监控、日志、链路追踪和排障笔记。内容偏向“遇到问题时能快速找到命令、配置和定位方向”。
 
-### 常用入口
+## 基础设施
 
-- [Docker](./docker/)：容器命令、镜像安装、远程连接和常用应用部署。
-- [Kubernetes](./k8s/)：kubectl、资源操作和集群排查。
-- [Nginx](./nginx/)：安装、配置、HTTPS 和性能参数。
-- [Prometheus](./prometheus/)：查询、告警、operator 与 kube-prometheus。
-- [SkyWalking](./skywalking/)：客户端、服务端、UI 与源码相关配置。
+- [容器](./containers/index.md)：Docker 命令、安装、远程连接和容器化应用。
+- [Kubernetes](./kubernetes/index.md)：kubectl、资源操作、集群访问和常用配置。
+- [网关](./gateway/index.md)：Nginx 安装、配置、HTTPS 和性能参数。
 
-### 排查优先级
+## 可观测
+
+- [监控告警](./monitoring/index.md)：Prometheus、Alertmanager、Grafana 和 kube-prometheus。
+- [日志链路](./logging/index.md)：Filebeat、Logstash、Elasticsearch 和日志采集处理。
+- [链路追踪](./tracing/index.md)：SkyWalking 客户端、服务端、UI 和源码结构。
+
+## 工程工具
+
+- [CI/CD](./ci-cd/index.md)：Jenkins 等持续集成和发布工具。
+- [进程管理](./process/index.md)：supervisord 等进程守护工具。
+
+## 排查优先级
 
 1. 先确认服务是否启动、端口是否监听、配置是否生效。
 2. 再看日志、指标和链路追踪，缩小到具体组件。
