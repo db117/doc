@@ -1,8 +1,28 @@
 name: Build and Deploy
-on: [push]
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/main.yml'
+      - 'docs/**'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_PRIVATE_KEY: ${{ secrets.ACTIONS_PRIVATE_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,15 +47,15 @@ jobs:
           repository-name: db117/db117.github.io
 
       - name: Private Key
-        env:
-          ACTIONS_PRIVATE_KEY: ${{ secrets.ACTIONS_PRIVATE_KEY }}
+        if: ${{ env.ACTIONS_PRIVATE_KEY != '' }}
         run: |
           mkdir -p ~/.ssh/
           echo "$ACTIONS_PRIVATE_KEY" > ~/.ssh/id_rsa 
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan gitee.com >> ~/.ssh/known_hosts      
 
-      - name: Push gitee 
+      - name: Push gitee
+        if: ${{ env.ACTIONS_PRIVATE_KEY != '' }}
         continue-on-error: true # 防止步骤失败时作业也会失败
         run: |
           cd docs/.vitepress/dist
