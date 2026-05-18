@@ -2,6 +2,7 @@
 title: 技术导航
 description: 大兵的技术导航，收录常用工具、AI、Java、数据库、运维、学习资源与开发文档。
 pageClass: nav-page
+outline: false
 ---
 
 # 大兵的技术导航
