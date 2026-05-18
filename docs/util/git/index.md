@@ -10,7 +10,7 @@ title: git
 
 > ~/.gitconfig 文件中添加或修改
 
-  ```gitconfig
+  ```ini
   [credential] 
   helper = store
   ```
@@ -217,4 +217,3 @@ Host github.com
   Hostname ssh.github.com
   Port 443
 ```
-

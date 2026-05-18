@@ -26,7 +26,7 @@ wget https://github.com/milvus-io/milvus/releases/download/v2.4.6/milvus-standal
 docker compose up -d
 ```
 
-访问 http://localhost:9091/ 出现404这说明成功了。
+访问 `http://localhost:9091/` 出现404这说明成功了。
 
 ### 安装 Attu
 
@@ -35,4 +35,3 @@ docker compose up -d
 ```
 docker run -p 3001:3000 -e MILVUS_URL=127.0.0.1:19530 -d --name atte  zilliz/attu:v2.4
 ```
-

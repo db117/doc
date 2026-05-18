@@ -21,4 +21,4 @@ docker run --name ec --device /dev/net/tun --cap-add NET_ADMIN -d --restart=alwa
 
 * git代理
 
-  [git代理](../../util/git/git代理.md)
+  [git代理](../../util/git/git-proxy.md)

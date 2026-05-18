@@ -24,7 +24,7 @@ git config --add core.gitproxy '"http://127.0.0.1:7777" for github.com'
 
 #### 编辑文件~/.gitconfig
 
-```gitconfig
+```ini
 [http]
 	 	proxy = socks5://127.0.0.1:10800
 [https]
@@ -46,4 +46,3 @@ git config --global --unset http.proxy
 git config --global --unset https.proxy
 git config --global --unset core.gitproxy
 ```
-

@@ -43,7 +43,7 @@ outline: false
 > - [LangChain4j](https://docs.langchain4j.dev/)
 > - [AI Short](https://www.aishort.top/)
 > - [AI Coding Harness](https://github.com/ZhangHanDong/harness-engineering-from-cc-to-ai-coding)
-> - [Hello Agents](./hello-agents.datawhale.cc.html)
+> - [Hello Agents](https://github.com/datawhalechina/hello-agents)
 >
 > ### AI 编程工具
 >
