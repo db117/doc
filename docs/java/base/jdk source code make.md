@@ -4,13 +4,13 @@ title: jdk源码编译
 
 ### 下载源码
 
-> [jdk11]([openjdk/jdk11u-dev: https://openjdk.java.net/projects/jdk-updates/ (github.com)](https://github.com/openjdk/jdk11u-dev))
+> [jdk11](https://github.com/openjdk/jdk11u-dev)
 >
-> [jdk]([openjdk/jdk: JDK main-line development (github.com)](https://github.com/openjdk/jdk))
+> [jdk](https://github.com/openjdk/jdk)
 
 ### configuration
 
-```
+```bash
 bash configure
 ```
 
@@ -21,7 +21,7 @@ bash configure
 
 > 解决CLion找不到头文件
 
-```
+```bash
 make compile-commands
 ```
 

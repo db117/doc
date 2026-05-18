@@ -1,10 +1,10 @@
 ---
-title: MAC 下 DNSmasq 安装于使用 
+title: Mac 下 DNSmasq 安装与使用
 ---
 
 ### 安装
 
-```
+```bash
 brew install dnsmasq
 ```
 
@@ -12,7 +12,7 @@ brew install dnsmasq
 
 配置文件默认在`$(brew --prefix)/etc/dnsmasq.conf`
 
-```
+```ini
 # 只监听本地，防止外部访问
 listen-address=127.0.0.1
 

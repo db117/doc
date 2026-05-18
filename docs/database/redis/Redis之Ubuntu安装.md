@@ -3,7 +3,7 @@ title: Ubuntu安装Redis
 ---
 ## 设置镜像源
 
-```
+```bash
 $ echo deb http://packages.dotdeb.org wheezy all >> dotdeb.org.list
 $ echo deb-src http://packages.dotdeb.org wheezy all >> dotdeb.org.list
 $ sudo mv dotdeb.org.list /etc/apt/sources.list.d
@@ -12,7 +12,7 @@ $ wget -q -O - http://www.dotdeb.org/dotdeb.gpg | sudo apt-key add -
 
 ## 更新镜像源并安装
 
-```
+```bash
 $ sudo apt-get update
 $ sudo apt-get install redis-server
 ```
@@ -20,16 +20,18 @@ $ sudo apt-get install redis-server
 
 ## 运行
 
-``` 
+```bash
 $ redis-server --daemonize yes
 ```
 
 ## 其他命令
 
+```text
 Usage: ./redis-server [/path/to/redis.conf] [options]
        ./redis-server - (read config from stdin)
        ./redis-server -v or --version
        ./redis-server -h or --help
+```
        ./redis-server --test-memory &lt;megabytes&gt;
 
 Examples:

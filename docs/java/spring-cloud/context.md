@@ -1,5 +1,5 @@
 ---
-title: spring-cloud-context 详细源码 
+title: spring-cloud-context 详细源码
 ---
 
 ### RefreshScope 实现

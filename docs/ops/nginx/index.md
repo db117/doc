@@ -2,11 +2,12 @@
 title: Nginx
 ---
 # Nginx
-> [官网]([nginx news](http://nginx.org/))
+
+> [官网](http://nginx.org/)
 
 ### 文件位置
 
-```
+```text
 # Nginx配置文件
 /etc/nginx/nginx.conf # nginx 主配置文件
 /etc/nginx/nginx.conf.default
@@ -114,4 +115,3 @@ awk '{print $1}' access.log | sort | uniq | wc -l
 # 分析出请求最多请求路径
 awk '{print $7}' access.log | sort | uniq -c | sort -rn | head -n 3
 ```
-

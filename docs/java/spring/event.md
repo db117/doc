@@ -1,5 +1,5 @@
 ---
-title: Spring event 
+title: Spring Event
 ---
 
 > 记录 spring 框架中的一些事件发送时机以及简单使用。
