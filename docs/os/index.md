@@ -17,7 +17,7 @@ title: 系统相关
   >
   > [官网](https://electerm.github.io/electerm/)
   >
-  > [gitbub](https://github.com/electerm/electerm)
+  > [github](https://github.com/electerm/electerm)
   
 - vsCode
 
@@ -176,6 +176,5 @@ title: 系统相关
 -q：静默模式；
 -t：指定要创建的密钥类型。RSA或DSA
 ```
-
 
 

@@ -1,5 +1,5 @@
 ---
-title: json 相关 
+title: JSON 相关
 ---
 
 # JSON 基本操作
@@ -35,8 +35,6 @@ SET @jsonInfo=N'{
  // 对于数组
 ```
 
-
-
 - 获取值 JSON_VALUE
 
   > 从 JSON 字符串中提取标量值。不能获取对象。
@@ -47,7 +45,7 @@ SET @jsonInfo=N'{
   json_value(@jsonInfo,'$')							null
   json_value(@jsonInfo,'$.info.type')		N'1'
   ```
-  
+
 - 获取对象 JSON_QUERY
 
   > 从 JSON 字符串中提取对象或数组。不能获取值。
@@ -84,24 +82,24 @@ SET @jsonInfo=N'{
   json_query(@jsonInfo,'$[0].info.tags')  	N'[ "Sport", "Water polo"]'
   ```
 
-  
 
 - OPENJSON
 
   > 对 JSON 文档提供行集视图。
   >
-  > `OPENJSON( jsonExpression [ , path ] )  [ <with_clause> ] <with_clause> ::= WITH ( { colName type [ column_path ] [ AS JSON ] } [ ,...n ] )`
+  >
+  `OPENJSON( jsonExpression [ , path ] )  [ <with_clause> ] <with_clause> ::= WITH ( { colName type [ column_path ] [ AS JSON ] } [ ,...n ] )`
 
   解析默认为 `key`,`value`,`type`三个属性，下面为 type 的含义。
-  
+
   | 类型列的值 | JSON 数据类型 |
-  | :--------- | :------------ |
+    | :--------- | :------------ |
   | 0          | Null          |
   | 1          | 字符串        |
   | 2          | 数字          |
   | 3          | true/false    |
   | 4          | array         |
-	| 5          | 对象 (object) |
+  | 5          | 对象 (object) |
 
   可以使用 `with`指定返回的行集头
 
@@ -118,7 +116,7 @@ SET @jsonInfo=N'{
 
 ### 修改 json 的值
 
-> JSON_MODIFY ( expression , path , newValue )  
+> JSON_MODIFY ( expression , path , newValue )
 
 ```
 DECLARE @info NVARCHAR(100)='{"name":"John","skills":["C#","SQL"]}'

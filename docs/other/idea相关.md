@@ -32,7 +32,7 @@ title: idea相关
 
 > [github](https://github.com/mars-men/GsonFormatPlus)
 >
-> 通过 josn 生成 java 对象
+> 通过 json 生成 java 对象
 
 ### Java Bean to Json
 
@@ -95,4 +95,3 @@ title: idea相关
 > [krasa/GrepConsole: IntelliJ plugin - https://plugins.jetbrains.com/plugin/7125 (github.com)](https://github.com/krasa/GrepConsole)
 >
 > 控制台日志 高亮
-

@@ -75,7 +75,3 @@ title: JVM参数
 ##### -XX:-UsePerfData
 
 如果关闭了UsePerfData这个参数，那么jvm启动过程中perf memory都不会被创建，默认情况是是打开的
-
-
-
-#### 

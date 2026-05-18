@@ -179,5 +179,3 @@ oap-server
 - TracingContext：核心类，主要用来创建 span
 - GlobalIdGenerator：生成 `traceId` ，第一部分为`实例 id`，第二部分为`线程 id`，第三部分为时间戳（毫秒）+当前线程中的序列号[0,9999]
 - AbstractSpan：各种插件使用
-
-## 

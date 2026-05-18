@@ -36,7 +36,6 @@ sdk install java 17-zulu /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/
 # 卸载
 sdk uninstall java 17-zulu
 
-# 查看当前使用的本部
+# 查看当前使用的版本
 sdk current
 ```
-

@@ -27,7 +27,7 @@ public class ArrayList<E> extends AbstractList<E>
 
 - subList
 
-  > 访问时通过从定向index来实现，添加修改会改变原来的List
+  > 访问时通过指定 index 来实现，添加修改会改变原来的 List
 
 - `java.util.Arrays.ArrayList`为`Arrays`的实现，不能修改。但是可以get，set
 
@@ -464,9 +464,7 @@ public class CopyOnWriteArraySet<E> extends AbstractSet<E>
     }
 ```
 
-
-
-## Qeque
+## Queue
 
 ```
 public interface Queue<E> extends Collection<E> 

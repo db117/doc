@@ -7,7 +7,7 @@ title: 查询语法
 #### 标签筛选
 
 ```
-# 正则匹配 lable
+# 正则匹配 label
 http_requests_total{env=~"test|dev",method!="GET",application="app.*"}
 # 不匹配某些uri
 http_requests_total{uri!~"/actuator/.*"}

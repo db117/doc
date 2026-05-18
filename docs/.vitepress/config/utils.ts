@@ -31,7 +31,7 @@ export const getMsg = (path: string) => {
 				if (fs.existsSync(file)) {
 
 					return {
-						text: item.name.split('.')[0],
+						text: title(file),
 						items: getMsg(resolve(path, item.name)),// 递归处理文件夹
 						link: resolve(path, item.name, "index"),
 						collapsible: true,

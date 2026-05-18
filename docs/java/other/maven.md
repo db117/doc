@@ -36,8 +36,6 @@ pom配置
  </properties>
 ```
 
-### 
-
 ## 其他
 
 #### 优雅的替换第三方依赖中的类
@@ -219,4 +217,3 @@ git.build.number.unique=${git.build.number.unique}
 > [mojohaus/exec-maven-plugin: Exec Maven Plugin (github.com)](https://github.com/mojohaus/exec-maven-plugin)
 >
 > [Exec Maven Plugin – Introduction (mojohaus.org)](https://www.mojohaus.org/exec-maven-plugin/)
-

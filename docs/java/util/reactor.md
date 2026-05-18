@@ -36,7 +36,7 @@ Flux.interval(Duration.ofMillis(100), Duration.ofMillis(100), Schedulers.newSing
       .map(v -> System.currentTimeMillis())
       .subscribe(ts);
 
-# 通过回到方法生成
+# 通过回调方法生成
 Flux.create(sink -> {
 			    sink.next("1");
 			    sink.next("2");
@@ -192,7 +192,7 @@ window();
 windowUntil():
 # 按照数量分组，如果超时也分组
 windowTimeout():
-# 满足条件就分租
+# 满足条件就分组
 windowWhile ():
 
 # 按照数量或时间分成集合
@@ -203,4 +203,3 @@ bufferTimeout():
 bufferUntil():
 bufferWhile():
 ```
-

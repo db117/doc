@@ -100,7 +100,7 @@ authorization:
 oauth2:
   [ <oauth2> ]
 
-# 是否从定向
+# 是否重定向
 [ follow_redirects: <bool> | default = true ]
 
 # 代理地址
@@ -228,4 +228,3 @@ type sample struct {
   {{ . | first | value | humanize }}
 {{ end }}
 ```
-
