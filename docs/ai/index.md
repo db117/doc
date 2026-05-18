@@ -7,10 +7,10 @@ AI 工具、模型部署、知识库和本地推理相关笔记。
 
 ### 常用入口
 
-- [Ollama](./ollama.md)：本地模型安装、运行和常用命令。
-- [本地模型](./localModel.md)：模型文件、运行环境和本地路径。
-- [ChatChat](./chatchat.md)：知识库项目安装与启动。
-- [Milvus](./milvus.md)：向量数据库安装和基础使用。
+- [Ollama](local/ollama.md)：本地模型安装、运行和常用命令。
+- [本地模型](local/localModel.md)：模型文件、运行环境和本地路径。
+- [ChatChat](local/chatchat.md)：知识库项目安装与启动。
+- [Milvus](local/milvus.md)：向量数据库安装和基础使用。
 
 ## 相关论文
 
