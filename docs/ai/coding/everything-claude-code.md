@@ -1,3 +1,6 @@
+---
+title: everything-claude-code Java 项目接入调研结论
+---
 # everything-claude-code Java 项目接入调研结论
 
 ## 推荐决策
