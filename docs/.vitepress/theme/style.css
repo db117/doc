@@ -137,3 +137,172 @@
   --docsearch-primary-color: var(--vp-c-brand-1) !important;
 }
 
+/**
+ * Homepage navigation
+ * -------------------------------------------------------------------------- */
+
+@media (min-width: 960px) {
+  .Layout.nav-page .VPDoc.has-aside .container {
+    max-width: 1440px;
+  }
+
+  .Layout.nav-page .VPDoc.has-aside .content {
+    max-width: 1104px;
+  }
+
+  .Layout.nav-page .VPDoc.has-aside .content-container {
+    max-width: 1040px;
+  }
+
+  .Layout.nav-page .VPDoc.has-aside .vp-doc {
+    max-width: none;
+  }
+}
+
+.Layout.nav-page .vp-doc > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.Layout.nav-page .vp-doc > div > h1,
+.Layout.nav-page .vp-doc > div > p,
+.Layout.nav-page .vp-doc > div > h2,
+.Layout.nav-page .vp-doc > div > ul {
+  grid-column: 1 / -1;
+}
+
+.Layout.nav-page .vp-doc > div > h2 {
+  margin: 12px 0 0;
+  border-top: 0;
+  padding-top: 0;
+}
+
+.Layout.nav-page .vp-doc > div > h2 + ul {
+  margin: 0;
+}
+
+.Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li {
+  min-height: 80px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-2);
+  font-size: 13px;
+  line-height: 1.5;
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li + li {
+  margin-top: 0;
+}
+
+.Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li:hover {
+  border-color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  transform: translateY(-1px);
+}
+
+.Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li > a {
+  display: inline-block;
+  margin-bottom: 4px;
+  color: var(--vp-c-text-1);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.Layout.nav-page .vp-doc > div > blockquote {
+  margin: 0;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  padding: 20px;
+  background: var(--vp-c-bg-soft);
+  transition: border-color 0.2s ease;
+}
+
+.Layout.nav-page .vp-doc > div > blockquote:hover {
+  border-color: var(--vp-c-brand-1);
+}
+
+.Layout.nav-page .vp-doc > div > blockquote > h2 {
+  margin: 0;
+  border-top: 0;
+  padding-top: 0;
+  font-size: 22px;
+  line-height: 1.35;
+}
+
+.Layout.nav-page .vp-doc > div > blockquote > h3 {
+  margin: 20px 0 10px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.Layout.nav-page .vp-doc > div > blockquote > p {
+  margin: 8px 0 0;
+  color: var(--vp-c-text-2);
+  line-height: 1.6;
+}
+
+.Layout.nav-page .vp-doc > div > blockquote > ul,
+.Layout.nav-page .vp-doc > div > blockquote > h3 + ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.Layout.nav-page .vp-doc > div > blockquote > ul > li + li,
+.Layout.nav-page .vp-doc > div > blockquote > h3 + ul > li + li {
+  margin-top: 0;
+}
+
+.Layout.nav-page .vp-doc > div > blockquote a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  max-width: 100%;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  padding: 4px 10px;
+  background: var(--vp-c-bg);
+  color: var(--vp-c-brand-1);
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.Layout.nav-page .vp-doc > div > blockquote a:hover {
+  border-color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+}
+
+@media (max-width: 640px) {
+  .Layout.nav-page .vp-doc > div,
+  .Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul {
+    grid-template-columns: 1fr;
+  }
+
+  .Layout.nav-page .vp-doc > div > blockquote {
+    padding: 16px;
+  }
+
+  .Layout.nav-page .vp-doc > div > blockquote > h2 {
+    font-size: 20px;
+  }
+}
