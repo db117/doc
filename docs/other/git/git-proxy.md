@@ -20,8 +20,6 @@ git config --global --unset http.<URI>.proxy
 git config --add core.gitproxy '"http://127.0.0.1:7777" for github.com'
 ```
 
-
-
 #### 编辑文件~/.gitconfig
 
 ```ini
@@ -36,8 +34,6 @@ git config --add core.gitproxy '"http://127.0.0.1:7777" for github.com'
 [http  "<URI>"]
 proxy = socks5://127.0.0.1:10800
 ```
-
-
 
 #### 取消代理
 

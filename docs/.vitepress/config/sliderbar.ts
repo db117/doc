@@ -1,4 +1,4 @@
-import { scanDir } from './utils'
+import {scanDir} from './utils'
 
 export default {
 
@@ -8,6 +8,5 @@ export default {
 	'/database/': scanDir('database'),
 	'/ops/': scanDir('ops'),
 	'/other/': scanDir('other'),
-	'/util/': scanDir('util'),
 
 }

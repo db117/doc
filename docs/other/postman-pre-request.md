@@ -12,8 +12,6 @@ title: postman预请求处理
 >
 > 如`var timestamp = pm.environment.replaceIn("{{$timestamp}}");`
 
-
-
 - **`$guid `**  ：uuid
 - **`$timestamp`**：时间戳（秒）
 - **`$isoTimestamp`**：2020-06-09T21:10:36.177Z
@@ -32,11 +30,7 @@ title: postman预请求处理
 - **`$randomUserAgent`**：随机生成 user agent
 - **`$randomProtocol`**：随机生成网络协议，"http"，"https"
 
-
-
 ------
-
-
 
 ### 常用操作
 
@@ -68,11 +62,7 @@ pm.request.headers.add({
   value: "{{aad-accesstoken}}"});
 ```
 
-
-
 ------
-
-
 
 ### 常见参数获取
 

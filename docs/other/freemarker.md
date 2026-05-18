@@ -1,30 +1,31 @@
 ---
 title: Freemarker
 ---
+
 ## 基础语法
 
 ### 字符输出
 
 * 变量存在，输出该变量，否则不输出
-      ```
-  ${emp.name?if_exists}
-      ```
-  
+  ```
+${emp.name?if_exists}
+  ```
+
 * 变量存在，输出该变量，否则不输出
 
       ${emp.name!}
-  
+
 * 变量不存在，取默认值xxx
     ```
     ${emp.name?default("xxx")}
     ```
-    
+
 * 变量不存在，取默认值xxx
 
     ```
     ${emp.name!"xxx"} 
 	```
-	
+
 * 对字符串进行HTML编码，对html中特殊字符进行转义
 
     ```
@@ -41,7 +42,7 @@ title: Freemarker
     ```
     ${"Str"?lower_case}
     ```
-    
+
 * 将字符串转换成大写
 
     ```
@@ -73,13 +74,11 @@ title: Freemarker
         ${str[1..4]} 　　　 // 结果是bcde// 返回指定字符的索引${str?index_of("n")}
         ```
 
-        
-
 ### 日期输出
 
 * 日期格式
 
-  * ```
+    * ```
     ${emp.date?string('yyyy-MM-dd')}
     ```
 

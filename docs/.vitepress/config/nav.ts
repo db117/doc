@@ -1,4 +1,4 @@
-import type { DefaultTheme } from 'vitepress'
+import type {DefaultTheme} from 'vitepress'
 
 const nav: DefaultTheme.NavItem[] = [
 	{ text: '首页', link: '/' },
@@ -7,7 +7,6 @@ const nav: DefaultTheme.NavItem[] = [
 	{ text: 'Java', link: '/java/' },
 	{ text: '运维', link: '/ops/' },
 	{ text: '系统', link: '/os/' },
-	{ text: '工具', link: '/util/' },
 	{ text: '知识碎片', link: '/other/' },
 	{ text: '关于我', link: 'https://www.500d.me/cvresume/3244698236/' },
 ]

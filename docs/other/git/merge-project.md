@@ -20,15 +20,11 @@ brew install git-filter-repo
 pip3 install --user git-filter-repo
 ```
 
-
-
- 创建“空壳”目标仓库并克隆
+创建“空壳”目标仓库并克隆
 
 ```bash
 git clone --bare git@github.com:yourorg/NEW_MONO.git
 ```
-
-
 
 创建并修改脚本
 
@@ -79,8 +75,6 @@ for idx in "${!REPOS[@]}"; do
   git merge "${SUB_DIRS[$idx]}-master" --allow-unrelated-histories -m "Merge ${SUB_DIRS[$idx]}"
 done
 ```
-
-
 
 修改文件权限并执行
 

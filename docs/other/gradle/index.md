@@ -1,6 +1,7 @@
 ---
 title: gradle
 ---
+
 ## gradle
 
 ## gradle配置国内镜像
@@ -12,8 +13,6 @@ title: gradle
 ```
 distributionUrl=https\://mirrors.cloud.tencent.com/gradle/gradle-8.8-bin.zip
 ```
-
-
 
 对所有项目生效，在${USER_HOME}/.gradle/下创建init.gradle文件
 
@@ -59,8 +58,6 @@ allprojects{
 }
 
 ```
-
-
 
 ### gradle代理
 

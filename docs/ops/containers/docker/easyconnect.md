@@ -17,8 +17,8 @@ docker run --name ec --device /dev/net/tun --cap-add NET_ADMIN -d --restart=alwa
 #### 注意事项
 
 * 如需要http的则需要使用privoxy进行前置代理
-  [privoxy](../../../util/privoxy.md)
+  [privoxy](../../../other/privoxy.md)
 
 * git代理
 
-  [git代理](../../../util/git/git-proxy.md)
+  [git代理](../../../other/git/git-proxy.md)

@@ -14,12 +14,13 @@ title: git
   [credential] 
   helper = store
   ```
+
 ------
 
 ### 解决Git中fatal: refusing to merge unrelated histories
 
-> 在你操作命令后面加`--allow-unrelated-histories` 
-> 例如： 
+> 在你操作命令后面加`--allow-unrelated-histories`
+> 例如：
 > `git merge master --allow-unrelated-histories`
 > push,pull同理
 
@@ -27,14 +28,11 @@ title: git
 
 ### windows下git报错 warning: Clone succeeded, but checkout failed.
 
-
->`git config core.longpaths true`
->Git的文件名限制为4096个字符，但在Windows上使用msys编译Git时除外。它使用Windows API的较早版本，文件名限制为260个字符。
->（对所有项目都避免--system或--global标记）
+> `git config core.longpaths true`
+> Git的文件名限制为4096个字符，但在Windows上使用msys编译Git时除外。它使用Windows API的较早版本，文件名限制为260个字符。
+> （对所有项目都避免--system或--global标记）
 
 ------
-
-
 
 ### 批量pull脚本
 
@@ -87,7 +85,7 @@ git log branch1 ^branch2
 #### 查看branch2中比branch1中多提交了哪些内容
 
 `git log branch1..branch2`
- **注意，列出来的是两个点后边（此处即dev）多提交的内容。**
+**注意，列出来的是两个点后边（此处即dev）多提交的内容。**
 
 #### 不知道谁提交的多谁提交的少，单纯想知道有什么不一样
 
@@ -125,8 +123,6 @@ git rev-list <commit-id-1>..<commit-id-2> --count
 GIT_COMMITTER_DATE="2021-12-12T12:27:07" git commit --amend --date="2021-12-12T12:27:07"
 ```
 
-
-
 ### git tag不能显示所有tags
 
 git pull不能默认将所有的tags拉下来。
@@ -135,15 +131,11 @@ git pull不能默认将所有的tags拉下来。
 git fetch --tags
 ```
 
-
-
 #### 提示安全目录问题
 
 ```
 git config --global --add safe.directory "*"
 ```
-
-
 
 #### 修改已提交的邮箱
 
@@ -171,8 +163,6 @@ git push origin --force --tags
 
 ```
 
-
-
 #### 只使用某些文件夹
 
 ```
@@ -192,8 +182,6 @@ git sparse-checkout set folderA
 git checkout main # 或其他分支名
 
 ```
-
-
 
 #### 22 端口不能访问
 

@@ -21,8 +21,6 @@ git config -l
 git config -list
 ```
 
-
-
 ## 基本信息
 
 ```
@@ -40,8 +38,6 @@ credential.helper cache
 # 记住密码（有过期时间）
 credential.helper 'cache --timeout=10000'
 ```
-
-
 
 ### 别名
 

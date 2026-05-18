@@ -17,7 +17,8 @@ title: IP 查询
 #### 数据库文件获取途经
 
 - 去官网注册，并下载文件
-- github有人下载好了[P3TERX/GeoLite.mmdb: MaxMind's GeoIP2 GeoLite2 Country, City, and ASN databases](https://github.com/P3TERX/GeoLite.mmdb)
+-
+github有人下载好了[P3TERX/GeoLite.mmdb: MaxMind's GeoIP2 GeoLite2 Country, City, and ASN databases](https://github.com/P3TERX/GeoLite.mmdb)
 
 #### maven
 
@@ -49,7 +50,7 @@ triedCountry.ifPresent(x -> {
 });
 ```
 
-## ip2region 
+## ip2region
 
 > [lionsoul2014/ip2region: Ip2region (2.0 - xdb) is a offline IP address manager framework and locator, support billions of data segments, ten microsecond searching performance. xdb engine implementation for many programming languages](https://github.com/lionsoul2014/ip2region)
 >
