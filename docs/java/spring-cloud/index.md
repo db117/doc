@@ -1,11 +1,18 @@
 ---
-title: spring-cloud
+title: Spring Cloud
 ---
 
-## 介绍
+# Spring Cloud
 
-> 是微服务系统架构的一站式解决方案，在平时我们构建微服务的过程中需要做如 **服务发现注册** 、**配置中心** 、**消息总线** 、**负载均衡** 、**断路器** 、**数据监控** 等操作，而 Spring Cloud 为我们提供了一套简易的编程模型，使我们能在 Spring Boot 的基础上轻松地实现微服务项目的构建。
+Spring Cloud 是微服务系统架构的一站式解决方案，围绕服务注册发现、配置中心、消息总线、负载均衡、断路器、数据监控等能力提供统一编程模型。
 
-待整理
+## 文档
 
-SpringFactoryImportSelector
+- [Gateway](./gateway.md)：基于 Spring WebFlux 和 Netty 的响应式网关。
+- [OpenFeign](./openfeign.md)：声明式 REST 客户端和 Spring MVC 注解整合。
+- [Sentinel](./sentinel.md)：限流、熔断、统计扩展点和 Slot 调用链。
+- [Spring Cloud Context](./context.md)：`RefreshScope` 和上下文刷新机制。
+
+## 待整理
+
+- `SpringFactoryImportSelector`

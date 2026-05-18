@@ -1,5 +1,5 @@
 ---
-title: chrome
+title: Chrome
 ---
 
 ### 禁止Chrome强制将http转为https访问

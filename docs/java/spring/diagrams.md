@@ -1,0 +1,95 @@
+---
+title: 流程图合集
+---
+
+## Spring
+
+### spring-ioc 加载流程
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/65fe8fa243192b2dea1855ac"></iframe>
+
+### Bean创建流程
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/65fecac2be850903c5231e0c"></iframe>
+
+### spring扩展接口执行流程
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/612318b37d9c0856876bb0de"></iframe>
+
+### spring-事务
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/66016e0b878a3f700d412f6f"></iframe>
+
+### spring-aop
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/6600efa0878a3f700d3ff666"></iframe>
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/63b7d219f27176074bb45725"></iframe>
+
+### SpringMVC 调用流程
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/611639481e085306e87a74f4"></iframe>
+
+### Spring cache  调用流程
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/64f822fc9c6202394a670f27?cid=64f822fc9c6202394a670f2a"></iframe>
+------
+
+## Spring-boot
+
+### spring-boot 类加载流程
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/60f69a560e3e74596bab3b71"></iframe>
+
+### spring-boot 启动流程
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/6602795e878a3f700d429747"></iframe>
+
+### spring-boot自动装配
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/66026df9188e2649fda2eefa"></iframe>
+
+
+------
+
+## Spring-cloud
+
+### Spring-cloud-context
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/660282ba24223828155c84e5"></iframe>
+
+### Openfeign
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/61517ffb079129511c901d8e"></iframe>
+
+### Spring-cloud RefreshScope
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/6348db5b7d9c080c425579d1"></iframe>
+
+### Spring-cloud gateway
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/616fc00e1efad42eb5ebffb5"></iframe>
+
+------
+
+## Spring-cloud Alibaba
+
+### Nacos Names 2.3
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/66068158242238281562eed6"></iframe>
+
+### Nacos Config 2.3
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/66066a85188e2649fda96513"></iframe>
+
+### Spring-cloud-alibaba-nacos Discovery 2023
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/660530c5188e2649fda7c68d"></iframe>
+
+### Alibaba-cloud-sentinel 2023
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/6603dd58851a570febf22aab"></iframe>
+
+### Sentinel-client 1.8
+
+<iframe id="embed_dom" name="embed_dom" frameborder="0" style="display:block;width:725px; height:300px;" src="https://www.processon.com/embed/6603c40c878a3f700d44a6bf"></iframe>
