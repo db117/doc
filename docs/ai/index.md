@@ -11,6 +11,8 @@ AI 工具、模型部署、知识库和本地推理相关笔记。
 - [本地模型](local/localModel.md)：模型文件、运行环境和本地路径。
 - [ChatChat](local/chatchat.md)：知识库项目安装与启动。
 - [Milvus](local/milvus.md)：向量数据库安装和基础使用。
+- [注册土耳其区 Apple ID 订阅 ChatGPT Plus](chatgpt-plus-turkey-apple-id.md)：土区 Apple ID、礼品卡充值和 ChatGPT Plus
+  订阅流程。
 
 ## 相关论文
 
