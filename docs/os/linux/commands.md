@@ -36,8 +36,6 @@ ls *.jpg | xargs -n1 -I {} cp {} /data/images
 find /path -type f -print0 | xargs -0 rm
 ```
 
-
-
 ### curl
 
 ```

@@ -31,8 +31,6 @@ public int bs(int[] nums, int target) {
 }
 ```
 
-
-
 ### 找等于目标值的最小索引
 
 两种写法，主要区别是 `while` 判断条件。

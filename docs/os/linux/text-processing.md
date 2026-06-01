@@ -4,9 +4,9 @@ title: 文本分析
 
 ## 说明
 
-> -  grep 更适合单纯的查找或匹配文本
-> -  sed 更适合编辑匹配到的文本
-> -  awk 更适合格式化文本，对文本进行较复杂格式处理
+> - grep 更适合单纯的查找或匹配文本
+> - sed 更适合编辑匹配到的文本
+> - awk 更适合格式化文本，对文本进行较复杂格式处理
 
 ## grep
 
@@ -134,13 +134,13 @@ sed '$r test1.txt' test.txt
 常用参数
 
 > - -F fs or --field-separator fs
->   指定输入文件折分隔符，fs是一个字符串或者是一个正则表达式，如-F:。
+    > 指定输入文件折分隔符，fs是一个字符串或者是一个正则表达式，如-F:。
 > - -v var=value or --asign var=value
->   赋值一个用户定义变量。
+    > 赋值一个用户定义变量。
 > - -f scripfile or --file scriptfile
->   从脚本文件中读取awk命令。
+    > 从脚本文件中读取awk命令。
 > - -W version or --version
->   打印bug报告信息的版本。
+    > 打印bug报告信息的版本。
 >
 > ------
 

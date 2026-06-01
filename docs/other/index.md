@@ -12,7 +12,7 @@ title: 其他
 - [Git](./git/)：配置、代理、统计、仓库瘦身和项目合并。
 - [Gradle](./gradle/)：镜像、代理、任务和测试跳过策略。
 - [单元测试](./unit-test/)：JUnit 与 Mockito 常用写法。
-- [正则表达式](./乱七八糟/正则表达式.md)：规则、常用表达式和大小写转换。
+- [正则表达式](./misc/regex.md)：规则、常用表达式和大小写转换。
 - [Chrome](./chrome.md)：浏览器相关记录。
 - [YAML](./yaml.md)：格式和语法说明。
 - [Python](./python.md)：pip、poetry 和国内镜像源。

@@ -1,5 +1,5 @@
 ---
-title: idea相关
+title: IDEA 相关
 ---
 
 ## 常用插件
@@ -80,7 +80,7 @@ title: idea相关
 
 ### jclasslib Bytecode Viewer
 
->  Java 类文件的字节码查看器
+> Java 类文件的字节码查看器
 >
 > [jclasslib](https://github.com/ingokegel/jclasslib)
 

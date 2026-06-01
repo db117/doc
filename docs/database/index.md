@@ -9,7 +9,7 @@ title: 数据库
 
 - [MySQL](./mysql/)：安装、函数、时间类型、窗口函数、批量插入和死锁排查。
 - [Redis](./redis/)：连接、锁、删除数据、SCAN 和 Ubuntu 安装。
-- [PostgreSQL](./postgreSql/)：UPSERT、JSON、统计视图和执行计划分析。
+- [PostgreSQL](./postgresql/)：UPSERT、JSON、统计视图和执行计划分析。
 - [SQL Server](./sqlserver/)：权限、系统表、JSON 和常见查询。
 - [Elasticsearch](./es/)：索引、mapping、分页和模板查询。
 

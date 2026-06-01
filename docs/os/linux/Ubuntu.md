@@ -1,5 +1,5 @@
 ---
-title: Ubuntu相关
+title: Ubuntu 相关
 ---
 <TOC />
 #### 安装Chrome 
@@ -34,4 +34,3 @@ sudo mv -f chromedriver /usr/local/share/chromedriver
 sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
 sudo ln -s /usr/local/share/chromedriver /usr/bin/chromedrive
 ```
-

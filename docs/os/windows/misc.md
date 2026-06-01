@@ -8,4 +8,4 @@ title: 乱七八糟
 
 #### 解决 Windows 11 在 HDR 模式下截图 Edge 浏览器界面时画面过曝的问题
 
- 访问 `edge://flags/`，搜索 `Force color profile`，并按照你的 HDR 颜色档案进行配置
+访问 `edge://flags/`，搜索 `Force color profile`，并按照你的 HDR 颜色档案进行配置

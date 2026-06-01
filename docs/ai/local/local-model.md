@@ -10,8 +10,6 @@ title: 本地运行大模型
 >
 > [ollama/ollama: (github.com)](https://github.com/ollama/ollama)
 
-
-
 ### xinference
 
 > https://inference.readthedocs.io/zh-cn/latest/index.html
@@ -19,8 +17,6 @@ title: 本地运行大模型
 > https://github.com/xorbitsai/inference/tree/main
 >
 > 模拟Open AI 的接口
-
-
 
 ### LM Studio
 

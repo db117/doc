@@ -1,5 +1,5 @@
 ---
-title: Mysql批量插入数据
+title: MySQL 批量插入数据
 ---
 
 # insert ignore into
@@ -25,17 +25,15 @@ title: Mysql批量插入数据
 
 ### 唯一键冲突情况
 
-​	数据不会发生变化但是自增主键会加1
+​ 数据不会发生变化但是自增主键会加1
 
 ## insert into ... on duplicate key update
 
 ### 作用
 
 - 在`insert into`语句末尾指定`on duplicate key update`，会根据主键或者唯一键判断：
-  - 若数据库有该条数据，则直接更新原数据，相当于 `update`
-  - 若数据库没有该条数据，则插入为新的数据，跟普通的 `insert into` 一样
-
-
+    - 若数据库有该条数据，则直接更新原数据，相当于 `update`
+    - 若数据库没有该条数据，则插入为新的数据，跟普通的 `insert into` 一样
 
 ```
 insert into table_name(field_name...) values (value...), (value...) on duplicate key update field_name=values(field_name), field_name=field_name;

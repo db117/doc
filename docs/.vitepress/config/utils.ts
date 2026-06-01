@@ -4,6 +4,20 @@ import fm from 'front-matter'
 
 const { relative, resolve } = path_
 const docsRoot = resolve(__dirname, '../..')
+const defaultOrder = Number.MAX_SAFE_INTEGER
+
+type PageMeta = {
+	title: string
+	order: number
+}
+
+type SidebarItem = {
+	text: string
+	link?: string
+	items?: SidebarItem[]
+	collapsible?: boolean
+	order?: number
+}
 
 export const scanDir = (pathName: string) => {
 	const path = resolve(docsRoot, pathName)
@@ -13,46 +27,48 @@ export const scanDir = (pathName: string) => {
 export const getMsg = (path: string) => {
 	const entries = fs.readdirSync(path, { withFileTypes: true })
 		.filter(item => filterFile(item))
-		.sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'))
 
 	if (entries.length) {
-		let arr = entries.map(item => {
+		return entries.map(item => {
 			if (item.isFile() && item.name.endsWith('.md')) {
-				// 文件完整路径
-				const fullPath = path_.join(path, item.name);
+				const fullPath = path_.join(path, item.name)
+				const meta = pageMeta(fullPath)
 
 				return {
-					text: title(fullPath),
+					text: meta.title,
 					link: resolve(path, item.name),
+					order: meta.order,
 				}
 			} else {
-				const file = resolve(path, item.name, "index.md");
+				const file = resolve(path, item.name, "index.md")
 
 				if (fs.existsSync(file)) {
+					const meta = pageMeta(file)
 
 					return {
-						text: title(file),
-						items: getMsg(resolve(path, item.name)),// 递归处理文件夹
+						text: meta.title,
+						items: getMsg(resolve(path, item.name)),
 						link: resolve(path, item.name, "index"),
 						collapsible: true,
+						order: meta.order,
 					}
 				} else {
 					return {
 						text: item.name.split('.')[0],
-						items: getMsg(resolve(path, item.name)),// 递归处理文件夹
+						items: getMsg(resolve(path, item.name)),
 						collapsible: true,
+						order: defaultOrder,
 					}
 				}
 
 			}
-		})
-		arr = arr.map(item => {
+		}).sort(compareSidebarItem).map(item => {
 			if (item.link) {
 				item.link = translateDir(item.link)
 			}
+			delete item.order
 			return item
 		})
-		return arr
 	} else {
 		return []
 	}
@@ -76,21 +92,25 @@ function filterFile(item: fs.Dirent) {
 	return item.isDirectory() || (item.isFile() && item.name.endsWith('.md') && item.name != "index.md");
 }
 /**
- * 获取文件标题
+ * 获取页面元信息
  * @param fullPath 完整文件路径
  * @returns 
  */
-function title(fullPath: string) {
-	// 读取文件内容
+function pageMeta(fullPath: string): PageMeta {
 	const data = fs.readFileSync(fullPath, 'utf8');
-	// 解析 front-matter
-	const content = fm<{ title?: string }>(data)
-	// 获取文件头
-	const title = content.attributes.title;
+	const content = fm<{ title?: string, order?: number }>(data)
 
-	if (title) {
-		return title;
+	return {
+		title: content.attributes.title || path_.basename(fullPath),
+		order: Number.isFinite(content.attributes.order) ? content.attributes.order! : defaultOrder,
 	}
-	// 没找到就返回原始文件名称
-	return path_.basename(fullPath);
+}
+
+function compareSidebarItem(a: SidebarItem, b: SidebarItem) {
+	const aOrder = a.order ?? defaultOrder
+	const bOrder = b.order ?? defaultOrder
+	if (aOrder !== bOrder) {
+		return aOrder - bOrder
+	}
+	return a.text.localeCompare(b.text, 'zh-CN')
 }

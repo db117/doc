@@ -26,7 +26,14 @@ hs_err_pid*
 /docs/.vitepress/dist/
 *.DS_Store
 /docs/.vitepress/cache
+
+# superpowers
 /.superpowers/
+
+# planning-with-files
 /findings.md
 /progress.md
 /task_plan.md
+
+# obsidian
+/docs/.obsidian/
