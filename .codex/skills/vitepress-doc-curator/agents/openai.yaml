@@ -1,0 +1,4 @@
+interface:
+  display_name: "VitePress 文档整理"
+  short_description: "整理素材池草稿并发布到文档站"
+  default_prompt: "Use $vitepress-doc-curator to整理当前仓库素材池中的文档并发布到 docs 目录。"
