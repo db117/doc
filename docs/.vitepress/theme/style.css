@@ -43,16 +43,23 @@
  *   in custom container, badges, etc.
  * -------------------------------------------------------------------------- */
 
- :root {
+:root {
   --vp-c-default-1: var(--vp-c-gray-1);
   --vp-c-default-2: var(--vp-c-gray-2);
   --vp-c-default-3: var(--vp-c-gray-3);
   --vp-c-default-soft: var(--vp-c-gray-soft);
 
-  --vp-c-brand-1: var(--vp-c-indigo-1);
-  --vp-c-brand-2: var(--vp-c-indigo-2);
-  --vp-c-brand-3: var(--vp-c-indigo-3);
-  --vp-c-brand-soft: var(--vp-c-indigo-soft);
+  --vp-c-brand-1: oklch(43% 0.095 186);
+  --vp-c-brand-2: oklch(50% 0.105 186);
+  --vp-c-brand-3: oklch(57% 0.11 186);
+  --vp-c-brand-soft: oklch(92% 0.04 186 / 0.55);
+
+  --nav-accent-teal: oklch(43% 0.095 186);
+  --nav-accent-blue: oklch(45% 0.12 245);
+  --nav-accent-green: oklch(44% 0.105 152);
+  --nav-accent-amber: oklch(47% 0.105 78);
+  --nav-accent-violet: oklch(46% 0.115 300);
+  --nav-accent-slate: oklch(43% 0.035 230);
 
   --vp-c-tip-1: var(--vp-c-brand-1);
   --vp-c-tip-2: var(--vp-c-brand-2);
@@ -68,6 +75,20 @@
   --vp-c-danger-2: var(--vp-c-red-2);
   --vp-c-danger-3: var(--vp-c-red-3);
   --vp-c-danger-soft: var(--vp-c-red-soft);
+}
+
+.dark {
+  --vp-c-brand-1: oklch(78% 0.095 186);
+  --vp-c-brand-2: oklch(72% 0.105 186);
+  --vp-c-brand-3: oklch(64% 0.105 186);
+  --vp-c-brand-soft: oklch(34% 0.055 186 / 0.45);
+
+  --nav-accent-teal: oklch(78% 0.095 186);
+  --nav-accent-blue: oklch(77% 0.1 245);
+  --nav-accent-green: oklch(76% 0.095 152);
+  --nav-accent-amber: oklch(78% 0.095 78);
+  --nav-accent-violet: oklch(77% 0.1 300);
+  --nav-accent-slate: oklch(78% 0.035 230);
 }
 
 /**
@@ -91,17 +112,13 @@
  * -------------------------------------------------------------------------- */
 
 :root {
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: -webkit-linear-gradient(
-    120deg,
-    #bd34fe 30%,
-    #41d1ff
-  );
+  --vp-home-hero-name-color: var(--vp-c-brand-1);
+  --vp-home-hero-name-background: none;
 
   --vp-home-hero-image-background-image: linear-gradient(
     -45deg,
-    #bd34fe 50%,
-    #47caff 50%
+    oklch(70% 0.11 186) 50%,
+    oklch(75% 0.1 152) 50%
   );
   --vp-home-hero-image-filter: blur(44px);
 }
@@ -175,6 +192,7 @@
 .Layout.nav-page .vp-doc > div {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  align-items: start;
   gap: 16px;
 }
 
@@ -185,10 +203,26 @@
   grid-column: 1 / -1;
 }
 
+.Layout.nav-page .vp-doc > div > h1 {
+  margin-bottom: 16px;
+  max-width: 18em;
+  text-wrap: balance;
+}
+
+.Layout.nav-page .vp-doc > div > h1 + p {
+  max-width: 68ch;
+  color: var(--vp-c-text-2);
+  font-size: 16px;
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
 .Layout.nav-page .vp-doc > div > h2 {
-  margin: 12px 0 0;
+  margin: 32px 0 12px;
   border-top: 0;
   padding-top: 0;
+  font-size: 24px;
+  line-height: 1.35;
 }
 
 .Layout.nav-page .vp-doc > div > h2 + ul {
@@ -199,16 +233,19 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
+  margin-bottom: 16px;
   padding-left: 0;
   list-style: none;
 }
 
 .Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li {
-  min-height: 80px;
-  border: 1px solid var(--vp-c-divider);
+  --nav-card-accent: var(--nav-accent-teal);
+
+  min-height: 74px;
+  border: 1px solid color-mix(in oklch, var(--nav-card-accent) 18%, var(--vp-c-divider));
   border-radius: 8px;
-  padding: 16px;
-  background: var(--vp-c-bg-soft);
+  padding: 14px 16px;
+  background: color-mix(in oklch, var(--nav-card-accent) 6%, var(--vp-c-bg-soft));
   color: var(--vp-c-text-2);
   font-size: 13px;
   line-height: 1.5;
@@ -220,44 +257,83 @@
 }
 
 .Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li:hover {
-  border-color: var(--vp-c-brand-1);
-  background: var(--vp-c-brand-soft);
+  border-color: var(--nav-card-accent);
+  background: color-mix(in oklch, var(--nav-card-accent) 11%, var(--vp-c-bg-soft));
   transform: translateY(-1px);
 }
 
 .Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li > a {
   display: inline-block;
   margin-bottom: 4px;
-  color: var(--vp-c-text-1);
+  color: color-mix(in oklch, var(--nav-card-accent) 42%, var(--vp-c-text-1));
   font-size: 16px;
   font-weight: 700;
   text-decoration: none;
 }
 
 .Layout.nav-page .vp-doc > div > blockquote {
+  --nav-card-accent: var(--nav-accent-teal);
+
   margin: 0;
-  border: 1px solid var(--vp-c-divider);
+  border: 1px solid color-mix(in oklch, var(--nav-card-accent) 16%, var(--vp-c-divider));
   border-radius: 8px;
   padding: 20px;
-  background: var(--vp-c-bg-soft);
-  transition: border-color 0.2s ease;
+  background: color-mix(in oklch, var(--nav-card-accent) 5%, var(--vp-c-bg-soft));
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(1),
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(2),
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(3) {
+  --nav-card-accent: var(--nav-accent-blue);
+}
+
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(4),
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(8),
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(9),
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(10) {
+  --nav-card-accent: var(--nav-accent-teal);
+}
+
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(5) {
+  --nav-card-accent: var(--nav-accent-amber);
+}
+
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(6),
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(7) {
+  --nav-card-accent: var(--nav-accent-green);
+}
+
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(11),
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(12),
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(13) {
+  --nav-card-accent: var(--nav-accent-slate);
+}
+
+.Layout.nav-page .vp-doc > div > blockquote:nth-of-type(14) {
+  --nav-card-accent: var(--nav-accent-violet);
 }
 
 .Layout.nav-page .vp-doc > div > blockquote:hover {
-  border-color: var(--vp-c-brand-1);
+  border-color: var(--nav-card-accent);
+  background: color-mix(in oklch, var(--nav-card-accent) 9%, var(--vp-c-bg-soft));
 }
 
 .Layout.nav-page .vp-doc > div > blockquote > h2 {
   margin: 0;
   border-top: 0;
   padding-top: 0;
+  color: color-mix(in oklch, var(--nav-card-accent) 36%, var(--vp-c-text-1));
   font-size: 22px;
   line-height: 1.35;
+  text-wrap: balance;
 }
 
 .Layout.nav-page .vp-doc > div > blockquote > h3 {
-  margin: 20px 0 10px;
+  margin: 18px 0 8px;
+  color: color-mix(in oklch, var(--nav-card-accent) 28%, var(--vp-c-text-1));
   font-size: 15px;
+  font-weight: 700;
   line-height: 1.4;
 }
 
@@ -271,7 +347,7 @@
 .Layout.nav-page .vp-doc > div > blockquote > h3 + ul {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 8px 7px;
   margin: 12px 0 0;
   padding-left: 0;
   list-style: none;
@@ -287,12 +363,13 @@
   align-items: center;
   min-height: 32px;
   max-width: 100%;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 8px;
-  padding: 4px 10px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-brand-1);
+  border: 1px solid color-mix(in oklch, var(--nav-card-accent) 18%, var(--vp-c-divider));
+  border-radius: 999px;
+  padding: 4px 11px;
+  background: color-mix(in oklch, var(--nav-card-accent) 5%, var(--vp-c-bg));
+  color: color-mix(in oklch, var(--nav-card-accent) 68%, var(--vp-c-text-1));
   font-size: 14px;
+  font-weight: 500;
   line-height: 1.45;
   overflow-wrap: anywhere;
   text-decoration: none;
@@ -300,15 +377,44 @@
 }
 
 .Layout.nav-page .vp-doc > div > blockquote a:hover {
-  border-color: var(--vp-c-brand-1);
-  background: var(--vp-c-brand-soft);
-  color: var(--vp-c-brand-1);
+  border-color: var(--nav-card-accent);
+  background: color-mix(in oklch, var(--nav-card-accent) 12%, var(--vp-c-bg));
+  color: color-mix(in oklch, var(--nav-card-accent) 82%, var(--vp-c-text-1));
 }
 
 @media (max-width: 640px) {
-  .Layout.nav-page .vp-doc > div,
-  .Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul {
+  .Layout.nav-page .vp-doc > div {
     grid-template-columns: 1fr;
+  }
+
+  .Layout.nav-page .vp-doc > div > h1 {
+    margin-bottom: 12px;
+  }
+
+  .Layout.nav-page .vp-doc > div > h1 + p {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .Layout.nav-page .vp-doc > div > h2 {
+    margin: 24px 0 10px;
+    font-size: 22px;
+  }
+
+  .Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li {
+    min-height: 0;
+    padding: 11px 12px;
+    font-size: 12px;
+  }
+
+  .Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li > a {
+    margin-bottom: 2px;
+    font-size: 14px;
   }
 
   .Layout.nav-page .vp-doc > div > blockquote {

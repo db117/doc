@@ -24,7 +24,7 @@ outline: false
 
 > ## AI
 >
-> 对话、模型、提示词与 AI 编程工具。
+> 对话、模型、提示词与 AI 工具。
 >
 > ### chat
 >
@@ -42,18 +42,22 @@ outline: false
 > - [Spring AI](https://docs.spring.io/spring-ai/reference/index.html)
 > - [LangChain4j](https://docs.langchain4j.dev/)
 > - [AI Short](https://www.aishort.top/)
-> - [AI Coding Harness](https://github.com/ZhangHanDong/harness-engineering-from-cc-to-ai-coding)
 > - [Hello Agents](https://github.com/datawhalechina/hello-agents)
+
+> ## AI 编程
 >
-> ### AI 编程工具
+> 编程辅助、规范、状态栏与智能体工作流。
 >
 > - [find-skills](https://skills.sh/)
 > - [planning-with-files](https://github.com/othmanadi/planning-with-files)
 > - [ccstatusline](https://github.com/sirmalloc/ccstatusline/)
 > - [OpenSpec](https://github.com/Fission-AI/OpenSpec)
 > - [superpowers](https://github.com/obra/superpowers)
+> - [AI Coding Harness](https://github.com/ZhangHanDong/harness-engineering-from-cc-to-ai-coding)
+
+> ## AI 资讯
 >
-> ### 其他
+> 资讯、比价和临时查询入口。
 >
 > - [AI 比价](https://aibijia.org/)
 > - [WEB3 工具](https://web3chirou.com/)
@@ -87,7 +91,7 @@ outline: false
 
 > ## 学习
 >
-> 课程、面试、Java 知识库和算法训练。
+> 课程、面试与 Java 知识库。
 >
 > - [知识星球](https://wx.zsxq.com/)
 > - [极客时间](https://time.geekbang.org/)
@@ -99,8 +103,10 @@ outline: false
 > - [虫洞栈](https://bugstack.cn/)
 > - [Java 全栈](https://pdai.tech/)
 > - [面试鸭](https://www.mianshiya.com/)
+
+> ## 算法
 >
-> ### 算法
+> 题单、可视化、复杂度和竞赛入口。
 >
 > - [LeetCode Rating](https://zerotrac.github.io/leetcode_problem_rating/#/)
 > - [LCCN Predictor](https://lccn.lbao.site/)
@@ -110,9 +116,6 @@ outline: false
 > - [算法可视化](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
 > - [复杂度](http://cooervo.github.io/Algorithms-DataStructures-BigONotation/index.html)
 > - [VisuAlgo](https://visualgo.net/zh)
->
-> ### 算法竞赛
->
 > - [LeetCode](https://leetcode-cn.com/u/db117/)
 > - [Codeforces](https://codeforces.com/)
 
