@@ -19,6 +19,14 @@ vim ~/.bash_profile
 source ~/.bash_profile
 ```
 
+####  已损坏，无法打开
+
+```
+xattr -cr "/Applications/xxx.app"
+```
+
+
+
 #### mac上启动springboot项目很慢
 
 - 查看本机的hostname
