@@ -1,5 +1,6 @@
 ---
 title: AI
+_width: wide
 ---
 ## AI 相关
 

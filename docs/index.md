@@ -148,6 +148,7 @@ outline: false
 > - [OSChina 工具](http://tool.oschina.net/)
 > - [每日 IP 段](https://ispip.clang.cn/)
 > - [IP 查询](https://iplark.com/)
+> - [openapi查看](https://redocly.github.io/redoc/)
 
 > ## 博客
 >
