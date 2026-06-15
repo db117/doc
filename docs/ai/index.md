@@ -2,6 +2,7 @@
 title: AI
 _width: wide
 ---
+
 ## AI 相关
 
 AI 工具、模型部署、知识库和本地推理相关笔记。
@@ -23,6 +24,6 @@ AI 工具、模型部署、知识库和本地推理相关笔记。
 
 > 思维链，增强大模型推理能力
 
-### PyTorch 
+### PyTorch
 
 [在本地启动 | PyTorch - PyTorch 中文](https://pytorch.ac.cn/get-started/locally/#supported-windows-distributions)
