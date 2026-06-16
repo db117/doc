@@ -13,6 +13,7 @@ AI 工具、模型部署、知识库和本地推理相关笔记。
 - [本地模型](local/local-model.md)：模型文件、运行环境和本地路径。
 - [ChatChat](local/chatchat.md)：知识库项目安装与启动。
 - [Milvus](local/milvus.md)：向量数据库安装和基础使用。
+- [OKF 开放知识格式](okf.md)：面向人类和 Agent 的 Markdown 知识资产格式。
 - [Claude Code status line 配置](claude-code-statusline.md)：底部状态栏脚本、配置字段和 token 展示示例。
 - [IDEA MCP 与 Index MCP 实践对比](ide-mcp-practice.md)：JetBrains 官方 MCP 与 Index MCP 的能力边界、工具路由和保留策略。
 - [注册土耳其区 Apple ID 订阅 ChatGPT Plus](chatgpt-plus-turkey-apple-id.md)：土区 Apple ID、礼品卡充值和 ChatGPT Plus
