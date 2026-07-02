@@ -27,6 +27,7 @@ title: 其他
 - [IP](./ip.md)：IP 与网络相关记录。
 - [OpenWrt](./openwrt.md)：OpenWrt 相关记录。
 - [Postman pre-request](./postman-pre-request.md)：Postman 预请求脚本。
+- [witr](./witr.md)：追踪进程、端口和容器为何运行。
 
 ### 护眼绿
 
