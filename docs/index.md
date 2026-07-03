@@ -156,6 +156,7 @@ outline: false
 >
 > 长期参考的技术博客。
 >
+> - [NoCap不日白](https://buribai.com/)
 > - [廖雪峰](https://www.liaoxuefeng.com/)
 
 > ## 资源
