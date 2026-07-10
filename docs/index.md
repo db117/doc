@@ -83,6 +83,7 @@ outline: false
 > - [Yahoo Finance](https://finance.yahoo.com/)
 > - [MacroMicro](https://sc.macromicro.me/)
 > - [SteadyOptions](https://steadyoptions.com/)
+> - [OptionStrat](https://optionstrat.com/)
 > - [Trading Economics](https://tradingeconomics.com/)
 > - [AI Trading](https://nof1.ai/)
 > - [美股编年史](https://historyofmarket.com/)
