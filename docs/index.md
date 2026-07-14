@@ -54,6 +54,7 @@ outline: false
 > - [OpenSpec](https://github.com/Fission-AI/OpenSpec)
 > - [superpowers](https://github.com/obra/superpowers)
 > - [jetbrains-index-mcp-plugin](https://github.com/hechtcarmel/jetbrains-index-mcp-plugin)
+> - [ponytail](https://github.com/DietrichGebert/ponytail)
 
 > ## AI 资讯
 >
