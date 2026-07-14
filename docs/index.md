@@ -53,7 +53,7 @@ outline: false
 > - [ccstatusline](https://github.com/sirmalloc/ccstatusline/)
 > - [OpenSpec](https://github.com/Fission-AI/OpenSpec)
 > - [superpowers](https://github.com/obra/superpowers)
-> - [AI Coding Harness](https://github.com/ZhangHanDong/harness-engineering-from-cc-to-ai-coding)
+> - [jetbrains-index-mcp-plugin](https://github.com/hechtcarmel/jetbrains-index-mcp-plugin)
 
 > ## AI 资讯
 >
