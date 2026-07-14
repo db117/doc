@@ -17,6 +17,7 @@ AI 工具、模型部署、知识库和本地推理相关笔记。
 - [Claude Code status line 配置](claude-code-statusline.md)：底部状态栏脚本、配置字段和 token 展示示例。
 - [IDEA MCP 与 Index MCP 实践对比](ide-mcp-practice.md)：JetBrains 官方 MCP 与 Index MCP 的能力边界、工具路由和保留策略。
 - [MCP 简介与工具调用流程](mcp.md)：MCP 的 Host / Client / Server 架构、工具发现与调用流程。
+- [Codex 安装与快速开始](codex-install.md)：官方桌面端与 CLI 的安装、登录、更新和安全使用建议。
 - [注册土耳其区 Apple ID 订阅 ChatGPT Plus](chatgpt-plus-turkey-apple-id.md)：土区 Apple ID、礼品卡充值和 ChatGPT Plus
   订阅流程。
 
