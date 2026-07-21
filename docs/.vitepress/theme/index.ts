@@ -11,11 +11,38 @@ export default {
   extends: DefaultTheme,
   Layout: () => {
     const {isDark} = useData()
+
+    // 配置vitepress-mermaid-renderer
     const initMermaid = () => {
-      createMermaidRenderer({
-        theme: isDark.value ? 'dark' : 'default',
-      })
-    }
+      const mermaidRenderer = createMermaidRenderer({
+        theme: isDark.value ? 'dark' : 'forest',
+      });
+
+      mermaidRenderer.setToolbar({
+        showLanguageLabel: false,
+        downloadFormat: 'png',
+        fullscreenMode: 'dialog',
+        desktop: {
+          copyCode: 'enabled',
+          toggleFullscreen: 'enabled',
+          resetView: 'enabled',
+          zoomOut: 'enabled',
+          zoomIn: 'enabled',
+          zoomLevel: 'enabled',
+          download: 'enabled',
+        },
+        fullscreen: {
+         copyCode: 'enabled',
+          toggleFullscreen: 'enabled',
+          resetView: 'enabled',
+          zoomOut: 'enabled',
+          zoomIn: 'enabled',
+          zoomLevel: 'enabled',
+          download: 'enabled',
+        }
+      });
+    };
+
 
     nextTick(initMermaid)
     watch(isDark, initMermaid)
