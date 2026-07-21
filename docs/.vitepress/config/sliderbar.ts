@@ -3,10 +3,10 @@ import {scanDir} from './utils'
 export default {
 
 	'/java/': scanDir('java'),
-	'/os/': scanDir('os'),
 	'/ai/': scanDir('ai'),
-	'/database/': scanDir('database'),
-	'/ops/': scanDir('ops'),
+	'/infrastructure/os/': scanDir('infrastructure/os'),
+	'/infrastructure/database/': scanDir('infrastructure/database'),
+	'/infrastructure/ops/': scanDir('infrastructure/ops'),
 	'/other/': scanDir('other'),
 
 }
