@@ -1,10 +1,10 @@
 {
   "devDependencies": {
-    "@types/node": "^20.14.11",
+    "@types/node": "^20.19.43",
     "front-matter": "^4.0.2",
-    "mermaid": "^10.9.6",
-    "vitepress": "^1.6.4",
-    "vitepress-plugin-mermaid": "^2.0.16"
+    "mermaid": "^11.16.0",
+    "vitepress": "^2.0.0-alpha.18",
+    "vitepress-mermaid-renderer": "^1.1.28"
   },
   "scripts": {
     "docs:dev": "vitepress dev docs",
