@@ -1,6 +1,11 @@
 ---
 title: Mac
 ---
+
+## 文档
+
+- [使用 `/etc/resolver` 配置分域 DNS](./resolver.md)
+
 ### Mac系统下的环境变量
 
 ```swift
@@ -62,4 +67,3 @@ defaults write com.apple.finder AppleShowAllFiles -bool false
 sudo killall -HUP mDNSResponder; 
 sudo dscacheutil -flushcache
 ```
-
