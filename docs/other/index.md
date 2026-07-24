@@ -18,6 +18,7 @@ title: 其他
 - [Python](./python.md)：pip、poetry 和国内镜像源。
 - [Wireshark](./wireshark.md)：过滤表达式和报文分析。
 - [Privoxy](./privoxy.md)：HTTP 代理前置配置。
+- [giffgaff eSIM](./giffgaff.md)：Android 设备写入 eSIM、开通与保号记录。
 
 ### 零散工具
 

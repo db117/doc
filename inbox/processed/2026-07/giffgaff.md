@@ -1,3 +1,10 @@
+🔗 视频演示中用到的工具：
+元萝卜：https://github.com/Katana-Official/SP...
+HookEuicc：https://github.com/Unicorn369/HookEuicc
+Via浏览器：https://res.viayoo.com/v1/via-release...
+giffgaff：https://mi9.com/package/com.giffgaffm...
+小叮当个人博客：https://techbigding.top/
+
 # GiffGaff esim开通流程
 
 ## 前置条件
