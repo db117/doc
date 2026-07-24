@@ -330,7 +330,6 @@ watch(ruleOptions, () => {
 
 .converter-grid {
   display: grid;
-  grid-template-columns: minmax(220px, 0.65fr) minmax(0, 1.35fr);
   gap: 16px;
   align-items: start;
 }
@@ -338,13 +337,9 @@ watch(ruleOptions, () => {
 .converter-panel {
   min-width: 0;
   border: 1px solid var(--vp-c-divider);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 20px;
   background: var(--vp-c-bg-soft);
-}
-
-.converter-input {
-  grid-column: 1 / -1;
 }
 
 .converter-panel h2,
@@ -390,13 +385,14 @@ watch(ruleOptions, () => {
   min-width: 0;
 }
 
-.converter input[type='url'],
+.converter input,
 .converter textarea,
 .converter select {
   width: 100%;
+  min-height: 42px;
   border: 1px solid var(--vp-c-divider);
-  border-radius: 7px;
-  background: transparent;
+  border-radius: 8px;
+  background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
   font: inherit;
 }
@@ -409,9 +405,10 @@ watch(ruleOptions, () => {
 
 .converter textarea {
   display: block;
-  min-height: 176px;
+  min-height: 160px;
   margin-bottom: 10px;
   padding: 10px 11px;
+  font-family: var(--vp-font-family-mono);
   line-height: 1.55;
   resize: vertical;
 }
@@ -427,9 +424,9 @@ watch(ruleOptions, () => {
 }
 
 .converter button {
-  min-height: 40px;
+  min-height: 42px;
   border: 1px solid var(--vp-c-divider);
-  border-radius: 7px;
+  border-radius: 8px;
   padding: 7px 13px;
   background: transparent;
   color: var(--vp-c-text-1);
@@ -451,7 +448,7 @@ watch(ruleOptions, () => {
 .converter .button-primary {
   border-color: var(--vp-c-brand-1);
   background: var(--vp-c-brand-1);
-  color: var(--vp-c-bg-soft);
+  color: var(--vp-c-bg);
 }
 
 .converter .button-primary:hover:not(:disabled) {
@@ -469,7 +466,7 @@ watch(ruleOptions, () => {
 .converter textarea:focus-visible,
 .converter select:focus-visible,
 .converter pre:focus-visible {
-  outline: 3px solid color-mix(in oklch, var(--vp-c-brand-1) 42%, transparent);
+  outline: 2px solid var(--vp-c-brand-1);
   outline-offset: 2px;
 }
 
@@ -522,16 +519,18 @@ watch(ruleOptions, () => {
 .checkbox-row {
   display: flex;
   gap: 9px;
-  align-items: flex-start;
+  align-items: center;
+  min-height: 42px;
   margin: 12px 0;
   line-height: 1.5;
   cursor: pointer;
 }
 
 .checkbox-row input {
-  width: 17px;
-  height: 17px;
-  margin: 3px 0 0;
+  width: 18px;
+  min-height: 18px;
+  height: 18px;
+  margin: 0;
   accent-color: var(--vp-c-brand-1);
 }
 
@@ -551,7 +550,7 @@ watch(ruleOptions, () => {
 .converter-error,
 .credential-warning {
   border: 1px solid var(--vp-c-danger-1);
-  border-radius: 7px;
+  border-radius: 8px;
   padding: 10px 12px;
   color: var(--vp-c-danger-1);
   font-size: 14px;
@@ -594,9 +593,9 @@ watch(ruleOptions, () => {
   max-height: 520px;
   margin: 0 0 12px;
   border: 1px solid var(--vp-c-divider);
-  border-radius: 7px;
+  border-radius: 8px;
   padding: 14px;
-  background: var(--vp-c-bg-soft);
+  background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
   font-size: 13px;
   line-height: 1.55;
@@ -614,15 +613,17 @@ watch(ruleOptions, () => {
   gap: 8px;
 }
 
-@media (max-width: 760px) {
+@media (min-width: 900px) {
   .converter-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr);
   }
 
   .converter-input {
-    grid-column: auto;
+    grid-column: 1 / -1;
   }
+}
 
+@media (max-width: 760px) {
   .converter-panel {
     padding: 16px;
   }

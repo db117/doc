@@ -425,3 +425,15 @@
     font-size: 20px;
   }
 }
+
+@media (min-width: 960px) {
+  .Layout.v2ray-converter-page .VPDoc .container {
+    max-width: 1280px;
+  }
+
+  .Layout.v2ray-converter-page .VPDoc .content,
+  .Layout.v2ray-converter-page .VPDoc .content-container,
+  .Layout.v2ray-converter-page .vp-doc {
+    max-width: none;
+  }
+}
