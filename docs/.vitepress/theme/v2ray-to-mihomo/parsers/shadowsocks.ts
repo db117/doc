@@ -50,7 +50,7 @@ export function parseShadowsocksUri(uri: string): ShadowsocksNode {
   const authority = query === -1 ? withoutFragment : withoutFragment.slice(0, query)
   const params = new URLSearchParams(query === -1 ? '' : withoutFragment.slice(query + 1))
 
-  if (params.get('plugin')) {
+  if (params.getAll('plugin').some(value => value !== '')) {
     throw new NodeParseError('unsupported-ss-plugin', '首版不支持 Shadowsocks 插件')
   }
 
