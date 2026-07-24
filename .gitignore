@@ -29,6 +29,7 @@ hs_err_pid*
 
 # superpowers
 /.superpowers/
+/.worktrees/
 
 # planning-with-files
 /findings.md
