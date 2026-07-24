@@ -204,7 +204,6 @@ outline: false
 > - [Spring](http://spring.io/)
 > - [Arthas](https://alibaba.github.io/arthas/index.html)
 > - [MyBatis](https://blog.mybatis.org/)
-> - [Travis CI](https://travis-ci.org)
 > - [VisualVM](https://visualvm.github.io/?Java_VisualVM)
 > - [echarts](https://echarts.apache.org/zh/index.html)
 
