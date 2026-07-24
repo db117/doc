@@ -2,39 +2,27 @@
 title: jQuery 常用操作
 ---
 
-## jquery 获取div宽度
+## 获取元素宽度
 
-```
-var content = $(‘div’). width();//只是获取content宽度
-
-var contentWithPadding = $(‘div’). innerWidth();//获取content+padding的宽度
-
-var withoutMargin = $(‘div’). outerWidth();//获取content+padding+border的宽度
-
-var full = $(‘div’). outerWidth(true);//获取content+padding+border+margin的宽度
+```js
+const content = $('div').width(); // 内容宽度
+const contentWithPadding = $('div').innerWidth(); // 内容 + padding
+const withoutMargin = $('div').outerWidth(); // 内容 + padding + border
+const full = $('div').outerWidth(true); // 内容 + padding + border + margin
 ```
 
-## ifarm操作父类
+## iframe 与父页面交互
 
-* 子页面获取父页面的id=care的子页面
-    * parent.care.location.reload();
-* 父页面获取id=imp的子页面
-    * imp.location.reload();
-* jquery在iframe子页面获取父页面元素和方法代码如下:
-    * parent.$("selector");
-    * parent.method();
+只有父、子页面同源（协议、域名和端口相同）时，才能直接访问对方的 DOM 或 JavaScript 对象。
 
-* jquery在父页面获取iframe子页面的元素和方法
-    * 代码如下:
-    * iframe.$("select");
-    * iframe.method();
+```js
+// 子页面访问父页面
+window.parent.document.getElementById('care');
+window.parent.$('selector');
 
-* js在iframe子页面获取父页面元素代码如下:
-    * window.parent.document.getElementById("元素id");
+// 父页面访问 iframe 内容
+const childWindow = document.getElementById('iframe_ID').contentWindow;
+childWindow.document.getElementById('imp');
+```
 
-* js在父页面获取iframe子页面元素代码如下:
-    * window.frames["iframe_ID"].document.getElementById("元素id");
-
-* 方法调用
-    * 父页面调用子页面方法：FrameName.window.childMethod();
-    * 子页面调用父页面方法：parent.window.parentMethod();
+跨域页面应使用 `window.postMessage()` 通信，不要尝试绕过浏览器的同源策略。

@@ -11,4 +11,3 @@ title: Netty
 ## 文档
 
 - [Netty 主要流程](./main-flow.md)：启动、通信、时间轮和常见使用场景。
-- [Netty IO](./io.md)：ByteBuf 与内存管理相关内容。

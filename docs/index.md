@@ -17,7 +17,7 @@ outline: false
   国内代码托管
 - [CSDN 博客](https://blog.csdn.net/weixin_38761297)  
   技术文章归档
-- [LeetCode](https://leetcode-cn.com/u/db117/)  
+- [LeetCode](https://leetcode.cn/)<br>
   算法练习记录
 - [ProcessOn](https://www.processon.com/u/5aaa7a7ee4b0a84684088ded)  
   流程图与架构图
@@ -119,7 +119,7 @@ outline: false
 > - [算法可视化](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
 > - [复杂度](http://cooervo.github.io/Algorithms-DataStructures-BigONotation/index.html)
 > - [VisuAlgo](https://visualgo.net/zh)
-> - [LeetCode](https://leetcode-cn.com/u/db117/)
+> - [LeetCode](https://leetcode.cn/)
 > - [Codeforces](https://codeforces.com/)
 
 > ## 工具
