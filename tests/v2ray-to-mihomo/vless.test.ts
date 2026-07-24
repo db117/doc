@@ -35,6 +35,50 @@ describe('parseVlessUri', () => {
       name: 'Plain', transport: { network: 'tcp' }, tls: undefined,
     })
   })
+
+  it('strips IPv6 brackets from the server', () => {
+    const uri = 'vless://11111111-1111-4111-8111-111111111111@[2001:db8::1]:443#IPv6'
+    expect(parseVlessUri(uri)).toMatchObject({ server: '2001:db8::1', port: 443 })
+  })
+
+  it.each(['', ':0', ':65536'])('rejects an invalid port suffix %j', suffix => {
+    const uri = `vless://11111111-1111-4111-8111-111111111111@edge.example.com${suffix}`
+    expect(() => parseVlessUri(uri)).toThrow(NodeParseError)
+  })
+
+  it('decodes an encoded WebSocket path exactly once', () => {
+    const uri = 'vless://11111111-1111-4111-8111-111111111111@edge.example.com:443?type=ws&path=%252F'
+    expect(parseVlessUri(uri).transport).toEqual({ network: 'ws', ws: { path: '%2F', host: undefined } })
+  })
+
+  it.each([
+    'vless://bad%ZZ@edge.example.com:443',
+    'vless://11111111-1111-4111-8111-111111111111@edge.example.com:443#bad%ZZ',
+  ])('rejects malformed percent encoding without exposing sensitive URI values', uri => {
+    let caught: unknown
+    try {
+      parseVlessUri(uri)
+    } catch (error) {
+      caught = error
+    }
+    expect(caught).toBeInstanceOf(NodeParseError)
+    expect(String(caught)).not.toContain(uri)
+    expect(String(caught)).not.toContain('11111111-1111-4111-8111-111111111111')
+    expect(String(caught)).not.toContain('bad%ZZ')
+  })
+
+  it('keeps sensitive identity-like values out of bad URI errors', () => {
+    const uri = 'vless://11111111-1111-4111-8111-111111111111%3Apassword@example.com:0'
+    try {
+      parseVlessUri(uri)
+      throw new Error('expected VLESS parsing to fail')
+    } catch (error) {
+      expect(String(error)).toContain('端口必须在 1 到 65535 之间')
+      expect(String(error)).not.toContain(uri)
+      expect(String(error)).not.toContain('password')
+      expect(String(error)).not.toContain('11111111-1111-4111-8111-111111111111')
+    }
+  })
 })
 
 describe('shared URL options', () => {
