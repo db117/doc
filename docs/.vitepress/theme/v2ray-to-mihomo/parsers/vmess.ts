@@ -50,7 +50,7 @@ export function parseVmessUri(uri: string): VmessNode {
     type: 'vmess',
     name: typeof data.ps === 'string' && data.ps.trim() ? data.ps.trim() : '未命名节点',
     server: requireText(data.add, 'add'),
-    port: parsePort(data.port as string | number),
+    port: parsePort(data.port),
     uuid: requireText(data.id, 'id'),
     alterId: data.aid === undefined ? 0 : Number(data.aid),
     cipher: typeof data.scy === 'string' && data.scy ? data.scy : 'auto',

@@ -5,7 +5,10 @@ export class NodeParseError extends Error {
   }
 }
 
-export function parsePort(value: string | number): number {
+export function parsePort(value: unknown): number {
+  if (typeof value !== 'string' && typeof value !== 'number') {
+    throw new NodeParseError('invalid-port', '端口必须在 1 到 65535 之间')
+  }
   const port = typeof value === 'number' ? value : Number(value)
   if (!Number.isInteger(port) || port < 1 || port > 65535) {
     throw new NodeParseError('invalid-port', '端口必须在 1 到 65535 之间')
