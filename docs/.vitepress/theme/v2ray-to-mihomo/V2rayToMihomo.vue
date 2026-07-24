@@ -25,10 +25,6 @@ const fetchFailureKind = ref<FetchFailureKind | null>(null)
 const result = ref<ParseSubscriptionResult | null>(null)
 const yaml = ref('')
 const ruleOptions = reactive<RuleOptions>({ ...DEFAULT_RULE_OPTIONS })
-const canOpenSubscription = computed(() => (
-  fetchFailureKind.value !== null
-  && parseHttpSubscriptionUrl(subscriptionUrl.value) !== null
-))
 
 const fetchMessages: Record<FetchFailureKind, string> = {
   'invalid-url': '请输入有效的 HTTP 或 HTTPS 订阅地址。',
@@ -38,6 +34,16 @@ const fetchMessages: Record<FetchFailureKind, string> = {
   'network-or-cors': '浏览器无法读取订阅，可能是网络或 CORS 限制，请改用手动粘贴。',
   empty: '订阅服务返回了空内容，请确认地址是否有效。',
 }
+
+const activeFetchFailureKind = computed<FetchFailureKind | null>(() => {
+  const kind = fetchFailureKind.value
+  return kind !== null && errorMessage.value === fetchMessages[kind] ? kind : null
+})
+const hasActiveInvalidUrlError = computed(() => activeFetchFailureKind.value === 'invalid-url')
+const canOpenSubscription = computed(() => (
+  activeFetchFailureKind.value !== null
+  && parseHttpSubscriptionUrl(subscriptionUrl.value) !== null
+))
 
 function convert(content: string): void {
   errorMessage.value = ''
@@ -85,6 +91,14 @@ async function readSubscription(): Promise<void> {
 
 function convertManual(): void {
   convert(manualContent.value)
+  if (yaml.value) fetchFailureKind.value = null
+}
+
+function clearFetchFailure(): void {
+  if (fetchFailureKind.value === null) return
+  fetchFailureKind.value = null
+  errorMessage.value = ''
+  statusMessage.value = ''
 }
 
 function reset(): void {
@@ -119,6 +133,7 @@ async function copyConfig(): Promise<void> {
     errorMessage.value = ''
     statusMessage.value = '配置已复制到剪贴板。'
   } catch {
+    statusMessage.value = ''
     errorMessage.value = '复制失败，请从预览中手动复制，或下载配置文件。'
   }
 }
@@ -136,6 +151,7 @@ function downloadConfig(): void {
     errorMessage.value = ''
     statusMessage.value = '已开始下载 config.yaml。'
   } catch {
+    statusMessage.value = ''
     errorMessage.value = '下载失败，请复制预览内容并保存为 config.yaml。'
   }
 }
@@ -176,8 +192,9 @@ watch(ruleOptions, () => {
               spellcheck="false"
               placeholder="https://example.com/subscription"
               :disabled="busy"
-              :aria-invalid="fetchFailureKind === 'invalid-url' ? 'true' : undefined"
-              :aria-describedby="fetchFailureKind === 'invalid-url' ? 'subscription-note converter-error' : 'subscription-note'"
+              :aria-invalid="hasActiveInvalidUrlError ? 'true' : undefined"
+              :aria-describedby="hasActiveInvalidUrlError ? 'subscription-note converter-error' : 'subscription-note'"
+              @input="clearFetchFailure"
             >
             <button class="button-primary" type="submit" :disabled="!subscriptionUrl.trim() || busy">
               {{ busy ? '正在读取…' : '读取订阅' }}
