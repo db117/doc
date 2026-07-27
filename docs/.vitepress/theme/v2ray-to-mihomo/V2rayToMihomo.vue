@@ -255,11 +255,31 @@ watch(ruleOptions, () => {
 
       <section class="converter-panel converter-rules" aria-labelledby="converter-rules-heading">
         <h2 id="converter-rules-heading">配置规则</h2>
-        <p class="panel-intro">标准分流</p>
+        <p class="panel-intro">规则集</p>
 
+        <label class="checkbox-row">
+          <input v-model="ruleOptions.enablePrivateDomain" type="checkbox" :disabled="busy">
+          <span>私有域名直连</span>
+        </label>
+        <label class="checkbox-row">
+          <input v-model="ruleOptions.enablePrivateIp" type="checkbox" :disabled="busy">
+          <span>私有 IP 直连</span>
+        </label>
         <label class="checkbox-row">
           <input v-model="ruleOptions.blockAds" type="checkbox" :disabled="busy">
           <span>拦截广告规则</span>
+        </label>
+        <label class="checkbox-row">
+          <input v-model="ruleOptions.enableChinaDomain" type="checkbox" :disabled="busy">
+          <span>国内域名规则</span>
+        </label>
+        <label class="checkbox-row">
+          <input v-model="ruleOptions.enableChinaIp" type="checkbox" :disabled="busy">
+          <span>国内 IP 规则</span>
+        </label>
+        <label class="checkbox-row">
+          <input v-model="ruleOptions.enableNonChina" type="checkbox" :disabled="busy">
+          <span>非中国域名规则</span>
         </label>
         <label class="checkbox-row">
           <input v-model="ruleOptions.directChina" type="checkbox" :disabled="busy">

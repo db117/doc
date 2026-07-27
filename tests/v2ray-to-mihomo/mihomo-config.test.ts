@@ -44,7 +44,12 @@ const nodes: ProxyNode[] = [
 ]
 
 const standardOptions: RuleOptions = {
+  enablePrivateDomain: true,
+  enablePrivateIp: true,
   blockAds: true,
+  enableChinaDomain: true,
+  enableChinaIp: true,
+  enableNonChina: true,
   directChina: true,
   unmatched: 'proxy',
 }
@@ -104,6 +109,11 @@ describe('generateMihomoYaml', () => {
       private: {
         type: 'http', behavior: 'domain', format: 'mrs', path: './ruleset/private.mrs',
         url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs',
+        interval: 86400,
+      },
+      'private-ip': {
+        type: 'http', behavior: 'ipcidr', format: 'mrs', path: './ruleset/private-ip.mrs',
+        url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs',
         interval: 86400,
       },
       ads: {
@@ -181,6 +191,7 @@ describe('generateMihomoYaml', () => {
     const unmatchedTarget = options.unmatched === 'proxy' ? '节点选择' : 'DIRECT'
     const expectedRules = [
       'RULE-SET,private,DIRECT',
+      'RULE-SET,private-ip,DIRECT,no-resolve',
       ...(options.blockAds ? ['RULE-SET,ads,REJECT'] : []),
       `RULE-SET,cn-domain,${chinaTarget}`,
       `RULE-SET,cn-ip,${chinaTarget},no-resolve`,
@@ -191,14 +202,15 @@ describe('generateMihomoYaml', () => {
     expect(config.rules).toEqual(expectedRules)
     expect(Object.keys(config['rule-providers'])).toEqual(
       options.blockAds
-        ? ['private', 'ads', 'cn-domain', 'non-cn', 'cn-ip']
-        : ['private', 'cn-domain', 'non-cn', 'cn-ip'],
+        ? ['private', 'private-ip', 'ads', 'cn-domain', 'non-cn', 'cn-ip']
+        : ['private', 'private-ip', 'cn-domain', 'non-cn', 'cn-ip'],
     )
   })
 
   it('uses the standard rule options when options are omitted', () => {
     expect(parse(generateMihomoYaml(nodes)).rules).toEqual([
       'RULE-SET,private,DIRECT',
+      'RULE-SET,private-ip,DIRECT,no-resolve',
       'RULE-SET,ads,REJECT',
       'RULE-SET,cn-domain,DIRECT',
       'RULE-SET,cn-ip,DIRECT,no-resolve',
@@ -207,11 +219,27 @@ describe('generateMihomoYaml', () => {
     ])
   })
 
+  it('omits disabled rule providers and their associated rules', () => {
+    const config = parse(generateMihomoYaml(nodes, {
+      ...standardOptions,
+      enablePrivateDomain: false,
+      enablePrivateIp: false,
+      blockAds: false,
+      enableChinaDomain: false,
+      enableChinaIp: false,
+      enableNonChina: false,
+    }))
+
+    expect(config['rule-providers']).toEqual({})
+    expect(config.rules).toEqual(['MATCH,节点选择'])
+  })
+
   it('returns an object through buildMihomoConfig without serializing it', () => {
     const config = buildMihomoConfig(nodes, standardOptions)
     expect(config.proxies).toHaveLength(5)
     expect(config.rules).toEqual([
       'RULE-SET,private,DIRECT',
+      'RULE-SET,private-ip,DIRECT,no-resolve',
       'RULE-SET,ads,REJECT',
       'RULE-SET,cn-domain,DIRECT',
       'RULE-SET,cn-ip,DIRECT,no-resolve',

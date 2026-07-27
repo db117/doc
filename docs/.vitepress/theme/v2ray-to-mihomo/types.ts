@@ -69,13 +69,23 @@ export interface ParseSubscriptionResult {
 }
 
 export interface RuleOptions {
+  enablePrivateDomain?: boolean
+  enablePrivateIp?: boolean
   blockAds: boolean
+  enableChinaDomain?: boolean
+  enableChinaIp?: boolean
+  enableNonChina?: boolean
   directChina: boolean
   unmatched: 'proxy' | 'direct'
 }
 
 export const DEFAULT_RULE_OPTIONS: RuleOptions = {
+  enablePrivateDomain: true,
+  enablePrivateIp: true,
   blockAds: true,
+  enableChinaDomain: true,
+  enableChinaIp: true,
+  enableNonChina: true,
   directChina: true,
   unmatched: 'proxy',
 }

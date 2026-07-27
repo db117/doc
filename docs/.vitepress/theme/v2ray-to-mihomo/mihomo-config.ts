@@ -62,6 +62,7 @@ export function buildMihomoConfig(
   const names = nodes.map(node => node.name)
   const chinaTarget = options.directChina ? 'DIRECT' : '节点选择'
   const unmatchedTarget = options.unmatched === 'proxy' ? '节点选择' : 'DIRECT'
+  const enabledProviders = getEnabledProviders(options)
 
   return {
     'mixed-port': 7890,
@@ -111,14 +112,14 @@ export function buildMihomoConfig(
         interval: 300,
       },
     ],
-    'rule-providers': buildRuleProviders(options.blockAds),
+    'rule-providers': buildRuleProviders(enabledProviders),
     rules: [
-      'RULE-SET,private,DIRECT',
-      'RULE-SET,private-ip,DIRECT,no-resolve',
-      ...(options.blockAds ? ['RULE-SET,ads,REJECT'] : []),
-      `RULE-SET,cn-domain,${chinaTarget}`,
-      `RULE-SET,cn-ip,${chinaTarget},no-resolve`,
-      'RULE-SET,non-cn,节点选择',
+      ...(enabledProviders.private ? ['RULE-SET,private,DIRECT'] : []),
+      ...(enabledProviders['private-ip'] ? ['RULE-SET,private-ip,DIRECT,no-resolve'] : []),
+      ...(enabledProviders.ads ? ['RULE-SET,ads,REJECT'] : []),
+      ...(enabledProviders['cn-domain'] ? [`RULE-SET,cn-domain,${chinaTarget}`] : []),
+      ...(enabledProviders['cn-ip'] ? [`RULE-SET,cn-ip,${chinaTarget},no-resolve`] : []),
+      ...(enabledProviders['non-cn'] ? ['RULE-SET,non-cn,节点选择'] : []),
       `MATCH,${unmatchedTarget}`,
     ],
   }
@@ -329,10 +330,21 @@ function toMihomoProxy(node: ProxyNode): ConfigRecord {
   return result
 }
 
-function buildRuleProviders(blockAds: boolean): ConfigRecord {
+function getEnabledProviders(options: RuleOptions): Record<keyof typeof PROVIDERS, boolean> {
+  return {
+    private: options.enablePrivateDomain ?? true,
+    'private-ip': options.enablePrivateIp ?? true,
+    ads: options.blockAds,
+    'cn-domain': options.enableChinaDomain ?? true,
+    'non-cn': options.enableNonChina ?? true,
+    'cn-ip': options.enableChinaIp ?? true,
+  }
+}
+
+function buildRuleProviders(enabledProviders: Record<keyof typeof PROVIDERS, boolean>): ConfigRecord {
   const providers: ConfigRecord = {}
   for (const [name, [behavior, path, url]] of Object.entries(PROVIDERS)) {
-    if (name === 'ads' && !blockAds) continue
+    if (!enabledProviders[name as keyof typeof PROVIDERS]) continue
     providers[name] = {
       type: 'http',
       behavior,
