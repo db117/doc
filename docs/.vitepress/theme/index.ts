@@ -4,6 +4,7 @@ import {useData} from 'vitepress'
 import type {Theme} from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import {createMermaidRenderer} from 'vitepress-mermaid-renderer'
+// @ts-ignore
 import './style.css'
 
 

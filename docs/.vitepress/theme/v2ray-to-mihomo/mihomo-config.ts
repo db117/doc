@@ -21,6 +21,11 @@ const PROVIDERS = {
     './ruleset/private.mrs',
     'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs',
   ],
+  'private-ip': [
+    'ipcidr',
+    './ruleset/private-ip.mrs',
+    'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs',
+  ],
   ads: [
     'domain',
     './ruleset/ads.mrs',
@@ -109,6 +114,7 @@ export function buildMihomoConfig(
     'rule-providers': buildRuleProviders(options.blockAds),
     rules: [
       'RULE-SET,private,DIRECT',
+      'RULE-SET,private-ip,DIRECT,no-resolve',
       ...(options.blockAds ? ['RULE-SET,ads,REJECT'] : []),
       `RULE-SET,cn-domain,${chinaTarget}`,
       `RULE-SET,cn-ip,${chinaTarget},no-resolve`,
