@@ -19,10 +19,6 @@ title: 其他
 - [Privoxy](./privoxy.md)：HTTP 代理前置配置。
 - [giffgaff eSIM](./giffgaff.md)：Android 设备写入 eSIM、开通与保号记录。
 
-### 在线工具
-
-- [V2Ray 订阅转 Clash Verge 配置](./v2ray-to-clash.md)：在浏览器本地把 V2Ray 订阅转换为 Mihomo YAML。
-
 ### 零散工具
 
 - [Freemarker](./freemarker.md)：模板语法和常用写法。

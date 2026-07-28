@@ -12,6 +12,12 @@ const nav: DefaultTheme.NavItem[] = [
 			{ text: '系统', link: '/infrastructure/os/' },
 		],
 	},
+	{
+		text: '在线工具',
+		items: [
+			{ text: 'V2Ray 转 Clash 订阅', link: '/tools/v2ray-to-clash' },
+		],
+	},
 	{ text: '知识碎片', link: '/other/' },
 	{ text: '关于我', link: 'https://www.500d.me/cvresume/3244698236/' },
 ]
