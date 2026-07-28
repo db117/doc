@@ -55,6 +55,7 @@ outline: false
 > - [superpowers](https://github.com/obra/superpowers)
 > - [jetbrains-index-mcp-plugin](https://github.com/hechtcarmel/jetbrains-index-mcp-plugin)
 > - [ponytail](https://github.com/DietrichGebert/ponytail)
+> - [Codex Pets](https://codex-pets.net/#/)
 
 > ## AI 资讯
 >
