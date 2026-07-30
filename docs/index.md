@@ -49,6 +49,7 @@ outline: false
 > 编程辅助、规范、状态栏与智能体工作流。
 >
 > - [find-skills](https://skills.sh/)
+> - [Matt Pocock Skills](https://github.com/mattpocock/skills)
 > - [planning-with-files](https://github.com/othmanadi/planning-with-files)
 > - [ccstatusline](https://github.com/sirmalloc/ccstatusline/)
 > - [OpenSpec](https://github.com/Fission-AI/OpenSpec)
