@@ -71,13 +71,34 @@ export function editLeg(
     })
 }
 
-export function refreshLegMarketIv(
+function executablePrice(option: OptionQuote, quantity: number): number | null {
+    // 买入按卖价、卖出按买价估算真实可成交成本；单边缺报价时不能用另一侧冒充。
+    const price = quantity > 0 ? option.ask : option.bid
+    return price !== null && Number.isFinite(price) && price >= 0 ? price : null
+}
+
+export function reverseLeg(
+    legs: readonly StrategyLeg[],
+    code: string,
+    quote?: OptionQuote,
+): StrategyLeg[] {
+    return legs.map((leg) => {
+        if (leg.code !== code) return leg
+        const quantity = -leg.quantity
+        const price = quote ? executablePrice(quote, quantity) : null
+        return {...leg, quantity, entryPrice: price ?? leg.entryPrice, marketIv: quote?.iv ?? leg.marketIv}
+    })
+}
+
+export function refreshLegMarketData(
     legs: readonly StrategyLeg[],
     quotes: ReadonlyMap<string, OptionQuote>,
 ): StrategyLeg[] {
-    // 行情刷新只更新估值输入 IV，不重写用户已经形成或编辑的建仓成本。
+    // 每次期权链刷新都同步方向对应价格和 IV；缺合约或缺单边报价时保留上次有效值。
     return legs.map((leg) => {
         const quote = quotes.get(leg.code)
-        return quote ? {...leg, marketIv: quote.iv} : leg
+        if (!quote) return leg
+        const price = executablePrice(quote, leg.quantity)
+        return {...leg, entryPrice: price ?? leg.entryPrice, marketIv: quote.iv}
     })
 }

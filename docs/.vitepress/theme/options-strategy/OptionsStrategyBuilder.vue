@@ -6,7 +6,7 @@ import StrategyPanel from './StrategyPanel.vue'
 import {BridgeError, FutuBridgeClient} from './bridge-client'
 import {formatNumber} from './format'
 import {atTheMoneyIv, curveStatistics, expirationStatistics, theoreticalProfitLossCurve} from './statistics'
-import {adjustLegAtQuote, editLeg, refreshLegMarketIv} from './strategy'
+import {adjustLegAtQuote, editLeg, refreshLegMarketData, reverseLeg} from './strategy'
 import type {OptionChain, OptionQuote, StockItem, StrategyLeg} from './types'
 
 const DEFAULT_BRIDGE_URL = 'http://127.0.0.1:8765'
@@ -25,6 +25,8 @@ const expirations = ref<string[]>([])
 const selectedExpiry = ref('')
 const chain = shallowRef<OptionChain | null>(null)
 const legs = ref<StrategyLeg[]>([])
+// 缓存已加载到期日的合约报价，供跨期腿同步和方向反转即时取价；切换标的时整体清空。
+const quoteCache = shallowRef<ReadonlyMap<string, OptionQuote>>(new Map())
 const loading = ref(true)
 const refreshing = ref(false)
 const loadingStocks = ref(false)
@@ -124,6 +126,37 @@ function describeError(error: unknown): string {
   return error instanceof Error ? error.message : '本地行情服务发生未知错误。'
 }
 
+function quotesFromChain(source: OptionChain): Map<string, OptionQuote> {
+  const quotes = new Map<string, OptionQuote>()
+  for (const row of source.rows) {
+    if (row.call) quotes.set(row.call.code, row.call)
+    if (row.put) quotes.set(row.put.code, row.put)
+  }
+  return quotes
+}
+
+function applyQuotes(quotes: ReadonlyMap<string, OptionQuote>): void {
+  const merged = new Map(quoteCache.value)
+  for (const [code, quote] of quotes) merged.set(code, quote)
+  quoteCache.value = merged
+  legs.value = refreshLegMarketData(legs.value, quotes)
+}
+
+async function refreshOtherExpiryLegs(activeClient: FutuBridgeClient, id: number): Promise<void> {
+  const otherExpiries = [...new Set(legs.value.map(leg => leg.expiry))]
+      .filter(expiry => expiry !== selectedExpiry.value)
+  if (!otherExpiries.length) return
+
+  // 跨期报价并行拉取且逐个隔离失败：一个到期日不可用时，其余腿仍能同步最新价格。
+  const results = await Promise.allSettled(
+      otherExpiries.map(expiry => activeClient.optionChain(selectedSymbol.value, expiry)),
+  )
+  if (id !== requestId || activeClient !== client.value) return
+  for (const result of results) {
+    if (result.status === 'fulfilled') applyQuotes(quotesFromChain(result.value))
+  }
+}
+
 async function connect(): Promise<void> {
   const id = ++requestId
   loading.value = !chain.value
@@ -134,6 +167,7 @@ async function connect(): Promise<void> {
     await nextClient.health()
     if (id !== requestId) return
     client.value = nextClient
+    quoteCache.value = new Map()
     void loadStocks(nextClient)
     const items = await nextClient.expirations(selectedSymbol.value)
     if (id !== requestId) return
@@ -187,6 +221,7 @@ async function loadSymbol(symbol: string, shouldConfirm = true, id = ++requestId
     expirations.value = items.map(item => item.date)
     selectedExpiry.value = expirations.value[0]
     legs.value = []
+    quoteCache.value = new Map()
     chain.value = null
     await loadChain(false, id, true)
   } catch (error) {
@@ -212,16 +247,12 @@ async function loadChain(background = false, id = requestId, resetScenario = fal
   if (!client.value || !selectedExpiry.value || (background && refreshing.value)) return
   if (background) refreshing.value = true
   try {
-    const nextChain = await client.value.optionChain(selectedSymbol.value, selectedExpiry.value)
+    const activeClient = client.value
+    const nextChain = await activeClient.optionChain(selectedSymbol.value, selectedExpiry.value)
     if (id !== requestId) return
     chain.value = nextChain
-    const quotes = new Map<string, OptionQuote>()
-    for (const row of nextChain.rows) {
-      if (row.call) quotes.set(row.call.code, row.call)
-      if (row.put) quotes.set(row.put.code, row.put)
-    }
-    // 只刷新当前链中同合约腿的市场 IV；历史建仓价必须保持不变，其他到期腿沿用上次 IV。
-    legs.value = refreshLegMarketIv(legs.value, quotes)
+    // 当前链先提交，保证可见报价及时更新；策略中的其他到期日随后独立刷新。
+    applyQuotes(quotesFromChain(nextChain))
     const atm = nextChain.underlying.last ? atTheMoneyIv(nextChain.rows, nextChain.underlying.last) : null
     // 初次/切链采用新 ATM IV；用户手动调整后，后台报价刷新不覆盖其情景假设。
     if (resetScenario || !ivTouched.value) scenarioIv.value = (atm ?? 0) * 100
@@ -232,6 +263,7 @@ async function loadChain(background = false, id = requestId, resetScenario = fal
     stale.value = false
     errorMessage.value = ''
     lastUpdated.value = new Date()
+    await refreshOtherExpiryLegs(activeClient, id)
   } catch (error) {
     if (id !== requestId) return
     errorMessage.value = describeError(error)
@@ -260,8 +292,14 @@ function addTrade(option: OptionQuote, side: 'ask' | 'bid'): void {
   legs.value = adjustLegAtQuote(legs.value, option, side === 'ask' ? 1 : -1, price, selectedExpiry.value)
 }
 
-function editStrategyLeg(code: string, field: 'quantity' | 'entryPrice', value: number): void {
-  legs.value = editLeg(legs.value, code, {[field]: value})
+function editStrategyLeg(code: string, field: 'quantity', value: number): void {
+  const edited = editLeg(legs.value, code, {[field]: value})
+  // 数量手工跨过零轴时，立即切换到新方向的 Bid/Ask，不等待下一轮轮询。
+  legs.value = refreshLegMarketData(edited, quoteCache.value)
+}
+
+function reverseStrategyLeg(code: string): void {
+  legs.value = reverseLeg(legs.value, code, quoteCache.value.get(code))
 }
 
 function removeLeg(code: string): void {
@@ -426,6 +464,7 @@ onBeforeUnmount(() => {
           :range-percent="rangePercent"
           :risk-free-rate="riskFreeRate"
           @edit="editStrategyLeg"
+          @reverse="reverseStrategyLeg"
           @remove="removeLeg"
           @clear="clearLegs"
           @select-expiry="changeExpiry"

@@ -23,7 +23,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  edit: [code: string, field: 'quantity' | 'entryPrice', value: number]
+  edit: [code: string, field: 'quantity', value: number]
+  reverse: [code: string]
   remove: [code: string]
   clear: []
   selectExpiry: [expiry: string]
@@ -34,7 +35,6 @@ const emit = defineEmits<{
 }>()
 
 const chart = ref<InstanceType<typeof ProfitLossChart> | null>(null)
-const estimatedMultiplier = computed(() => props.legs.some(leg => leg.multiplierEstimated))
 const legGroups = computed(() => {
   // 固定按到期日升序展示，让最早一组与跨期情景截止日保持一致。
   const groups = new Map<string, StrategyLeg[]>()
@@ -135,20 +135,25 @@ function resetRange(): void {
 
               <div v-for="leg in group.legs" :key="leg.code" class="leg-row">
                 <div class="leg-name">
-                  <span :class="leg.quantity > 0 ? 'long' : 'short'">{{ leg.quantity > 0 ? '买' : '卖' }}</span>
+                  <button
+                      type="button"
+                      class="direction-button"
+                      :class="leg.quantity > 0 ? 'long' : 'short'"
+                      :aria-label="`${leg.strike} ${leg.type} 当前${leg.quantity > 0 ? '买入' : '卖出'}，点击反转为${leg.quantity > 0 ? '卖出' : '买入'}`"
+                      :title="`点击反转为${leg.quantity > 0 ? '卖出' : '买入'}`"
+                      @click="emit('reverse', leg.code)"
+                  >{{ leg.quantity > 0 ? '买' : '卖' }}</button>
                   <strong>{{ formatNumber(leg.strike) }} {{ leg.type === 'CALL' ? 'Call' : 'Put' }}</strong>
-                  <small>IV {{ formatPercent(leg.marketIv) }} · ×{{ leg.multiplier }}{{ leg.multiplierEstimated ? '*' : '' }}</small>
+                  <small>IV {{ formatPercent(leg.marketIv) }}</small>
                 </div>
                 <label>数量<input type="number" step="1" :value="leg.quantity"
                                   @change="emit('edit', leg.code, 'quantity', inputNumber($event))"></label>
-                <label>成本<input type="number" min="0" step="0.01" :value="leg.entryPrice"
-                                  @change="emit('edit', leg.code, 'entryPrice', inputNumber($event))"></label>
+                <label>价格<output class="quote-price">{{ formatNumber(leg.entryPrice) }}</output></label>
                 <button class="remove-button" type="button" :aria-label="`删除 ${leg.expiry} ${leg.strike} ${leg.type}`"
                         @click="emit('remove', leg.code)">×</button>
               </div>
             </section>
           </div>
-          <p v-if="estimatedMultiplier" class="inline-warning">* 合约缺少乘数，暂按 100 计算。</p>
         </section>
 
         <section class="chart-column" aria-labelledby="profit-chart-heading">
@@ -384,20 +389,32 @@ dd {
   align-items: center;
 }
 
-.leg-name > span {
+.direction-button {
   grid-row: 1 / 3;
   display: inline-grid;
   width: 24px;
   height: 24px;
+  padding: 0;
   place-items: center;
+  border: 0;
   border-radius: 5px;
   color: white;
+  cursor: pointer;
+  font: inherit;
   font-size: .6875rem;
   font-weight: 700;
+  transition: filter 160ms ease-out, transform 160ms ease-out;
 }
 
 .leg-name .long { background: #19866c; }
 .leg-name .short { background: #c24157; }
+
+.direction-button:hover { filter: brightness(.9); }
+.direction-button:active { transform: scale(.92); }
+.direction-button:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
 
 .leg-name strong { font-size: .75rem; }
 
@@ -414,7 +431,7 @@ dd {
   font-size: .5625rem;
 }
 
-.leg-row input, .model-settings input {
+.leg-row input, .quote-price, .model-settings input {
   box-sizing: border-box;
   width: 100%;
   height: 28px;
@@ -427,6 +444,12 @@ dd {
   font: inherit;
   font-size: .6875rem;
   font-variant-numeric: tabular-nums;
+}
+
+.quote-price {
+  display: flex;
+  align-items: center;
+  cursor: default;
 }
 
 .leg-row input:focus-visible, .model-settings input:focus-visible {
@@ -450,14 +473,6 @@ dd {
   background: var(--vp-c-danger-soft);
 }
 
-.inline-warning {
-  margin: 0;
-  padding: 6px 12px;
-  color: var(--vp-c-warning-1);
-  background: var(--vp-c-warning-soft);
-  font-size: .6875rem;
-}
-
 .chart-column { min-width: 0; }
 
 .text-button {
@@ -471,6 +486,10 @@ dd {
 }
 
 .text-button.danger { color: var(--vp-c-danger-1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .direction-button { transition: none; }
+}
 
 .scenario-controls {
   display: grid;

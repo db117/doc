@@ -67,6 +67,7 @@ export interface StrategyLeg {
     /** 到期日固定为 YYYY-MM-DD；跨期分组和每腿剩余期限都以此为时间边界。 */
     expiry: string
     quantity: number
+    /** 当前方向的可成交报价：买入取 Ask，卖出取 Bid；缺报价时保留上次有效值。 */
     entryPrice: number
     multiplier: number
     multiplierEstimated: boolean
