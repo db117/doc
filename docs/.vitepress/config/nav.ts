@@ -15,6 +15,7 @@ const nav: DefaultTheme.NavItem[] = [
 	{
 		text: '在线工具',
 		items: [
+			{text: '美股期权策略构建器', link: '/tools/options-strategy'},
 			{ text: 'V2Ray 转 Clash 订阅', link: '/tools/v2ray-to-clash' },
 		],
 	},

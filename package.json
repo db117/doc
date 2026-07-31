@@ -13,5 +13,8 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "test": "vitest run"
+  },
+  "dependencies": {
+    "echarts": "^6.1.0"
   }
 }
