@@ -240,6 +240,22 @@
   font-size: 12px;
 }
 
+/* Keep the linked strategy page as the parent while making its guide visibly nested. */
+.VPSidebarItem.level-1 .VPLink[href*="/tools/options-strategy-local-setup"] {
+  padding-left: 16px;
+}
+
+@media (min-width: 960px) {
+  html.options-strategy-wide .Layout.options-strategy-page .VPSidebar {
+    display: none;
+  }
+
+  html.options-strategy-wide .Layout.options-strategy-page .VPContent.has-sidebar {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
 @media (min-width: 1600px) {
   .Layout.options-strategy-page .VPDoc .content {
     padding-inline: 36px;

@@ -34,6 +34,7 @@ const ivTouched = ref(false)
 const scenarioDay = ref(0)
 const rangePercent = ref(12)
 const riskFreeRate = ref(0.045)
+const wideMode = ref(false)
 let pollTimer: ReturnType<typeof setInterval> | undefined
 let requestId = 0
 
@@ -258,6 +259,15 @@ function onVisibilityChange(): void {
   if (!document.hidden) void loadChain(true)
 }
 
+function setWideMode(enabled: boolean): void {
+  wideMode.value = enabled
+  document.documentElement.classList.toggle('options-strategy-wide', enabled)
+}
+
+function onKeydown(event: KeyboardEvent): void {
+  if (event.key === 'Escape' && wideMode.value) setWideMode(false)
+}
+
 onMounted(() => {
   const stored = localStorage.getItem('options-strategy.bridge-url')
   if (stored) bridgeUrl.value = bridgeInput.value = stored
@@ -266,11 +276,14 @@ onMounted(() => {
     if (!document.hidden) void loadChain(true)
   }, POLL_INTERVAL_MS)
   document.addEventListener('visibilitychange', onVisibilityChange)
+  document.addEventListener('keydown', onKeydown)
 })
 
 onBeforeUnmount(() => {
   if (pollTimer) clearInterval(pollTimer)
   document.removeEventListener('visibilitychange', onVisibilityChange)
+  document.removeEventListener('keydown', onKeydown)
+  document.documentElement.classList.remove('options-strategy-wide')
 })
 </script>
 
@@ -338,6 +351,15 @@ onBeforeUnmount(() => {
           <p>浏览器只会发起只读查询，不包含下单接口。</p>
         </div>
       </details>
+
+      <button
+          class="icon-button wide-mode-button"
+          type="button"
+          :aria-pressed="wideMode"
+          :title="wideMode ? '退出宽屏模式（Esc）' : '隐藏侧边栏并展开工作区'"
+          @click="setWideMode(!wideMode)"
+      >{{ wideMode ? '退出宽屏' : '宽屏' }}
+      </button>
     </div>
 
     <div v-if="errorMessage" class="status-message" :class="{ compact: chain }" role="alert">
@@ -586,6 +608,12 @@ input, select, button {
   cursor: wait;
 }
 
+.wide-mode-button[aria-pressed="true"] {
+  border-color: var(--vp-c-brand-2);
+  color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+}
+
 .bridge-settings {
   position: relative;
 }
@@ -593,6 +621,7 @@ input, select, button {
 .bridge-settings summary {
   display: grid;
   height: var(--control-height);
+  margin: 0;
   padding: 0 8px;
   place-items: center;
   border: 1px solid var(--vp-c-divider);
@@ -732,6 +761,12 @@ input, select, button {
 
   .panel-skeleton {
     grid-row: 1;
+  }
+}
+
+@media (max-width: 959px) {
+  .wide-mode-button {
+    display: none;
   }
 }
 
