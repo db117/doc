@@ -7,6 +7,7 @@ outline: false
 ---
 
 <script setup>
+import OptionsStrategyBuilder from '../.vitepress/theme/options-strategy/OptionsStrategyBuilder.vue'
 </script>
 
 # 美股期权策略构建器
