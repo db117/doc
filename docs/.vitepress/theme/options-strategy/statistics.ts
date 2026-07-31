@@ -17,9 +17,11 @@ export function expirationStatistics(legs: readonly StrategyLeg[]): ExpirationSt
     const cost = netCost(legs)
     if (legs.length === 0) return {netCost: cost, maxProfit: 0, maxLoss: 0, breakevens: []}
 
+    // 仅适用于同到期日：到期收益只会在各行权价处改变斜率，因此可精确求极值和零点。
     const strikes = [...new Set(legs.map(leg => leg.strike))].sort((a, b) => a - b)
     const knots = [0, ...strikes]
     const values = knots.map(price => expirationProfitLoss(legs, price))
+    // 最后一个行权价之后只有 Call 继续贡献斜率，用它判断盈利或亏损是否无上界。
     const tailSlope = legs
         .filter(leg => leg.type === 'CALL')
         .reduce((slope, leg) => slope + leg.quantity * leg.multiplier, 0)
@@ -89,7 +91,8 @@ interface ProfitLossCurveInput {
     minimumPrice: number
     maximumPrice: number
     points?: number
-    timeToExpiry: number
+    /** 情景日固定为 YYYY-MM-DD；每条腿再按自己的到期日计算剩余期限。 */
+    scenarioDate: string
     currentAtmIv: number | null
     scenarioAtmIv: number | null
     riskFreeRate: number
@@ -99,6 +102,7 @@ interface ProfitLossCurveInput {
 export function theoreticalProfitLossCurve(input: ProfitLossCurveInput): ProfitLossPoint[] {
     const count = Math.max(2, Math.trunc(input.points ?? 241))
     const step = (input.maximumPrice - input.minimumPrice) / (count - 1)
+    // 情景 IV 按当前 ATM 的比例缩放每条腿 IV，保留已有波动率微笑的相对形状。
     const ivMultiplier = input.currentAtmIv && input.scenarioAtmIv !== null
         ? input.scenarioAtmIv / input.currentAtmIv
         : 1
@@ -106,14 +110,16 @@ export function theoreticalProfitLossCurve(input: ProfitLossCurveInput): ProfitL
     return Array.from({length: count}, (_, index) => {
         const price = input.minimumPrice + index * step
         const profitLoss = input.legs.reduce((total, leg) => {
+            const timeToExpiry = yearsBetween(input.scenarioDate, leg.expiry)
             const baseIv = leg.marketIv ?? input.currentAtmIv
-            const value = input.timeToExpiry <= 0
+            // 情景日到达某腿到期日后只剩内在价值；较远到期腿继续按美式模型保留时间价值。
+            const value = timeToExpiry <= 0
                 ? intrinsicValue(leg.type, price, leg.strike)
                 : americanOptionPrice({
                     type: leg.type,
                     spot: price,
                     strike: leg.strike,
-                    timeToExpiry: input.timeToExpiry,
+                    timeToExpiry,
                     volatility: Math.max(0, (baseIv ?? 0) * ivMultiplier),
                     riskFreeRate: input.riskFreeRate,
                     dividendYield: input.dividendYield,
@@ -124,3 +130,32 @@ export function theoreticalProfitLossCurve(input: ProfitLossCurveInput): ProfitL
     })
 }
 
+export function curveStatistics(legs: readonly StrategyLeg[], points: readonly ProfitLossPoint[]): ExpirationStatistics {
+    // 跨期曲线没有简单的全局封闭解；这里只报告用户当前价格范围内的采样极值和交点。
+    if (!points.length) return {netCost: netCost(legs), maxProfit: 0, maxLoss: 0, breakevens: []}
+    const values = points.map(point => point.profitLoss)
+    const breakevens: number[] = []
+    for (let index = 0; index < points.length - 1; index += 1) {
+        collectLinearRoot(
+            points[index].price,
+            points[index].profitLoss,
+            points[index + 1].price,
+            points[index + 1].profitLoss,
+            breakevens,
+        )
+    }
+    return {
+        netCost: netCost(legs),
+        maxProfit: Math.max(...values),
+        maxLoss: Math.max(0, -Math.min(...values)),
+        breakevens: deduplicate(breakevens),
+    }
+}
+
+function yearsBetween(from: string, to: string): number {
+    // 使用 UTC 中午消除浏览器时区/DST 差异；无效日期按已到期处理，避免定价函数收到 NaN。
+    const fromTime = Date.parse(`${from}T12:00:00Z`)
+    const toTime = Date.parse(`${to}T12:00:00Z`)
+    if (!Number.isFinite(fromTime) || !Number.isFinite(toTime)) return 0
+    return Math.max(0, (toTime - fromTime) / 31_536_000_000)
+}

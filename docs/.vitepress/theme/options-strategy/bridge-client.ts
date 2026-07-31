@@ -31,6 +31,7 @@ interface ClientOptions {
 const DEFAULT_TIMEOUT_MS = 15_000
 
 function finiteNumber(value: unknown): number | null {
+    // Bridge 字段可能为空或为字符串；非法值归一为 null，避免 NaN 扩散到表格和定价模型。
     const number = typeof value === 'number' ? value : Number(value)
     return Number.isFinite(number) ? number : null
 }
@@ -73,7 +74,7 @@ function optionQuote(raw: unknown, strike: number): OptionQuote | null {
         askSize: finiteNumber(item.ask_size),
         volume: finiteNumber(item.volume),
         openInterest: finiteNumber(item.open_interest),
-        // Futu snapshots expose IV as a percentage, while pricing functions use a decimal.
+        // Futu 快照的 IV 是百分数，定价层统一使用小数；换算只在数据适配边界做一次。
         iv: rawIv !== null && rawIv > 0 ? rawIv / 100 : null,
         delta: finiteNumber(item.delta),
         gamma: finiteNumber(item.gamma),
@@ -105,7 +106,7 @@ export class FutuBridgeClient {
 
     constructor(baseUrl: string, options: ClientOptions = {}) {
         this.baseUrl = normalizeBaseUrl(baseUrl)
-        // Some browser/extension environments enforce Window's Web IDL receiver check.
+        // 部分浏览器/扩展会校验 Window 接收者，绑定 globalThis 以兼容原生 fetch 和测试注入。
         this.fetchImpl = (options.fetchImpl ?? globalThis.fetch).bind(globalThis) as FetchLike
         this.timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
     }
@@ -117,6 +118,7 @@ export class FutuBridgeClient {
     async stocks(type: 'STOCK' | 'ETF'): Promise<StockItem[]> {
         const data = await this.get<Record<string, unknown>>('/api/stocks', {market: 'US', type})
         if (!Array.isArray(data.stocks)) throw new BridgeError('invalid-response', '股票列表格式无效。')
+        // 前端仅支持美股且不允许选择已退市标的，异常记录在适配层隔离，不污染搜索列表。
         return data.stocks.flatMap((raw): StockItem[] => {
             if (!raw || typeof raw !== 'object') return []
             const item = raw as Record<string, unknown>
@@ -146,6 +148,7 @@ export class FutuBridgeClient {
         const data = await this.get<Record<string, unknown>>('/api/option-chain', {symbol, expiry})
         if (!Array.isArray(data.rows)) throw new BridgeError('invalid-response', '期权链格式无效。')
 
+        // 丢弃无效行权价并在入口统一升序，虚拟列表、现价定位和 T 型展示都依赖该顺序。
         const rows: OptionChainRow[] = data.rows.flatMap((raw): OptionChainRow[] => {
             if (!raw || typeof raw !== 'object') return []
             const item = raw as Record<string, unknown>
@@ -163,6 +166,7 @@ export class FutuBridgeClient {
     }
 
     private async get<T>(path: string, params: Record<string, string> = {}): Promise<T> {
+        // 单次请求不自动重试；重试和定时刷新由页面统一控制，避免故障时成倍压垮本机 Bridge。
         const url = new URL(`${this.baseUrl}${path}`)
         for (const [key, value] of Object.entries(params)) url.searchParams.set(key, value)
         const controller = new AbortController()
@@ -170,6 +174,7 @@ export class FutuBridgeClient {
         try {
             const response = await this.fetchImpl(url, {
                 method: 'GET',
+                // Bridge 是只读本机接口，不携带站点凭据和来源信息，避免跨域泄露。
                 credentials: 'omit',
                 referrerPolicy: 'no-referrer',
                 signal: controller.signal,
@@ -180,7 +185,7 @@ export class FutuBridgeClient {
                     const body = await response.json() as { error?: unknown }
                     if (typeof body.error === 'string' && body.error.trim()) detail = body.error
                 } catch {
-                    // Keep the status-based message when an upstream error is not JSON.
+                    // 上游错误不保证 JSON；解析失败时保留 HTTP 状态，不能让二次异常遮住原失败。
                 }
                 throw new BridgeError('http', detail, response.status)
             }

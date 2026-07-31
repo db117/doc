@@ -25,7 +25,7 @@ export function normalCdf(value: number): number {
 }
 
 function bivariateNormalCdf(a: number, b: number, correlation: number): number {
-    // Five-point Gauss-Legendre approximation used by the reference Y2002 model.
+    // 保持参考 Y2002 模型的五点 Gauss-Legendre 近似，避免不同积分实现造成价格漂移。
     const weights = [0.018854042, 0.038088059, 0.0452707394, 0.038088059, 0.018854042]
     const nodes = [0.04691008, 0.23076534, 0.5, 0.76923466, 0.95308992]
     let correction = 0
@@ -64,13 +64,16 @@ export function europeanOptionPrice(input: OptionPricingInput): number {
 
 export function americanOptionPrice(input: OptionPricingInput): number {
     const {type, spot, strike, timeToExpiry, volatility, riskFreeRate} = input
+    // 无分红美式 Call 不会提前行权，直接走欧式公式可避开近零分红率的数值不稳定。
     if (type === 'CALL' && input.dividendYield <= 0) return europeanOptionPrice(input)
     const dividendYield = Math.max(input.dividendYield, 1e-8)
     if (timeToExpiry <= 0) return intrinsicValue(type, spot, strike)
     if (spot <= 0 || strike <= 0) return type === 'PUT' ? strike : 0
+    // 极低波动率会让边界公式除以接近零的方差；退化为内在价值是保守的失败隔离。
     if (volatility <= 0.005) return intrinsicValue(type, spot, strike)
 
     const carry = riskFreeRate - dividendYield
+    // Put 通过对偶变换复用同一套美式 Call 实现，避免两套提前行权逻辑产生偏差。
     const price = type === 'CALL'
         ? americanCall2002(spot, strike, timeToExpiry, riskFreeRate, carry, volatility)
         : americanCall2002(
@@ -97,7 +100,7 @@ function americanCall2002(
     carry: number,
     volatility: number,
 ): number {
-    // Without dividends, early exercise of an American call is never optimal.
+    // carry 不低于利率时提前行权无优势，回退欧式价格也是 Y2002 的适用边界。
     if (carry >= rate) {
         return europeanOptionPrice({
             type: 'CALL', spot, strike, timeToExpiry: time, volatility,

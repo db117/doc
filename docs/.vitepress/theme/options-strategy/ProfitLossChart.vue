@@ -9,6 +9,7 @@ import {CanvasRenderer} from 'echarts/renderers'
 import {formatMoney, formatNumber} from './format'
 import type {ProfitLossPoint} from './types'
 
+// 只注册实际使用的 ECharts 模块，避免策略页把完整图表包带入客户端。
 use([LineChart, GridComponent, TooltipComponent, DataZoomComponent, MarkLineComponent, CanvasRenderer])
 
 const props = defineProps<{
@@ -65,6 +66,7 @@ const option = computed<EChartsCoreOption>(() => ({
     moveOnMouseWheel: false
   }],
   series: [
+    // 盈利与亏损拆为两条序列，才能分别填色；null 断点防止颜色跨过零轴串线。
     {
       name: '盈利',
       type: 'line',
@@ -107,6 +109,7 @@ const option = computed<EChartsCoreOption>(() => ({
 function render(): void {
   if (!root.value) return
   if (!chart) chart = init(root.value, undefined, {renderer: 'canvas'})
+  // 深色模式、数据和标记线会一起变化，整包替换可避免旧盈亏平衡线残留。
   chart.setOption(option.value, {notMerge: true, lazyUpdate: true})
 }
 

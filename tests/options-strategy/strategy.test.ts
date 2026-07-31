@@ -11,19 +11,19 @@ const call: OptionQuote = {
 
 describe('strategy leg state', () => {
     it('adds at ask, averages same-direction entries, and offsets at bid', () => {
-        let legs = adjustLegAtQuote([], call, 1, 2)
-        legs = adjustLegAtQuote(legs, call, 1, 4)
-        expect(legs[0]).toMatchObject({quantity: 2, entryPrice: 3})
+        let legs = adjustLegAtQuote([], call, 1, 2, '2026-08-03')
+        legs = adjustLegAtQuote(legs, call, 1, 4, '2026-08-03')
+        expect(legs[0]).toMatchObject({quantity: 2, entryPrice: 3, expiry: '2026-08-03'})
 
-        legs = adjustLegAtQuote(legs, call, -1, 2.5)
+        legs = adjustLegAtQuote(legs, call, -1, 2.5, '2026-08-03')
         expect(legs[0]).toMatchObject({quantity: 1, entryPrice: 3})
 
-        legs = adjustLegAtQuote(legs, call, -1, 2.5)
+        legs = adjustLegAtQuote(legs, call, -1, 2.5, '2026-08-03')
         expect(legs).toEqual([])
     })
 
     it('supports direct quantity and cost-basis editing', () => {
-        const initial = adjustLegAtQuote([], call, 1, 2)
+        const initial = adjustLegAtQuote([], call, 1, 2, '2026-08-03')
         expect(editLeg(initial, call.code, {quantity: -3, entryPrice: 1.75})[0])
             .toMatchObject({quantity: -3, entryPrice: 1.75})
         expect(editLeg(initial, call.code, {quantity: 0})).toEqual([])
@@ -35,4 +35,3 @@ describe('strategy leg state', () => {
         expect(resolveMultiplier({...call, contractSize: null, lotSize: null})).toEqual({value: 100, estimated: true})
     })
 })
-

@@ -12,8 +12,10 @@ const emit = defineEmits<{
   trade: [option: OptionQuote, side: 'ask' | 'bid']
 }>()
 
+// 虚拟列表依赖固定行高；修改这里时必须同步表格单元格的 CSS 高度。
 const ROW_HEIGHT = 35
 const OVERSCAN = 8
+// T 型链的固定顺序是 10 列 Call + 行权价 + 10 列 Put；表头、表体和居中计算必须同步。
 const QUOTE_COLUMN_WIDTH = 68
 const CALL_COLUMN_COUNT = 10
 const STRIKE_COLUMN_WIDTH = 112
@@ -32,6 +34,7 @@ const bottomSpacer = computed(() => Math.max(0, (props.chain.rows.length - endIn
 const spot = computed(() => props.chain.underlying.last)
 const spotRowIndex = computed(() => {
   if (spot.value === null || props.chain.rows.length === 0) return -1
+  // 现价通常不等于离散行权价，因此以最近一档作为定位锚点。
   let best = 0
   for (let index = 1; index < props.chain.rows.length; index += 1) {
     if (Math.abs(props.chain.rows[index].strike - spot.value) < Math.abs(props.chain.rows[best].strike - spot.value)) best = index
@@ -47,7 +50,7 @@ function scrollToSpot(): void {
 
 function centerStrikeColumn(): void {
   if (!scroller.value) return
-  // Keep the T-shaped chain centered initially without overlaying adjacent quotes.
+  // 初始只把中轴行权价居中；不使用 sticky 覆盖相邻报价，横向比较时不会遮挡数据。
   const strikeCenter = CALL_COLUMN_COUNT * QUOTE_COLUMN_WIDTH + STRIKE_COLUMN_WIDTH / 2
   scroller.value.scrollLeft = Math.max(0, strikeCenter - scroller.value.clientWidth / 2)
   if (headerScroller.value) headerScroller.value.scrollLeft = scroller.value.scrollLeft
@@ -56,6 +59,7 @@ function centerStrikeColumn(): void {
 function onScroll(event: Event): void {
   const target = event.currentTarget as HTMLElement
   scrollTop.value = target.scrollTop
+  // 表头与表体拆开以固定表头，只同步横向滚动，纵向交给虚拟列表处理。
   if (headerScroller.value) headerScroller.value.scrollLeft = target.scrollLeft
 }
 
@@ -69,6 +73,7 @@ function trade(option: OptionQuote | null, side: 'ask' | 'bid'): void {
 }
 
 watch(() => [props.chain.symbol, props.chain.expiry], async () => {
+  // 等新链 DOM 完成后再定位，否则会使用上一条链的尺寸与滚动范围。
   await nextTick()
   scrollToSpot()
 })
@@ -262,6 +267,8 @@ h2 {
 }
 
 .chain-table {
+  /* 覆盖 VitePress 正文表格的 block 样式，保证独立表头和表体使用同一列宽算法。 */
+  display: table;
   width: 100%;
   min-width: 1510px;
   table-layout: fixed;
@@ -273,11 +280,11 @@ h2 {
 }
 
 col {
-  width: 68px;
+  width: 4.6%;
 }
 
 col.strike-col {
-  width: 112px;
+  width: 8%;
 }
 
 th, td {

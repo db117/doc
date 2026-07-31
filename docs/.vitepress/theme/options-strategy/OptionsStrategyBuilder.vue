@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import {computed, onBeforeUnmount, onMounted, ref, shallowRef} from 'vue'
+import {computed, onBeforeUnmount, onMounted, ref, shallowRef, watch} from 'vue'
+import ExpirationRail from './ExpirationRail.vue'
 import OptionChainTable from './OptionChainTable.vue'
 import StrategyPanel from './StrategyPanel.vue'
 import {BridgeError, FutuBridgeClient} from './bridge-client'
 import {formatNumber} from './format'
-import {atTheMoneyIv, expirationStatistics, theoreticalProfitLossCurve} from './statistics'
+import {atTheMoneyIv, curveStatistics, expirationStatistics, theoreticalProfitLossCurve} from './statistics'
 import {adjustLegAtQuote, editLeg, refreshLegMarketIv} from './strategy'
 import type {OptionChain, OptionQuote, StockItem, StrategyLeg} from './types'
 
 const DEFAULT_BRIDGE_URL = 'http://127.0.0.1:8765'
 const DEFAULT_SYMBOL = 'US.MU'
+// 页面只通过本机只读 Bridge 取行情；轮询由页面统一调度，避免客户端重试叠加请求。
 const POLL_INTERVAL_MS = 5_000
 
 const bridgeUrl = ref(DEFAULT_BRIDGE_URL)
@@ -36,11 +38,13 @@ const rangePercent = ref(12)
 const riskFreeRate = ref(0.045)
 const wideMode = ref(false)
 let pollTimer: ReturnType<typeof setInterval> | undefined
+// 标的、到期日切换可能并发；只有最后一次请求可以提交状态，防止慢响应覆盖新选择。
 let requestId = 0
 
 const stockResults = computed(() => {
   const query = searchText.value.trim().toLowerCase().replace(/^us\./, '')
   if (!query) return stocks.value.slice(0, 30)
+  // 搜索结果固定按“完全匹配、代码前缀、代码或名称包含”排列，代码直达优先于模糊名称。
   const exact: StockItem[] = []
   const prefix: StockItem[] = []
   const contains: StockItem[] = []
@@ -56,26 +60,43 @@ const stockResults = computed(() => {
 })
 
 const quantities = computed(() => new Map(legs.value.map(leg => [leg.code, leg.quantity])))
+const legCountsByExpiry = computed(() => {
+  const counts = new Map<string, number>()
+  for (const leg of legs.value) counts.set(leg.expiry, (counts.get(leg.expiry) ?? 0) + 1)
+  return counts
+})
 const currentPrice = computed(() => chain.value?.underlying.last ?? 0)
 const currentAtmIv = computed(() => chain.value && currentPrice.value > 0
     ? atTheMoneyIv(chain.value.rows, currentPrice.value)
     : null)
-const statistics = computed(() => expirationStatistics(legs.value))
-const totalDays = computed(() => {
-  if (!selectedExpiry.value) return 1
-  const expiry = new Date(`${selectedExpiry.value}T16:00:00`)
-  return Math.max(1, Math.ceil((expiry.getTime() - Date.now()) / 86_400_000))
+const analysisExpiry = computed(() => {
+  // 跨期情景只推进到最早到期腿；再往后需要假设平仓/行权后的路径，不属于本工具边界。
+  const dates = [...new Set(legs.value.map(leg => leg.expiry))].sort()
+  return dates[0] ?? selectedExpiry.value
 })
-const scenarioDateLabel = computed(() => {
-  if (!currentAtmIv.value) return selectedExpiry.value
+const sameExpiryStrategy = computed(() => new Set(legs.value.map(leg => leg.expiry)).size <= 1)
+const totalDays = computed(() => {
+  if (!analysisExpiry.value) return 0
+  // 日期统一落在本地中午，避免午夜附近的时区或夏令时切换造成天数偏差。
+  const expiry = new Date(`${analysisExpiry.value}T12:00:00`)
+  const today = new Date()
+  today.setHours(12, 0, 0, 0)
+  return Math.max(0, Math.round((expiry.getTime() - today.getTime()) / 86_400_000))
+})
+const scenarioDate = computed(() => {
   const date = new Date()
   date.setHours(12, 0, 0, 0)
   date.setDate(date.getDate() + scenarioDay.value)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+})
+const scenarioDateLabel = computed(() => {
+  if (!currentAtmIv.value) return analysisExpiry.value
+  const date = new Date(`${scenarioDate.value}T12:00:00`)
   return date.toLocaleDateString('zh-CN', {year: 'numeric', month: '2-digit', day: '2-digit'})
 })
-const timeToExpiry = computed(() => currentAtmIv.value
-    ? Math.max(0, (totalDays.value - scenarioDay.value) / 365)
-    : 0)
 const scenarioIvMax = computed(() => Math.max(300, Math.ceil(((currentAtmIv.value ?? 1.5) * 200) / 25) * 25))
 const curve = computed(() => {
   if (!chain.value || currentPrice.value <= 0 || legs.value.length === 0) return []
@@ -85,13 +106,17 @@ const curve = computed(() => {
     minimumPrice: Math.max(0.01, currentPrice.value * (1 - fraction)),
     maximumPrice: currentPrice.value * (1 + fraction),
     points: 241,
-    timeToExpiry: timeToExpiry.value,
+    scenarioDate: scenarioDate.value,
     currentAtmIv: currentAtmIv.value,
     scenarioAtmIv: currentAtmIv.value ? scenarioIv.value / 100 : null,
     riskFreeRate: riskFreeRate.value,
     dividendYield: 0,
   })
 })
+// 同到期组合可精确分析分段线性到期收益；跨期仍有时间价值，只统计当前采样价格区间。
+const statistics = computed(() => sameExpiryStrategy.value
+    ? expirationStatistics(legs.value)
+    : curveStatistics(legs.value, curve.value))
 const lastUpdatedLabel = computed(() => lastUpdated.value?.toLocaleTimeString('zh-CN', {hour12: false}) ?? '—')
 
 function describeError(error: unknown): string {
@@ -105,6 +130,7 @@ async function connect(): Promise<void> {
   errorMessage.value = ''
   try {
     const nextClient = new FutuBridgeClient(bridgeUrl.value)
+    // 健康检查通过后才替换活动客户端，避免失败配置影响仍在运行的页面状态。
     await nextClient.health()
     if (id !== requestId) return
     client.value = nextClient
@@ -114,7 +140,7 @@ async function connect(): Promise<void> {
     if (!items.length) throw new Error('该标的没有可用的美股期权到期日。')
     expirations.value = items.map(item => item.date)
     if (!expirations.value.includes(selectedExpiry.value)) {
-      // 首次连接选择最近到期日；重连后仅在原到期日失效时清空不兼容的策略腿。
+      // 首次连接选最近日期；重连仅在原日期失效时清腿，避免把旧合约错误绑定到新日期。
       selectedExpiry.value = expirations.value[0]
       legs.value = []
     }
@@ -123,6 +149,7 @@ async function connect(): Promise<void> {
   } catch (error) {
     if (id !== requestId) return
     errorMessage.value = describeError(error)
+    // 已有链可继续查看但必须标记过期；首次加载失败则保持空态，不能伪装成有效行情。
     stale.value = Boolean(chain.value)
   } finally {
     if (id === requestId) loading.value = false
@@ -136,7 +163,7 @@ async function loadStocks(activeClient: FutuBridgeClient): Promise<void> {
     if (activeClient !== client.value) return
     stocks.value = [...stockItems, ...etfItems].sort((a, b) => a.code.localeCompare(b.code))
   } catch {
-    // Stock search is optional; direct ticker entry remains available.
+    // 股票目录只是搜索增强；失败不阻断用户直接输入代码查询。
   } finally {
     loadingStocks.value = false
   }
@@ -144,6 +171,7 @@ async function loadStocks(activeClient: FutuBridgeClient): Promise<void> {
 
 async function loadSymbol(symbol: string, shouldConfirm = true, id = ++requestId): Promise<void> {
   if (!client.value) return
+  // 策略不支持跨标的组合；切换标的必须显式确认并清空原有合约腿。
   if (shouldConfirm && legs.value.length && !window.confirm('切换标的会清空当前策略，确认继续吗？')) return
   const normalized = symbol.trim().toUpperCase().replace(/^US\./, '')
   if (!normalized) return
@@ -170,9 +198,8 @@ async function loadSymbol(symbol: string, shouldConfirm = true, id = ++requestId
 
 async function changeExpiry(expiry: string): Promise<void> {
   if (expiry === selectedExpiry.value) return
-  if (legs.value.length && !window.confirm('切换到期日会清空当前策略，确认继续吗？')) return
   selectedExpiry.value = expiry
-  legs.value = []
+  // 切日期时保留跨期策略腿，但先移除旧链，避免新日期标题下误点旧日期报价。
   chain.value = null
   loading.value = true
   const id = ++requestId
@@ -181,6 +208,7 @@ async function changeExpiry(expiry: string): Promise<void> {
 }
 
 async function loadChain(background = false, id = requestId, resetScenario = false): Promise<void> {
+  // 后台刷新不并发；主动切换仍由 requestId 隔离过期响应。
   if (!client.value || !selectedExpiry.value || (background && refreshing.value)) return
   if (background) refreshing.value = true
   try {
@@ -192,8 +220,10 @@ async function loadChain(background = false, id = requestId, resetScenario = fal
       if (row.call) quotes.set(row.call.code, row.call)
       if (row.put) quotes.set(row.put.code, row.put)
     }
+    // 只刷新当前链中同合约腿的市场 IV；历史建仓价必须保持不变，其他到期腿沿用上次 IV。
     legs.value = refreshLegMarketIv(legs.value, quotes)
     const atm = nextChain.underlying.last ? atTheMoneyIv(nextChain.rows, nextChain.underlying.last) : null
+    // 初次/切链采用新 ATM IV；用户手动调整后，后台报价刷新不覆盖其情景假设。
     if (resetScenario || !ivTouched.value) scenarioIv.value = (atm ?? 0) * 100
     if (resetScenario) {
       scenarioDay.value = totalDays.value
@@ -205,6 +235,7 @@ async function loadChain(background = false, id = requestId, resetScenario = fal
   } catch (error) {
     if (id !== requestId) return
     errorMessage.value = describeError(error)
+    // 后台刷新失败保留旧链并标记过期；主动切日期已清链，不回退到错误日期的数据。
     stale.value = Boolean(chain.value)
   } finally {
     refreshing.value = false
@@ -223,9 +254,10 @@ function submitSearch(): void {
 }
 
 function addTrade(option: OptionQuote, side: 'ask' | 'bid'): void {
+  // 按真实可成交方向记账：点卖价代表买入，点买价代表卖出。
   const price = side === 'ask' ? option.ask : option.bid
   if (price === null) return
-  legs.value = adjustLegAtQuote(legs.value, option, side === 'ask' ? 1 : -1, price)
+  legs.value = adjustLegAtQuote(legs.value, option, side === 'ask' ? 1 : -1, price, selectedExpiry.value)
 }
 
 function editStrategyLeg(code: string, field: 'quantity' | 'entryPrice', value: number): void {
@@ -259,6 +291,10 @@ function onVisibilityChange(): void {
   if (!document.hidden) void loadChain(true)
 }
 
+watch(totalDays, value => {
+  if (scenarioDay.value > value) scenarioDay.value = value
+})
+
 function setWideMode(enabled: boolean): void {
   wideMode.value = enabled
   document.documentElement.classList.toggle('options-strategy-wide', enabled)
@@ -272,6 +308,7 @@ onMounted(() => {
   const stored = localStorage.getItem('options-strategy.bridge-url')
   if (stored) bridgeUrl.value = bridgeInput.value = stored
   void connect()
+  // 页面隐藏时暂停轮询以降低本机 OpenD 压力；重新可见时由 visibilitychange 立即补刷。
   pollTimer = setInterval(() => {
     if (!document.hidden) void loadChain(true)
   }, POLL_INTERVAL_MS)
@@ -321,13 +358,6 @@ onBeforeUnmount(() => {
         </div>
       </form>
 
-      <label class="expiry-field">到期日
-        <select :value="selectedExpiry" :disabled="!expirations.length"
-                @change="changeExpiry(($event.target as HTMLSelectElement).value)">
-          <option v-for="expiry in expirations" :key="expiry" :value="expiry">{{ expiry }}</option>
-        </select>
-      </label>
-
       <div v-if="chain" class="underlying-quote">
         <span>{{ chain.underlying.name || selectedSymbol }}</span>
         <strong>{{ formatNumber(chain.underlying.last) }}</strong>
@@ -367,13 +397,18 @@ onBeforeUnmount(() => {
       <button type="button" @click="chain ? loadChain(true) : connect()">重试</button>
     </div>
 
-    <div v-if="loading && !chain" class="loading-layout" aria-label="正在加载期权数据" aria-busy="true">
-      <div class="skeleton chain-skeleton"/>
-      <div class="skeleton panel-skeleton"/>
-    </div>
+    <ExpirationRail
+        v-if="expirations.length"
+        :expirations="expirations"
+        :selected-expiry="selectedExpiry"
+        :leg-counts="legCountsByExpiry"
+        :loading="loading"
+        @select="changeExpiry"
+    />
 
-    <div v-else-if="chain" class="workbench-layout">
-      <OptionChainTable :chain="chain" :quantities="quantities" @trade="addTrade"/>
+    <div class="workbench-layout">
+      <div v-if="loading && !chain" class="skeleton chain-skeleton" aria-label="正在加载期权数据" aria-busy="true"/>
+      <OptionChainTable v-else-if="chain" :chain="chain" :quantities="quantities" @trade="addTrade"/>
       <StrategyPanel
           :legs="legs"
           :statistics="statistics"
@@ -386,12 +421,14 @@ onBeforeUnmount(() => {
           :scenario-day="scenarioDay"
           :total-days="totalDays"
           :scenario-date-label="scenarioDateLabel"
-          :expiry="selectedExpiry"
+          :expiry="analysisExpiry"
+          :statistics-scope="sameExpiryStrategy ? 'expiry' : 'range'"
           :range-percent="rangePercent"
           :risk-free-rate="riskFreeRate"
           @edit="editStrategyLeg"
           @remove="removeLeg"
           @clear="clearLegs"
+          @select-expiry="changeExpiry"
           @update:scenario-iv="updateScenarioIv"
           @update:scenario-day="updateScenarioDay"
           @update:range-percent="rangePercent = $event"
@@ -448,7 +485,7 @@ input, select, button {
   font: inherit;
 }
 
-.search-field input, .expiry-field select, .bridge-settings input {
+.search-field input, .bridge-settings input {
   box-sizing: border-box;
   height: var(--control-height);
   border: 1px solid var(--vp-c-divider);
@@ -529,12 +566,6 @@ input, select, button {
   padding: 10px;
   color: var(--vp-c-text-3);
   font-size: 12px;
-}
-
-.expiry-field select {
-  min-width: 132px;
-  padding: 0 8px;
-  border-radius: 6px;
 }
 
 .underlying-quote {
@@ -707,17 +738,11 @@ input, select, button {
   cursor: pointer;
 }
 
-.workbench-layout, .loading-layout {
+.workbench-layout {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(390px, 2fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
-  align-items: start;
   margin-top: 12px;
-}
-
-.workbench-layout > :last-child {
-  position: sticky;
-  top: 76px;
 }
 
 .skeleton {
@@ -729,10 +754,6 @@ input, select, button {
 
 .chain-skeleton {
   height: 680px;
-}
-
-.panel-skeleton {
-  height: 620px;
 }
 
 @keyframes shimmer {
@@ -750,18 +771,6 @@ input, select, button {
     margin-left: 0;
   }
 
-  .workbench-layout, .loading-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .workbench-layout > :last-child {
-    grid-row: 1;
-    position: static;
-  }
-
-  .panel-skeleton {
-    grid-row: 1;
-  }
 }
 
 @media (max-width: 959px) {

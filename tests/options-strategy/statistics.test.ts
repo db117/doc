@@ -9,6 +9,7 @@ import type {StrategyLeg} from '../../docs/.vitepress/theme/options-strategy/typ
 function leg(patch: Partial<StrategyLeg>): StrategyLeg {
     return {
         code: 'option', name: 'option', type: 'CALL', strike: 100,
+        expiry: '2026-08-07',
         quantity: 1, entryPrice: 5, multiplier: 100, multiplierEstimated: false,
         marketIv: 0.3, ...patch,
     }
@@ -57,16 +58,29 @@ describe('scenario inputs', () => {
         const legs = [leg({})]
         const lowIv = theoreticalProfitLossCurve({
             legs, minimumPrice: 90, maximumPrice: 110, points: 3,
-            timeToExpiry: 0, currentAtmIv: 0.3, scenarioAtmIv: 0.1,
+            scenarioDate: '2026-08-07', currentAtmIv: 0.3, scenarioAtmIv: 0.1,
             riskFreeRate: 0.045, dividendYield: 0,
         })
         const highIv = theoreticalProfitLossCurve({
             legs, minimumPrice: 90, maximumPrice: 110, points: 3,
-            timeToExpiry: 0, currentAtmIv: 0.3, scenarioAtmIv: 1,
+            scenarioDate: '2026-08-07', currentAtmIv: 0.3, scenarioAtmIv: 1,
             riskFreeRate: 0.045, dividendYield: 0,
         })
         expect(highIv).toEqual(lowIv)
         expect(lowIv.map(point => point.profitLoss)).toEqual([-500, -500, 500])
     })
-})
 
+    it('keeps later-expiring legs alive at the first expiry', () => {
+        const points = theoreticalProfitLossCurve({
+            legs: [
+                leg({code: 'near', type: 'PUT', strike: 100, expiry: '2026-08-07'}),
+                leg({code: 'far', type: 'PUT', strike: 105, expiry: '2026-08-14', quantity: -1}),
+            ],
+            minimumPrice: 100, maximumPrice: 100, points: 2,
+            scenarioDate: '2026-08-07', currentAtmIv: 0.3, scenarioAtmIv: 0.3,
+            riskFreeRate: 0.045, dividendYield: 0,
+        })
+        expect(points[0].profitLoss).toBeLessThan(-500)
+        expect(points[0].profitLoss).toBeGreaterThan(-1500)
+    })
+})

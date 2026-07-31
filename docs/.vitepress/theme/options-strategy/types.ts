@@ -35,7 +35,7 @@ export interface OptionQuote {
     askSize: number | null
     volume: number | null
     openInterest: number | null
-    /** Decimal IV, for example 0.42 means 42%. */
+    /** 定价层统一使用小数 IV，例如 0.42 表示 42%；数据源百分数在适配层换算。 */
     iv: number | null
     delta: number | null
     gamma: number | null
@@ -64,6 +64,8 @@ export interface StrategyLeg {
     name: string
     type: OptionType
     strike: number
+    /** 到期日固定为 YYYY-MM-DD；跨期分组和每腿剩余期限都以此为时间边界。 */
+    expiry: string
     quantity: number
     entryPrice: number
     multiplier: number
@@ -82,4 +84,3 @@ export interface ProfitLossPoint {
     price: number
     profitLoss: number
 }
-
