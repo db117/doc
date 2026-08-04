@@ -30,6 +30,7 @@ outline: false
 >
 > - [ChatGPT](https://chatgpt.com/)
 > - [Grok](https://grok.com/)
+> - [奈喜论坛](https://forum.naixi.net/)
 >
 > ### AI 工具
 >
