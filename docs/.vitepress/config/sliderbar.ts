@@ -16,6 +16,7 @@ export default {
 				{text: '本地使用指南', link: '/tools/options-strategy-local-setup'},
 			],
 		},
+        {text: '个人净资产追踪', link: '/tools/net-worth'},
 		{text: 'V2Ray 订阅转 Clash Verge 配置', link: '/tools/v2ray-to-clash'},
 	],
 	'/other/': scanDir('other'),

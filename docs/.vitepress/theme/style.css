@@ -240,6 +240,21 @@
   font-size: 12px;
 }
 
+/**
+ * Net worth tracker workbench
+ * -------------------------------------------------------------------------- */
+
+.Layout.net-worth-page .VPDoc .container,
+.Layout.net-worth-page .VPDoc .content,
+.Layout.net-worth-page .VPDoc .content-container,
+.Layout.net-worth-page .VPDoc .vp-doc {
+    max-width: none;
+}
+
+.Layout.net-worth-page .VPDoc .content {
+    padding-inline: 0;
+}
+
 /* Keep the linked strategy page as the parent while making its guide visibly nested. */
 .VPSidebarItem.level-1 .VPLink[href*="/tools/options-strategy-local-setup"] {
   padding-left: 16px;
