@@ -1,13 +1,17 @@
 import {describe, expect, it} from 'vitest'
 import {isReactive, reactive} from 'vue'
 import {
+    addInstallmentPlan,
+    backfillInstallments,
     confirmInstallmentPaid,
+    correctInstallmentRemaining,
+    deleteUnstartedInstallmentPlan,
     emptyLedger,
-    installmentBalance,
     makeLedgerFile,
     normalizeMonth,
     parseLedgerFile,
     summarize,
+    terminateInstallmentPlan,
     upsertBalance,
     upsertExchangeRate,
     type Account,
@@ -109,43 +113,88 @@ describe('net worth ledger', () => {
         expect(ledger.ledger.balances[0].amount).toBe('200')
     })
 
-    it('records one confirmed installment payment without automatic date-based reduction', () => {
+    it('supports multiple plans, keeps the current month pending, and confirms it manually', () => {
         const liability = account({
             name: '账单分期',
             type: 'liability',
             balanceMode: 'installment',
-            installment: {
-                periodAmount: '1200',
-                totalPeriods: 3,
-                remainingPeriods: 3,
-                nextDueDate: '2026-03-15',
-                maturityDate: '2026-05-15',
-            },
+            installments: [],
         })
         let ledger = {...emptyLedger(), accounts: [liability]}
-        ledger = upsertBalance(ledger, {
-            accountId: liability.id,
-            date: '2026-03-01',
-            amount: installmentBalance(liability.installment!),
-            source: 'installment-setup'
+        ledger = addInstallmentPlan(ledger, liability.id, {
+            id: 'phone', name: '手机', periodAmount: '1000', totalPeriods: 3, remainingPeriods: 3,
+            effectiveMonth: '2026-03', nextDueMonth: '2026-03',
         })
+        ledger = addInstallmentPlan(ledger, liability.id, {
+            id: 'computer', name: '电脑', periodAmount: '500', totalPeriods: 2, remainingPeriods: 2,
+            effectiveMonth: '2026-03', nextDueMonth: '2026-04',
+        })
+        ledger = addInstallmentPlan(ledger, liability.id, {
+            id: 'mistake', name: '误建', periodAmount: '10', totalPeriods: 1, remainingPeriods: 1,
+            effectiveMonth: '2026-03', nextDueMonth: '2026-04',
+        })
+        ledger = deleteUnstartedInstallmentPlan(ledger, liability.id, 'mistake', '2026-03')
 
-        const unchanged = summarize(ledger, '2026-03-15')
-        expect(unchanged.liabilitiesCny).toBe('3600')
+        expect(summarize(ledger, '2026-03').liabilitiesCny).toBe('4000')
+        expect(ledger.accounts[0].installments).toHaveLength(2)
+        expect(backfillInstallments(ledger, '2026-03').changed).toBe(false)
 
-        const paid = confirmInstallmentPaid(ledger, liability.id, '2026-03-20')
-        const updated = paid.accounts[0].installment!
+        const paid = confirmInstallmentPaid(ledger, liability.id, 'phone', '2026-03')
+        const updated = paid.accounts[0].installments![0]
         expect(updated.remainingPeriods).toBe(2)
-        expect(updated.nextDueDate).toBe('2026-04-15')
-        expect(updated.maturityDate).toBe('2026-05-15')
-        expect(summarize(paid, '2026-03-20').liabilitiesCny).toBe('2400')
+        expect(updated.nextDueMonth).toBe('2026-04')
+        expect(updated.maturityMonth).toBe('2026-05')
+        expect(summarize(paid, '2026-03').liabilitiesCny).toBe('3000')
+
+        const backfilled = backfillInstallments(paid, '2026-06')
+        expect(backfilled.completedPlanNames).toEqual(['手机', '电脑'])
+        expect(summarize(backfilled.ledger, '2026-04').liabilitiesCny).toBe('1500')
+        expect(summarize(backfilled.ledger, '2026-05').liabilitiesCny).toBe('0')
     })
 
-    it('round-trips a versioned backup file and rejects unknown versions', () => {
+    it('corrects from an effective month and can terminate a plan without rewriting earlier history', () => {
+        const liability = account({name: '贷款', type: 'liability', balanceMode: 'installment', installments: []})
+        let ledger = {...emptyLedger(), accounts: [liability]}
+        ledger = addInstallmentPlan(ledger, liability.id, {
+            id: 'loan', name: '装修贷', periodAmount: '100', totalPeriods: 6, remainingPeriods: 6,
+            effectiveMonth: '2026-02', nextDueMonth: '2026-03',
+        })
+        ledger = backfillInstallments(ledger, '2026-06').ledger
+        expect(summarize(ledger, '2026-03').liabilitiesCny).toBe('500')
+        expect(summarize(ledger, '2026-05').liabilitiesCny).toBe('300')
+
+        ledger = correctInstallmentRemaining(ledger, liability.id, 'loan', '2026-04', 5, '2026-06')
+        expect(summarize(ledger, '2026-03').liabilitiesCny).toBe('500')
+        expect(summarize(ledger, '2026-04').liabilitiesCny).toBe('500')
+        expect(summarize(ledger, '2026-06').liabilitiesCny).toBe('400')
+
+        ledger = terminateInstallmentPlan(ledger, liability.id, 'loan', '2026-05', '2026-06')
+        expect(summarize(ledger, '2026-04').liabilitiesCny).toBe('500')
+        expect(summarize(ledger, '2026-05').liabilitiesCny).toBe('0')
+        expect(ledger.accounts[0].installments![0].status).toBe('terminated')
+    })
+
+    it('round-trips schema v2, migrates a legacy installment, and rejects unknown versions', () => {
         const source = emptyLedger('2026-04-01T00:00:00.000Z')
         const file = makeLedgerFile(source, '2026-04-02T00:00:00.000Z')
+        expect(file.schemaVersion).toBe(2)
         expect(parseLedgerFile(JSON.parse(JSON.stringify(file))).ledger.createdAt).toBe(source.createdAt)
-        expect(() => parseLedgerFile({...file, schemaVersion: 2})).toThrow('版本不兼容')
+        const legacyAccount = account({name: '旧分期', type: 'liability', balanceMode: 'installment'})
+        const legacy = parseLedgerFile({
+            format: 'net-worth-ledger', schemaVersion: 1, exportedAt: file.exportedAt,
+            ledger: {
+                ...emptyLedger(),
+                accounts: [{
+                    ...legacyAccount, installment: {
+                        periodAmount: '100', totalPeriods: 2, remainingPeriods: 2,
+                        nextDueDate: '2026-04', maturityDate: '2026-05',
+                    }
+                }],
+            },
+        })
+        expect(legacy.schemaVersion).toBe(2)
+        expect(legacy.ledger.accounts[0].installments?.[0].name).toBe('旧分期')
+        expect(() => parseLedgerFile({...file, schemaVersion: 3})).toThrow('版本不兼容')
     })
 
     it('turns reactive ledgers into structured-cloneable storage data', () => {

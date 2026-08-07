@@ -15,6 +15,7 @@ import {
   summarize,
   todayMonthISO,
   type Account,
+  type BalanceSource,
   type Ledger,
 } from './ledger'
 import {formatChartAxisCny, formatCny, formatOriginal} from './format'
@@ -60,17 +61,17 @@ const historySummary = computed(() => summarize(props.ledger, historyDate.value)
 // 目标月份状态采用“账户当时有效 + 截至当月最新余额”的历史快照口径。
 const historyRows = computed(() => props.ledger.accounts
     .filter(account => accountIsEffective(account, historyDate.value))
-    .map(account => {
+    .flatMap(account => {
       const record = latestBalance(props.ledger, account.id, historyDate.value)
-      const rate = record ? rateForRecord(props.ledger, account, record) : null
-      return {
+      if (!record) return []
+      const rate = rateForRecord(props.ledger, account, record)
+      return [{
         account,
         record,
         rate,
-        cnyAmount: record && rate ? multiplyAmountByRate(record.amount, rate.cnyRate) : '0',
-      }
-    })
-    .filter(row => row.record))
+        cnyAmount: rate ? multiplyAmountByRate(record.amount, rate.cnyRate) : '0',
+      }]
+    }))
 // 趋势只绘制实际存在余额记录的月份，不虚构没有采样的数据点。
 const historyPoints = computed(() => historyDates.value.map(date => ({
   date,
@@ -89,6 +90,15 @@ const accountHistoryChartPoints = computed(() => {
       })
       .filter(point => point.cnyAmount !== null)
 })
+
+function balanceSourceLabel(source: BalanceSource): string {
+  return source === 'manual' ? '手动'
+      : source === 'installment-setup' ? '分期设置'
+          : source === 'installment-confirmation' ? '本月确认'
+              : source === 'installment-backfill' ? '跨月补记'
+                  : source === 'installment-correction' ? '进度修正'
+                      : '分期终止'
+}
 
 // 两张折线图共享坐标轴规范，保证金额单位和暗色主题表现一致。
 const chartAxes = computed(() => ({
@@ -282,16 +292,18 @@ onBeforeUnmount(() => {
               <span class="account-dot"
                     :class="row.account.type === 'liability' ? 'liability-dot' : 'asset-dot'"/>{{ row.account.name }}
             </button>
-            <span>{{ row.record?.date }}</span>
-            <span>{{ row.record ? formatOriginal(row.record.amount, row.account.currency) : '—' }}</span>
+            <span>{{ row.record.date }}</span>
+            <span>{{ formatOriginal(row.record.amount, row.account.currency) }}</span>
             <span :class="{'liability-value': row.account.type === 'liability'}">{{
                 row.rate ? `${row.account.type === 'liability' ? '-' : ''}${formatCny(row.cnyAmount)}` : '缺少汇率'
               }}</span>
             <span class="history-actions">
-              <button v-if="row.record?.source === 'manual'" class="row-button" type="button"
+              <button v-if="row.record.source === 'manual'" class="row-button" type="button"
                       @click="emit('editBalance', row.account, row.record.date)">修正</button>
-              <button v-if="row.record?.source === 'manual'" class="text-danger" type="button"
+              <button v-if="row.record.source === 'manual'" class="text-danger" type="button"
                       @click="emit('deleteRecord', row.account.id, row.record.date)">删除</button>
+              <button v-else-if="!row.rate && row.account.currency !== 'CNY'" class="row-button" type="button"
+                      @click="emit('editBalance', row.account, row.record.date)">补汇率</button>
               <small v-else>分期记录</small>
             </span>
           </div>
@@ -326,14 +338,14 @@ onBeforeUnmount(() => {
             <span :class="{'liability-value': historyAccount?.type === 'liability'}">{{
                 row.rate ? `${historyAccount?.type === 'liability' ? '-' : ''}${formatCny(row.cnyAmount)}` : '缺少汇率'
               }}</span>
-            <span class="history-source">{{
-                row.record.source === 'manual' ? '手动' : row.record.source === 'installment-setup' ? '分期设置' : '分期还款'
-              }}</span>
+            <span class="history-source">{{ balanceSourceLabel(row.record.source) }}</span>
             <span class="history-actions">
               <button v-if="row.record.source === 'manual'" class="row-button" type="button"
                       @click="historyAccount && emit('editBalance', historyAccount, row.record.date)">修正</button>
               <button v-if="row.record.source === 'manual'" class="text-danger" type="button"
                       @click="emit('deleteRecord', historyAccount?.id ?? '', row.record.date)">删除</button>
+              <button v-else-if="!row.rate && historyAccount?.currency !== 'CNY'" class="row-button" type="button"
+                      @click="historyAccount && emit('editBalance', historyAccount, row.record.date)">补汇率</button>
               <small v-else>自动记录</small>
             </span>
           </div>

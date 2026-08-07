@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted, reactive, ref, watch} from 'vue'
+import {computed, onMounted, reactive, ref} from 'vue'
 import BackupView from './BackupView.vue'
 import HistoryView from './HistoryView.vue'
 import OverviewView from './OverviewView.vue'
@@ -8,9 +8,14 @@ import {
   CURRENCIES,
   REGIONS,
   accountHasBalances,
+  addInstallmentPlan,
+  backfillInstallments,
   calculateMaturityDate,
   confirmInstallmentPaid,
+  correctInstallmentRemaining,
+  deleteUnstartedInstallmentPlan,
   emptyLedger,
+  installmentDueState,
   installmentBalance,
   latestBalance,
   multiplyAmountByRate,
@@ -19,6 +24,7 @@ import {
   normalizeRate,
   rateForRecord,
   todayMonthISO,
+  terminateInstallmentPlan,
   upsertBalance,
   upsertExchangeRate,
   type Account,
@@ -26,14 +32,16 @@ import {
   type BalanceMode,
   type Currency,
   type Ledger,
+  type InstallmentPlan,
   type RateSource,
 } from './ledger'
 import {fetchCnyRate} from './rates'
-import {formatCny} from './format'
+import {formatCny, formatOriginal} from './format'
 import {loadLedger, saveLedger} from './storage'
 
-type EditorMode = 'account' | 'balance' | null
+type EditorMode = 'account' | 'balance' | 'installment' | null
 type ViewMode = 'overview' | 'history' | 'backup'
+type InstallmentAction = 'new' | 'correct' | 'terminate'
 
 // 表单保留字符串金额，统一交给 ledger 层做定点校验，避免输入阶段引入浮点数。
 interface AccountForm {
@@ -47,12 +55,16 @@ interface AccountForm {
   openedOn: string
   initialAmount: string
   initialRate: string
+  note: string
+}
+
+interface InstallmentForm {
+  name: string
   periodAmount: string
   totalPeriods: number
   remainingPeriods: number
-  nextDueDate: string
-  maturityDate: string
-  note: string
+  effectiveMonth: string
+  nextDueMonth: string
 }
 
 interface BalanceForm {
@@ -74,12 +86,19 @@ function blankAccountForm(): AccountForm {
     openedOn: date,
     initialAmount: '',
     initialRate: '',
+    note: '',
+  }
+}
+
+function blankInstallmentForm(): InstallmentForm {
+  const month = todayMonthISO()
+  return {
+    name: '',
     periodAmount: '',
     totalPeriods: 12,
     remainingPeriods: 12,
-    nextDueDate: date,
-    maturityDate: calculateMaturityDate(date, 12),
-    note: '',
+    effectiveMonth: month,
+    nextDueMonth: month
   }
 }
 
@@ -92,6 +111,8 @@ const editorMode = ref<EditorMode>(null)
 const editingAccountId = ref<string | null>(null)
 const selectedAccountId = ref<string | null>(null)
 const accountActionId = ref<string | null>(null)
+const installmentAction = ref<InstallmentAction>('new')
+const editingInstallmentId = ref<string | null>(null)
 const viewMode = ref<ViewMode>('overview')
 const historyCorrection = ref(false)
 const rateLoading = ref(false)
@@ -99,13 +120,19 @@ const rateSource = ref<RateSource | null>(null)
 const rateMessage = ref('')
 const manualRateTouched = ref(false)
 const accountForm = reactive<AccountForm>(blankAccountForm())
+const installmentForm = reactive<InstallmentForm>(blankInstallmentForm())
 const balanceForm = reactive<BalanceForm>({date: todayMonthISO(), amount: '', rate: ''})
 const selectedAccount = computed(() => ledger.value.accounts.find(account => account.id === selectedAccountId.value) ?? null)
 const isEditingAccount = computed(() => Boolean(editingAccountId.value))
 const editingAccount = computed(() => ledger.value.accounts.find(account => account.id === editingAccountId.value) ?? null)
 const editingHasBalances = computed(() => Boolean(editingAccount.value && accountHasBalances(ledger.value, editingAccount.value.id)))
+const installmentMaturityMonth = computed(() => installmentForm.nextDueMonth && installmentForm.remainingPeriods > 0
+    ? calculateMaturityDate(installmentForm.nextDueMonth, installmentForm.remainingPeriods)
+    : '')
 
 const accountAction = computed(() => ledger.value.accounts.find(account => account.id === accountActionId.value) ?? null)
+const activeActionPlans = computed(() => accountAction.value?.installments?.filter(plan => plan.status === 'active' || plan.status === 'overdue') ?? [])
+const endedActionPlans = computed(() => accountAction.value?.installments?.filter(plan => plan.status === 'completed' || plan.status === 'terminated') ?? [])
 // 父组件只为当前操作账户投影一行数据，完整列表与汇总留在 OverviewView 内部。
 const accountActionRow = computed(() => {
   const account = accountAction.value
@@ -120,16 +147,14 @@ const accountActionRow = computed(() => {
   }
 })
 
-watch([() => accountForm.nextDueDate, () => accountForm.remainingPeriods], () => {
-  // 到期月份是计划的派生值，随下期日期或剩余期数变化自动保持一致。
-  if (accountForm.balanceMode !== 'installment' || !accountForm.nextDueDate || accountForm.remainingPeriods < 1) return
-  accountForm.maturityDate = calculateMaturityDate(accountForm.nextDueDate, accountForm.remainingPeriods)
-})
-
 onMounted(async () => {
   try {
-    ledger.value = await loadLedger()
+    const loaded = await loadLedger()
+    const backfilled = backfillInstallments(loaded)
+    if (backfilled.changed) await saveLedger(backfilled.ledger)
+    ledger.value = backfilled.ledger
     ready.value = true
+    if (backfilled.completedPlanNames.length) setStatus(`${backfilled.completedPlanNames.join('、')} 已全部还清`)
   } catch (error) {
     loadError.value = error instanceof Error ? error.message : '无法读取本地账本。'
   }
@@ -153,6 +178,10 @@ async function commit(next: Ledger, successMessage = '已保存'): Promise<void>
 
 function resetAccountForm(): void {
   Object.assign(accountForm, blankAccountForm())
+}
+
+function resetInstallmentForm(): void {
+  Object.assign(installmentForm, blankInstallmentForm())
 }
 
 function resetBalanceForm(): void {
@@ -184,7 +213,6 @@ function closeAccountActions(): void {
 
 function openEditAccount(account: Account): void {
   closeAccountActions()
-  const plan = account.installment
   Object.assign(accountForm, {
     name: account.name,
     institution: account.institution,
@@ -196,17 +224,38 @@ function openEditAccount(account: Account): void {
     openedOn: account.openedOn,
     initialAmount: '',
     initialRate: '',
-    periodAmount: plan?.periodAmount ?? '',
-    totalPeriods: plan?.totalPeriods ?? 12,
-    remainingPeriods: plan?.remainingPeriods ?? 12,
-    nextDueDate: plan?.nextDueDate ?? todayMonthISO(),
-    maturityDate: plan?.maturityDate ?? todayMonthISO(),
     note: account.note,
   })
   editingAccountId.value = account.id
   selectedAccountId.value = account.id
   editorMode.value = 'account'
   actionError.value = ''
+}
+
+function openInstallmentEditor(action: InstallmentAction, plan?: InstallmentPlan): void {
+  if (!accountAction.value || accountAction.value.status === 'inactive') return
+  resetInstallmentForm()
+  installmentAction.value = action
+  editingInstallmentId.value = plan?.id ?? null
+  if (plan) Object.assign(installmentForm, {
+    name: plan.name,
+    periodAmount: plan.periodAmount,
+    totalPeriods: plan.totalPeriods,
+    remainingPeriods: plan.remainingPeriods,
+    effectiveMonth: todayMonthISO(),
+    nextDueMonth: plan.nextDueMonth,
+  })
+  editorMode.value = 'installment'
+  actionError.value = ''
+}
+
+function installmentStatusText(plan: InstallmentPlan): string {
+  const state = installmentDueState(plan)
+  return state === 'pending' ? '本月待确认'
+      : state === 'overdue' ? '已逾期'
+          : state === 'completed' ? '已结清'
+              : state === 'terminated' ? '已终止'
+                  : '进行中'
 }
 
 function openBalanceEditor(account: Account, date = todayMonthISO(), correction = false): void {
@@ -264,19 +313,27 @@ function normalizeFormRate(): string {
   return normalizeRate(balanceForm.rate)
 }
 
+async function addRateIfAvailable(next: Ledger, account: Account, month: string): Promise<Ledger> {
+  if (account.currency === 'CNY' || next.exchangeRates.some(rate => rate.currency === account.currency && rate.date === month)) return next
+  try {
+    const result = await fetchCnyRate(account.currency, month)
+    return upsertExchangeRate(next, {
+      date: month,
+      currency: account.currency,
+      cnyRate: result.cnyRate,
+      source: result.source
+    })
+  } catch {
+    return next
+  }
+}
+
 async function saveBalance(): Promise<void> {
   const account = selectedAccount.value
   if (!account) return
-  // 分期当前余额由计划派生，禁止普通更新绕过剩余期数；历史纠错是唯一例外。
-  if (account.balanceMode === 'installment' && !historyCorrection.value) {
-    actionError.value = '分期负债请使用“已还一期”，或编辑分期计划。'
-    return
-  }
   try {
-    const amount = normalizeAmount(balanceForm.amount)
     const rate = normalizeFormRate()
     let next = ledger.value
-    // 外币余额与当月汇率一起生成下一份账本，最后只执行一次持久化。
     if (account.currency !== 'CNY') {
       next = upsertExchangeRate(next, {
         date: balanceForm.date,
@@ -285,6 +342,14 @@ async function saveBalance(): Promise<void> {
         source: manualRateTouched.value ? 'manual' : (rateSource.value ?? 'manual'),
       })
     }
+    if (account.balanceMode === 'installment') {
+      if (account.currency === 'CNY') throw new Error('人民币分期账户无需补汇率。')
+      await commit(next, '汇率已保存')
+      editorMode.value = null
+      historyCorrection.value = false
+      return
+    }
+    const amount = normalizeAmount(balanceForm.amount)
     next = upsertBalance(next, {
       accountId: account.id,
       date: balanceForm.date,
@@ -299,26 +364,61 @@ async function saveBalance(): Promise<void> {
   }
 }
 
-async function confirmPaid(): Promise<void> {
-  const account = selectedAccount.value
-  if (!account?.installment) return
+async function confirmPlan(plan: InstallmentPlan): Promise<void> {
+  const account = accountAction.value
+  if (!account) return
+  if (plan.remainingPeriods === 1 && !window.confirm(`确认“${plan.name}”已全部还清？`)) return
   try {
-    let next = ledger.value
-    if (account.currency !== 'CNY') {
-      const rate = normalizeFormRate()
-      next = upsertExchangeRate(next, {
-        date: balanceForm.date,
-        currency: account.currency,
-        cnyRate: rate,
-        source: manualRateTouched.value ? 'manual' : (rateSource.value ?? 'manual'),
-      })
-    }
-    next = confirmInstallmentPaid(next, account.id, balanceForm.date)
-    await commit(next, '已记录本期还款')
-    const refreshed = next.accounts.find(item => item.id === account.id)
-    if (refreshed?.installment) balanceForm.amount = installmentBalance(refreshed.installment)
+    let next = confirmInstallmentPaid(ledger.value, account.id, plan.id)
+    next = await addRateIfAvailable(next, account, todayMonthISO())
+    await commit(next, plan.remainingPeriods === 1 ? `${plan.name} 已全部还清` : '已记录本期还款')
   } catch (error) {
     actionError.value = error instanceof Error ? error.message : '还款记录失败。'
+  }
+}
+
+async function deletePlan(plan: InstallmentPlan): Promise<void> {
+  const account = accountAction.value
+  if (!account || !window.confirm(`删除误建的“${plan.name}”？`)) return
+  try {
+    await commit(deleteUnstartedInstallmentPlan(ledger.value, account.id, plan.id), '分期已删除')
+  } catch (error) {
+    actionError.value = error instanceof Error ? error.message : '分期删除失败。'
+  }
+}
+
+async function saveInstallment(): Promise<void> {
+  const account = accountAction.value
+  if (!account) return
+  const planId = editingInstallmentId.value
+  try {
+    let next = ledger.value
+    let message = '分期已添加'
+    if (installmentAction.value === 'new') {
+      next = addInstallmentPlan(next, account.id, {
+        name: installmentForm.name,
+        periodAmount: installmentForm.periodAmount,
+        totalPeriods: Number(installmentForm.totalPeriods),
+        remainingPeriods: Number(installmentForm.remainingPeriods),
+        effectiveMonth: todayMonthISO(),
+        nextDueMonth: installmentForm.nextDueMonth,
+      })
+      next = await addRateIfAvailable(next, account, todayMonthISO())
+    } else if (installmentAction.value === 'correct' && planId) {
+      if (installmentForm.remainingPeriods === 0 && !window.confirm(`确认“${installmentForm.name}”已全部还清？`)) return
+      next = correctInstallmentRemaining(
+          next, account.id, planId, installmentForm.effectiveMonth, Number(installmentForm.remainingPeriods),
+      )
+      message = installmentForm.remainingPeriods === 0 ? `${installmentForm.name} 已全部还清` : '分期进度已修正'
+    } else if (installmentAction.value === 'terminate' && planId) {
+      if (!window.confirm(`从 ${installmentForm.effectiveMonth} 起终止“${installmentForm.name}”？`)) return
+      next = terminateInstallmentPlan(next, account.id, planId, installmentForm.effectiveMonth)
+      message = '分期已终止'
+    }
+    await commit(next, message)
+    editorMode.value = null
+  } catch (error) {
+    actionError.value = error instanceof Error ? error.message : '分期保存失败。'
   }
 }
 
@@ -352,10 +452,14 @@ async function saveAccount(): Promise<void> {
       }
       const nextAccount: Account = {
         ...current,
+        type: accountForm.type,
         name,
         institution: accountForm.institution.trim(),
         category: accountForm.category,
         region: accountForm.region,
+        currency: accountForm.currency,
+        balanceMode: accountForm.balanceMode,
+        installments: accountForm.balanceMode === 'installment' ? (current.installments ?? []) : undefined,
         note: accountForm.note.trim(),
         updatedAt: now,
       }
@@ -368,18 +472,6 @@ async function saveAccount(): Promise<void> {
     }
 
     const accountId = crypto.randomUUID()
-    const installment = accountForm.type === 'liability' && accountForm.balanceMode === 'installment'
-        ? {
-          periodAmount: normalizeAmount(accountForm.periodAmount),
-          totalPeriods: Number(accountForm.totalPeriods),
-          remainingPeriods: Number(accountForm.remainingPeriods),
-          nextDueDate: accountForm.nextDueDate,
-          maturityDate: calculateMaturityDate(accountForm.nextDueDate, Number(accountForm.remainingPeriods)),
-        }
-        : undefined
-    if (installment && (!Number.isInteger(installment.totalPeriods) || installment.totalPeriods < 1 || !Number.isInteger(installment.remainingPeriods) || installment.remainingPeriods < 1 || installment.remainingPeriods > installment.totalPeriods)) {
-      throw new Error('请填写有效的分期期数。')
-    }
     const account: Account = {
       id: accountId,
       type: accountForm.type,
@@ -390,16 +482,15 @@ async function saveAccount(): Promise<void> {
       currency: accountForm.currency,
       status: 'active',
       balanceMode: accountForm.balanceMode,
-      installment,
+      installments: accountForm.balanceMode === 'installment' ? [] : undefined,
       openedOn: accountForm.openedOn,
       note: accountForm.note.trim(),
       createdAt: now,
       updatedAt: now,
     }
     let next = {...ledger.value, accounts: [...ledger.value.accounts, account]}
-    // 初始余额可留空；分期账户必须立即生成由计划计算出的初始欠款。
-    if (accountForm.initialAmount.trim() || installment) {
-      const amount = installment ? installmentBalance(installment) : normalizeAmount(accountForm.initialAmount)
+    if (accountForm.balanceMode === 'manual' && accountForm.initialAmount.trim()) {
+      const amount = normalizeAmount(accountForm.initialAmount)
       if (account.currency !== 'CNY') {
         let initialRate = accountForm.initialRate.trim()
         let initialRateSource: RateSource = 'manual'
@@ -419,7 +510,7 @@ async function saveAccount(): Promise<void> {
         accountId,
         date: accountForm.openedOn,
         amount,
-        source: installment ? 'installment-setup' : 'manual',
+        source: 'manual',
       })
     }
     await commit(next, '账户已新增')
@@ -432,6 +523,10 @@ async function saveAccount(): Promise<void> {
 async function deactivateSelected(): Promise<void> {
   const account = editingAccount.value
   if (!account || account.status === 'inactive') return
+  if (account.installments?.some(plan => plan.status === 'active' || plan.status === 'overdue')) {
+    actionError.value = '请先结清或终止全部分期项目。'
+    return
+  }
   if (!window.confirm(`停用“${account.name}”？历史数据会保留。`)) return
   // 停用是软删除：记录停用月份，历史数据和过去月份汇总继续保留。
   await commit({
@@ -497,13 +592,11 @@ function closeEditor(): void {
               <p v-if="rateLoading" class="field-hint">正在获取汇率…</p>
               <p v-if="rateMessage" class="field-error">{{ rateMessage }}</p>
               <p v-if="selectedAccount.balanceMode === 'installment'" class="field-hint">
-                分期余额由每期金额和剩余期数计算，请使用“已还一期”更新。</p>
+                分期账户总余额由项目汇总，不能直接修改；这里只补充该月汇率。</p>
               <div class="form-actions">
-                <button v-if="selectedAccount.installment" class="secondary-button" type="button" @click="confirmPaid">
-                  已还一期
-                </button>
-                <button class="primary-button" type="submit" :disabled="selectedAccount.balanceMode === 'installment'">
-                  保存余额
+                <button class="primary-button" type="submit"
+                        :disabled="selectedAccount.balanceMode === 'installment' && selectedAccount.currency === 'CNY'">
+                  {{ selectedAccount.balanceMode === 'installment' ? '保存汇率' : '保存余额' }}
                 </button>
               </div>
             </form>
@@ -532,24 +625,18 @@ function closeEditor(): void {
                 <option v-for="region in REGIONS" :key="region" :value="region">{{ region }}</option>
               </select></label><label>开始月份<input v-model="accountForm.openedOn" type="month"
                                                      :disabled="isEditingAccount"/></label></div>
-              <template v-if="!isEditingAccount">
-                <label v-if="accountForm.type === 'liability'">余额模式<select v-model="accountForm.balanceMode">
+              <label v-if="accountForm.type === 'liability'">负债形态<select v-model="accountForm.balanceMode"
+                                                                             :disabled="editingHasBalances">
                   <option value="manual">手动更新</option>
                   <option value="installment">分期负债</option>
                 </select></label>
-                <template v-if="accountForm.balanceMode === 'installment'">
-                  <div class="form-grid"><label>每期金额<input v-model="accountForm.periodAmount" inputmode="decimal"
-                                                               placeholder="包含已知手续费"/></label><label>总期数<input
-                      v-model.number="accountForm.totalPeriods" type="number" min="1" step="1"/></label></div>
-                  <div class="form-grid"><label>剩余期数<input v-model.number="accountForm.remainingPeriods"
-                                                               type="number" min="1" :max="accountForm.totalPeriods"
-                                                               step="1"/></label><label>下次还款月份<input
-                      v-model="accountForm.nextDueDate" type="month"/></label></div>
-                  <p class="field-hint">最终到期月份：{{ accountForm.maturityDate }}</p>
-                </template>
+              <template v-if="!isEditingAccount">
+                <p v-if="accountForm.balanceMode === 'installment'" class="field-hint">
+                  保存账户后，再逐个添加分期项目。</p>
                 <label v-else>初始余额<input v-model="accountForm.initialAmount" inputmode="decimal"
                                              placeholder="可留空，之后再更新"/></label>
-                <label v-if="accountForm.currency !== 'CNY'">初始汇率<input v-model="accountForm.initialRate"
+                <label v-if="accountForm.balanceMode === 'manual' && accountForm.currency !== 'CNY'">初始汇率<input
+                    v-model="accountForm.initialRate"
                                                                             inputmode="decimal"
                                                                             placeholder="例如 7.20"/></label>
               </template>
@@ -564,6 +651,48 @@ function closeEditor(): void {
             </form>
           </section>
 
+        <section v-if="editorMode === 'installment' && accountAction" class="editor-panel">
+          <div class="panel-heading">
+            <div><span class="panel-kicker">分期项目</span>
+              <h2>{{
+                  installmentAction === 'new' ? '添加分期' : installmentAction === 'correct' ? '修正进度' : '终止分期'
+                }}</h2></div>
+            <button class="close-button" type="button" aria-label="关闭" @click="closeEditor">×</button>
+          </div>
+          <form @submit.prevent="saveInstallment">
+            <label>项目名称<input v-model="installmentForm.name" :readonly="installmentAction !== 'new'"
+                                  placeholder="例如 手机分期"/></label>
+            <template v-if="installmentAction === 'new'">
+              <div class="form-grid"><label>每期金额<input v-model="installmentForm.periodAmount" inputmode="decimal"
+                                                           placeholder="包含已知费用"/></label><label>原总期数<input
+                  v-model.number="installmentForm.totalPeriods" type="number" min="1" step="1"/></label></div>
+              <div class="form-grid"><label>当前剩余期数<input v-model.number="installmentForm.remainingPeriods"
+                                                               type="number" min="1" :max="installmentForm.totalPeriods"
+                                                               step="1"/></label><label>下次还款月<input
+                  v-model="installmentForm.nextDueMonth" type="month"/></label></div>
+              <p class="field-hint">最终到期月：{{ installmentMaturityMonth }}</p>
+            </template>
+            <template v-else>
+              <label>生效月份<input v-model="installmentForm.effectiveMonth" type="month"/></label>
+              <label v-if="installmentAction === 'correct'">修正后的剩余期数<input
+                  v-model.number="installmentForm.remainingPeriods" type="number" min="0"
+                  :max="installmentForm.totalPeriods" step="1"/></label>
+              <p class="field-hint">{{
+                  installmentAction === 'correct'
+                      ? '该月及之后的自动余额会重建，更早历史保持不变。'
+                      : '该月起剩余应付归零，已有历史继续保留。'
+                }}</p>
+            </template>
+            <div class="form-actions">
+              <button :class="installmentAction === 'terminate' ? 'danger-button' : 'primary-button'" type="submit">
+                {{
+                  installmentAction === 'new' ? '添加分期' : installmentAction === 'correct' ? '保存修正' : '终止分期'
+                }}
+              </button>
+            </div>
+          </form>
+        </section>
+
           <div v-if="actionError" class="notice error" role="alert">{{ actionError }}</div>
       </aside>
 
@@ -576,16 +705,56 @@ function closeEditor(): void {
             <button class="close-button" type="button" aria-label="关闭" @click="closeAccountActions">×</button>
           </div>
           <div class="account-action-summary">
-            <span>{{ accountAction.type === 'asset' ? '资产账户' : '负债账户' }} · {{ accountAction.currency }}</span>
+            <span>{{
+                accountAction.type === 'asset' ? '资产账户' : accountAction.balanceMode === 'installment' ? '分期负债账户' : '普通负债账户'
+              }} · {{ accountAction.currency }}</span>
             <strong v-if="accountActionRow?.record && accountActionRow.rate">{{
                 accountAction.type === 'liability' ? '-' : ''
               }}{{ formatCny(accountActionRow.cnyAmount) }}</strong>
             <strong v-else>未录入</strong>
             <small v-if="accountActionRow?.record">记录月份：{{ accountActionRow.record.date }}</small>
           </div>
+          <div v-if="accountAction.balanceMode === 'installment'" class="installment-manager">
+            <div v-if="!activeActionPlans.length" class="installment-empty">暂无进行中的分期</div>
+            <div v-for="plan in activeActionPlans" :key="plan.id" class="installment-item">
+              <div class="installment-main">
+                <strong>{{ plan.name }}</strong>
+                <span class="installment-status" :class="installmentDueState(plan)">{{
+                    installmentStatusText(plan)
+                  }}</span>
+                <small>{{ formatOriginal(installmentBalance(plan), accountAction.currency) }} · 剩余
+                  {{ plan.remainingPeriods }}/{{ plan.totalPeriods }} 期 · 下次 {{ plan.nextDueMonth }}</small>
+              </div>
+              <div class="installment-actions">
+                <button v-if="installmentDueState(plan) === 'pending'" class="secondary-button" type="button"
+                        @click="confirmPlan(plan)">已还一期
+                </button>
+                <button class="text-button" type="button" @click="openInstallmentEditor('correct', plan)">修正</button>
+                <button v-if="plan.effectiveMonth === todayMonthISO() && plan.nextDueMonth > todayMonthISO()"
+                        class="text-danger" type="button" @click="deletePlan(plan)">删除
+                </button>
+                <button class="text-danger" type="button" @click="openInstallmentEditor('terminate', plan)">终止
+                </button>
+              </div>
+            </div>
+            <details v-if="endedActionPlans.length" class="ended-installments">
+              <summary>已结束项目（{{ endedActionPlans.length }}）</summary>
+              <div v-for="plan in endedActionPlans" :key="plan.id" class="installment-item ended">
+                <div class="installment-main"><strong>{{ plan.name }}</strong>
+                  <span class="installment-status" :class="plan.status">{{ installmentStatusText(plan) }}</span>
+                  <small>{{ plan.status === 'terminated' ? `${plan.terminatedMonth} 起终止` : '已全部还清' }}</small>
+                </div>
+              </div>
+            </details>
+          </div>
           <div class="account-action-buttons">
-            <button v-if="accountAction.status === 'active'" class="primary-button" type="button"
-                    @click="openBalanceEditor(accountAction)">{{ accountAction.installment ? '还款' : '更新余额' }}
+            <button v-if="accountAction.status === 'active' && accountAction.balanceMode === 'manual'"
+                    class="primary-button" type="button"
+                    @click="openBalanceEditor(accountAction)">更新余额
+            </button>
+            <button v-if="accountAction.status === 'active' && accountAction.balanceMode === 'installment'"
+                    class="primary-button" type="button"
+                    @click="openInstallmentEditor('new')">添加分期
             </button>
             <button class="secondary-button" type="button" @click="openEditAccount(accountAction)">编辑账户</button>
           </div>

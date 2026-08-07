@@ -163,6 +163,107 @@ h2 {
   margin-top: 16px;
 }
 
+.installment-manager {
+  margin-top: 14px;
+  border-top: 1px solid var(--nw-border);
+}
+
+.installment-empty {
+  padding: 16px 2px 6px;
+  color: var(--nw-muted);
+  font-size: 12px;
+}
+
+.installment-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--nw-border);
+}
+
+.installment-item.ended {
+  padding-inline: 0;
+  color: var(--nw-muted);
+}
+
+.installment-main {
+  min-width: 0;
+}
+
+.installment-main strong {
+  margin-right: 7px;
+  font-size: 13px;
+}
+
+.installment-main small {
+  display: block;
+  margin-top: 4px;
+  color: var(--nw-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.installment-status {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 2px 7px;
+  background: var(--nw-accent-soft);
+  color: var(--nw-accent);
+  font-size: 10px;
+  line-height: 1.4;
+  vertical-align: 1px;
+}
+
+.installment-status.pending {
+  background: var(--vp-c-yellow-soft);
+  color: var(--vp-c-warning-1);
+}
+
+.installment-status.overdue {
+  background: var(--vp-c-red-soft);
+  color: var(--vp-c-danger-1);
+}
+
+.installment-status.completed, .installment-status.terminated {
+  background: var(--vp-c-default-soft);
+  color: var(--nw-muted);
+}
+
+.installment-actions {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 8px;
+}
+
+.installment-actions .secondary-button {
+  padding: 6px 9px;
+  font-size: 11px;
+}
+
+.text-button, .text-danger {
+  border: 0;
+  padding: 3px 0;
+  background: transparent;
+  color: var(--nw-accent);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.text-danger {
+  color: var(--vp-c-danger-1);
+}
+
+.ended-installments summary {
+  padding: 11px 2px;
+  color: var(--nw-muted);
+  font-size: 11px;
+  cursor: pointer;
+}
+
 /* 账户与余额表单 */
 .editor-panel form {
   display: grid;
@@ -336,6 +437,11 @@ textarea {
 
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .installment-item {
+    align-items: start;
+    flex-direction: column;
   }
 
   .toast {

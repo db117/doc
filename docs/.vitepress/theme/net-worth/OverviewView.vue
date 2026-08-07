@@ -7,7 +7,7 @@ import {PieChart} from 'echarts/charts'
 import {LegendComponent, TooltipComponent} from 'echarts/components'
 import {CanvasRenderer} from 'echarts/renderers'
 import {
-  installmentBalance,
+  installmentDueState,
   latestBalance,
   multiplyAmountByRate,
   rateForRecord,
@@ -102,6 +102,14 @@ onBeforeUnmount(() => {
   assetPieObserver?.disconnect()
   assetPieChart?.dispose()
 })
+
+function installmentSummary(account: Account): string {
+  const plans = account.installments?.filter(plan => plan.status === 'active' || plan.status === 'overdue') ?? []
+  if (!plans.length) return '暂无进行中的分期'
+  const pending = plans.filter(plan => installmentDueState(plan) === 'pending').length
+  const overdue = plans.filter(plan => installmentDueState(plan) === 'overdue').length
+  return `${plans.length} 个进行中${pending ? ` · ${pending} 个本月待确认` : ''}${overdue ? ` · ${overdue} 个逾期` : ''}`
+}
 </script>
 
 <template>
@@ -177,9 +185,9 @@ onBeforeUnmount(() => {
                  @click="emit('openAccount', row.account)">
               <div class="account-name"><span class="account-dot liability-dot"/> <span>{{ row.account.name }}<small
                   v-if="row.account.status === 'inactive'">已停用 · 不计入当前汇总</small><small
-                  v-else-if="row.account.installment">剩余 {{ formatCny(installmentBalance(row.account.installment)) }} ·
-                  {{ row.account.installment.remainingPeriods }}/{{ row.account.installment.totalPeriods }} 期 · 到期
-                  {{ row.account.installment.maturityDate }}</small><small
+                  v-else-if="row.account.balanceMode === 'installment'">{{
+                  installmentSummary(row.account)
+                }}</small><small
                   v-else>{{ row.account.institution || row.account.category }}</small></span></div>
               <span class="amount liability-value">{{
                   row.account.status === 'inactive' ? '—' : (row.record ? `-${formatOriginal(row.record.amount, row.account.currency)}` : '未录入')
