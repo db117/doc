@@ -29,7 +29,7 @@ let assetPieChart: ECharts | undefined
 let assetPieObserver: ResizeObserver | undefined
 
 const summary = computed(() => summarize(props.ledger))
-// 每个账户只展示截至当前月的最新一条记录，停用账户固定排在末尾。
+// 每个账户只展示截至当前月的最新一条记录，同类按 CNY 金额降序，停用账户固定排在末尾。
 const accountRows = computed(() => props.ledger.accounts
     .map(account => {
       const record = latestBalance(props.ledger, account.id, todayMonthISO())
@@ -42,6 +42,7 @@ const accountRows = computed(() => props.ledger.accounts
       }
     })
     .sort((a, b) => Number(a.account.status === 'inactive') - Number(b.account.status === 'inactive')
+        || Number(b.cnyAmount) - Number(a.cnyAmount)
         || a.account.name.localeCompare(b.account.name, 'zh-CN')))
 const assetRows = computed(() => accountRows.value.filter(row => row.account.type === 'asset'))
 const liabilityRows = computed(() => accountRows.value.filter(row => row.account.type === 'liability'))
