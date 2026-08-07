@@ -14,6 +14,7 @@ import {
   type OneDriveRemoteMetadata,
 } from './onedrive'
 
+// 父组件拥有当前账本；本模块只在导入数据通过校验并成功落库后请求替换。
 const props = defineProps<{ ledger: Ledger }>()
 const emit = defineEmits<{ replaceLedger: [ledger: Ledger] }>()
 
@@ -57,6 +58,7 @@ function triggerImport(): void {
 }
 
 function setImportPreview(file: { exportedAt: string; ledger: Ledger }): void {
+  // OneDrive 下载和本地上传共用同一预览流程，避免远端数据绕过人工确认。
   const dates = file.ledger.balances.map(record => record.date).sort()
   importLedger.value = file.ledger
   importMetadata.value = {
@@ -88,6 +90,7 @@ async function connectOneDrive(): Promise<void> {
     oneDriveName.value = await beginOneDriveLogin()
     oneDriveConnectedState.value = true
     remoteMetadata.value = await getOneDriveMetadata()
+    // “登录并备份”是一个明确动作，授权成功后直接覆盖远端，无需重复确认。
     await backupToOneDrive(false)
   } catch (error) {
     actionError.value = error instanceof Error ? error.message : '无法连接 OneDrive。'
@@ -119,6 +122,7 @@ async function refreshOneDriveMetadata(): Promise<void> {
 
 async function backupToOneDrive(confirmBeforeUpload = true): Promise<void> {
   if (!oneDriveConnectedState.value) return
+  // 常规备份会覆盖远端，显示远端时间帮助用户判断是否误覆盖。
   if (confirmBeforeUpload && !window.confirm(`用当前本地账本覆盖 OneDrive${remoteMetadata.value ? `（远程时间：${remoteMetadata.value.lastModifiedDateTime}）` : ''}吗？`)) return
   oneDriveBusy.value = true
   try {
@@ -138,6 +142,7 @@ async function syncFromOneDrive(): Promise<void> {
   try {
     const remote = await downloadFromOneDrive()
     remoteMetadata.value = remote.metadata
+    // “同步”也不立即写本地，先展示预览，再由用户确认覆盖。
     setImportPreview(remote.file)
     actionError.value = ''
     setStatus('已读取 OneDrive 账本，请确认覆盖本地')
@@ -151,6 +156,7 @@ async function syncFromOneDrive(): Promise<void> {
 async function applyImportedLedger(): Promise<void> {
   if (!importLedger.value || !window.confirm('确认用上传的账本覆盖当前浏览器数据吗？当前数据会保存在最近一次回退中。')) return
   try {
+    // 覆盖前先写单槽回退；两步都成功后才通知父组件更新画面。
     await saveRollback(props.ledger)
     await saveLedger(importLedger.value)
     emit('replaceLedger', importLedger.value)
@@ -165,6 +171,7 @@ async function applyImportedLedger(): Promise<void> {
 
 async function restoreRollback(): Promise<void> {
   const rollback = await loadRollback()
+  // 恢复时不轮换回退槽，避免原始可恢复版本被当前错误数据替换。
   if (!rollback || !window.confirm('确认恢复覆盖前的本地账本吗？当前数据不会再次保存到回退槽。')) return
   try {
     await saveLedger(rollback)
@@ -178,6 +185,7 @@ async function restoreRollback(): Promise<void> {
 onMounted(async () => {
   rollbackAvailable.value = Boolean(await loadRollback())
   try {
+    // 同时覆盖普通进入和 Microsoft 重定向返回两种挂载场景。
     const name = await completeOneDriveLogin()
     if (name) {
       oneDriveConnectedState.value = true
@@ -219,7 +227,7 @@ onMounted(async () => {
         </button>
       </div>
       <div v-if="oneDriveConnectedState" class="backup-actions">
-        <button class="primary-button" type="button" :disabled="oneDriveBusy" @click="backupToOneDrive">
+        <button class="primary-button" type="button" :disabled="oneDriveBusy" @click="backupToOneDrive()">
           备份到 OneDrive
         </button>
         <button class="secondary-button" type="button" :disabled="oneDriveBusy" @click="syncFromOneDrive">

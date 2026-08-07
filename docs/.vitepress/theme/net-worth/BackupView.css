@@ -1,3 +1,4 @@
+/* 备份页标题、通用按钮和反馈状态 */
 h2, h3, p {
     margin-top: 0;
 }
@@ -108,18 +109,21 @@ h3 {
     display: none;
 }
 
+/* 本地备份内容保持单列，覆盖确认按阅读顺序向下展开。 */
 .backup-view {
     display: grid;
     gap: 14px;
     max-width: 760px;
 }
 
+/* 本地与云端动作共用按钮排列规则。 */
 .backup-actions {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
 }
 
+/* OneDrive 状态独立成卡片，避免与本地文件入口混淆。 */
 .onedrive-panel {
     border: 1px solid var(--nw-border);
     border-radius: 10px;
@@ -131,6 +135,7 @@ h3 {
     margin-bottom: 4px;
 }
 
+/* 覆盖预览和单槽回退使用同一提示层级。 */
 .backup-preview, .backup-rollback {
     border: 1px solid var(--nw-border);
     border-radius: 10px;
@@ -156,6 +161,7 @@ h3 {
     margin-bottom: 4px;
 }
 
+/* 小屏按钮纵向排布，降低误触相邻覆盖动作的风险。 */
 @media (max-width: 640px) {
     .backup-rollback {
         align-items: start;

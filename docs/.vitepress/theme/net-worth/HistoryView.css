@@ -1,0 +1,357 @@
+/* 历史页标题、月份和账户筛选 */
+h2, p {
+    margin-top: 0;
+}
+
+h2 {
+    margin-bottom: 4px;
+    font-size: 17px;
+    line-height: 1.35;
+}
+
+.history-view {
+    display: grid;
+    gap: 14px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 10px 0;
+}
+
+.section-heading.compact {
+    margin-top: 0;
+}
+
+.section-heading p {
+    margin-bottom: 0;
+    color: var(--nw-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.history-heading {
+    align-items: end;
+}
+
+.history-date-picker {
+    width: 180px;
+}
+
+.history-account-picker {
+    width: 220px;
+}
+
+label {
+    display: grid;
+    gap: 5px;
+    color: var(--nw-muted);
+    font-size: 12px;
+}
+
+select {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--nw-border);
+    border-radius: 6px;
+    padding: 9px 10px;
+    background: var(--vp-c-bg);
+    color: var(--vp-c-text-1);
+    font: inherit;
+    font-size: 14px;
+}
+
+select:focus, button:focus-visible {
+    outline: 2px solid color-mix(in oklch, var(--nw-accent) 70%, transparent);
+    outline-offset: 2px;
+}
+
+select:disabled {
+    cursor: not-allowed;
+    opacity: .7;
+}
+
+/* 历史月份摘要沿用总览的三列金额层级。 */
+.summary-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    border: 1px solid var(--nw-border);
+    border-radius: 10px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    background: var(--nw-border);
+}
+
+.summary-strip > div {
+    display: grid;
+    gap: 5px;
+    padding: 15px 18px;
+    background: var(--vp-c-bg);
+}
+
+.summary-strip span {
+    color: var(--nw-muted);
+    font-size: 12px;
+}
+
+.summary-strip strong {
+    font-size: 24px;
+    font-variant-numeric: tabular-nums;
+}
+
+.net-worth-value {
+    color: var(--nw-accent);
+}
+
+.liability-value {
+    color: var(--vp-c-danger-1);
+}
+
+/* 趋势图和两张历史表 */
+.history-chart-panel, .history-table-panel {
+    border: 1px solid var(--nw-border);
+    border-radius: 10px;
+    padding: 16px;
+    background: var(--vp-c-bg);
+}
+
+.history-chart {
+    display: block;
+    width: 100%;
+    height: 320px;
+}
+
+.history-table {
+    overflow-x: auto;
+}
+
+.history-table-head, .history-row {
+    display: grid;
+    grid-template-columns: minmax(160px, 1.5fr) 100px 120px 120px 110px;
+    gap: 10px;
+    align-items: center;
+    min-width: 670px;
+    padding: 10px 4px;
+}
+
+.history-table-head, .account-history-head {
+    border-bottom: 1px solid var(--nw-border);
+    color: var(--nw-muted);
+    font-size: 11px;
+}
+
+.history-row, .account-history-row {
+    border-bottom: 1px solid var(--nw-border);
+    font-size: 13px;
+}
+
+.history-row:last-child, .account-history-row:last-child {
+    border-bottom: 0;
+}
+
+.account-history-head, .account-history-row {
+    display: grid;
+    grid-template-columns: 120px 140px 140px 100px 110px;
+    gap: 10px;
+    align-items: center;
+    min-width: 640px;
+    padding: 10px 4px;
+}
+
+.history-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.history-actions small, .history-source {
+    color: var(--nw-muted);
+    font-size: 12px;
+}
+
+.history-account-link {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--nw-accent);
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+}
+
+.history-account-link:hover {
+    text-decoration: underline;
+}
+
+.account-name {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 9px;
+    font-weight: 650;
+}
+
+.account-dot {
+    width: 9px;
+    height: 9px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--nw-accent);
+}
+
+.liability-dot {
+    background: var(--vp-c-red-1);
+}
+
+.row-button, .close-button {
+    font: inherit;
+    cursor: pointer;
+}
+
+.row-button {
+    border: 1px solid var(--nw-accent);
+    border-radius: 6px;
+    padding: 6px 9px;
+    background: transparent;
+    color: var(--nw-accent);
+    font-size: 12px;
+}
+
+.row-button:hover {
+    background: var(--nw-accent-soft);
+}
+
+.text-danger {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--vp-c-danger-1);
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+}
+
+.empty-state {
+    display: grid;
+    justify-items: center;
+    gap: 7px;
+    border: 1px dashed var(--nw-border);
+    border-radius: 10px;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.empty-state h2 {
+    margin: 5px 0 0;
+}
+
+.empty-state p {
+    max-width: 35ch;
+    margin-bottom: 10px;
+    color: var(--nw-muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.empty-mark {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--nw-accent-soft);
+    color: var(--nw-accent);
+    font-size: 25px;
+}
+
+.compact-empty {
+    padding: 28px 16px;
+}
+
+/* 单账户趋势浮层高于账户操作层、低于主编辑器。 */
+.account-history-chart-backdrop {
+    position: fixed;
+    z-index: 35;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgb(15 24 22 / 42%);
+}
+
+.account-history-chart-modal {
+    width: min(760px, 100%);
+    max-height: calc(100vh - 40px);
+    box-sizing: border-box;
+    overflow: auto;
+    border: 1px solid var(--nw-border);
+    border-radius: 12px;
+    padding: 18px;
+    background: var(--vp-c-bg);
+    box-shadow: 0 18px 60px rgb(0 0 0 / 22%);
+}
+
+.panel-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.panel-kicker {
+    display: block;
+    margin: 0 0 4px;
+    color: var(--nw-accent);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .04em;
+}
+
+.close-button {
+    border: 0;
+    background: transparent;
+    color: var(--nw-muted);
+    font-size: 22px;
+    line-height: 1;
+}
+
+.account-history-chart {
+    width: 100%;
+    height: 360px;
+}
+
+.distribution-empty {
+    display: grid;
+    min-height: 180px;
+    place-items: center;
+    color: var(--nw-muted);
+    font-size: 13px;
+}
+
+/* 窄屏保留表格横向滚动，只压缩标题和图表区域。 */
+@media (max-width: 640px) {
+    .summary-strip > div {
+        padding: 11px 9px;
+    }
+
+    .summary-strip strong {
+        font-size: 16px;
+    }
+
+    .history-heading, .history-table-panel .section-heading {
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .history-date-picker, .history-account-picker {
+        width: 100%;
+    }
+
+    .account-history-chart {
+        height: 280px;
+    }
+}

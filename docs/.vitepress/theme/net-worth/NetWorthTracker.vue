@@ -1,18 +1,13 @@
 <script setup lang="ts">
-import {computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch} from 'vue'
-import {useData} from 'vitepress'
-import type {ECharts, EChartsCoreOption} from 'echarts/core'
-import {init, use} from 'echarts/core'
-import {LineChart, PieChart} from 'echarts/charts'
-import {GridComponent, LegendComponent, TooltipComponent} from 'echarts/components'
-import {CanvasRenderer} from 'echarts/renderers'
+import {computed, onMounted, reactive, ref, watch} from 'vue'
 import BackupView from './BackupView.vue'
+import HistoryView from './HistoryView.vue'
+import OverviewView from './OverviewView.vue'
 import {
   ACCOUNT_CATEGORIES,
   CURRENCIES,
   REGIONS,
   accountHasBalances,
-  accountIsEffective,
   calculateMaturityDate,
   confirmInstallmentPaid,
   emptyLedger,
@@ -23,7 +18,6 @@ import {
   normalizeMonth,
   normalizeRate,
   rateForRecord,
-  summarize,
   todayMonthISO,
   upsertBalance,
   upsertExchangeRate,
@@ -35,13 +29,13 @@ import {
   type RateSource,
 } from './ledger'
 import {fetchCnyRate} from './rates'
+import {formatCny} from './format'
 import {loadLedger, saveLedger} from './storage'
-
-use([LineChart, PieChart, GridComponent, LegendComponent, TooltipComponent, CanvasRenderer])
 
 type EditorMode = 'account' | 'balance' | null
 type ViewMode = 'overview' | 'history' | 'backup'
 
+// 表单保留字符串金额，统一交给 ledger 层做定点校验，避免输入阶段引入浮点数。
 interface AccountForm {
   name: string
   institution: string
@@ -99,8 +93,6 @@ const editingAccountId = ref<string | null>(null)
 const selectedAccountId = ref<string | null>(null)
 const accountActionId = ref<string | null>(null)
 const viewMode = ref<ViewMode>('overview')
-const historyDate = ref(todayMonthISO())
-const historyAccountId = ref<string | null>(null)
 const historyCorrection = ref(false)
 const rateLoading = ref(false)
 const rateSource = ref<RateSource | null>(null)
@@ -108,219 +100,28 @@ const rateMessage = ref('')
 const manualRateTouched = ref(false)
 const accountForm = reactive<AccountForm>(blankAccountForm())
 const balanceForm = reactive<BalanceForm>({date: todayMonthISO(), amount: '', rate: ''})
-const assetPieRoot = ref<HTMLElement | null>(null)
-const historyChartRoot = ref<HTMLElement | null>(null)
-const accountHistoryChartRoot = ref<HTMLElement | null>(null)
-const {isDark} = useData()
-let assetPieChart: ECharts | undefined
-let assetPieObserver: ResizeObserver | undefined
-let historyChart: ECharts | undefined
-let historyChartObserver: ResizeObserver | undefined
-let accountHistoryChart: ECharts | undefined
-let accountHistoryChartObserver: ResizeObserver | undefined
-
-const summary = computed(() => summarize(ledger.value))
-const historyDates = computed(() => [...new Set(ledger.value.balances.map(record => record.date))].sort())
-const historyAccountOptions = computed(() => ledger.value.accounts
-    .filter(account => accountHasBalances(ledger.value, account.id))
-    .sort((a, b) => a.name.localeCompare(b.name, 'zh-CN')))
-const historyAccount = computed(() => historyAccountOptions.value.find(account => account.id === historyAccountId.value)
-    ?? historyAccountOptions.value[0]
-    ?? null)
-const historyAccountRows = computed(() => {
-  const account = historyAccount.value
-  if (!account) return []
-  return ledger.value.balances
-      .filter(record => record.accountId === account.id)
-      .sort((a, b) => a.date.localeCompare(b.date))
-      .map(record => {
-        const rate = rateForRecord(ledger.value, account, record)
-        return {record, rate, cnyAmount: rate ? multiplyAmountByRate(record.amount, rate.cnyRate) : '0'}
-      })
-})
-const historySummary = computed(() => summarize(ledger.value, historyDate.value))
-const historyRows = computed(() => ledger.value.accounts
-    .filter(account => accountIsEffective(account, historyDate.value))
-    .map(account => {
-      const record = latestBalance(ledger.value, account.id, historyDate.value)
-      const rate = record ? rateForRecord(ledger.value, account, record) : null
-      return {
-        account,
-        record,
-        rate,
-        cnyAmount: record && rate ? multiplyAmountByRate(record.amount, rate.cnyRate) : '0'
-      }
-    })
-    .filter(row => row.record))
-const historyPoints = computed(() => historyDates.value.map(date => ({
-  date,
-  netWorth: summarize(ledger.value, date).netWorthCny
-})))
-const accountHistoryChartId = ref<string | null>(null)
-const accountHistoryChartAccount = computed(() => ledger.value.accounts.find(account => account.id === accountHistoryChartId.value) ?? null)
-const accountHistoryChartPoints = computed(() => {
-  const account = accountHistoryChartAccount.value
-  if (!account) return []
-  return ledger.value.balances
-      .filter(record => record.accountId === account.id)
-      .sort((a, b) => a.date.localeCompare(b.date))
-      .map(record => {
-        const rate = rateForRecord(ledger.value, account, record)
-        return {record, rate, cnyAmount: rate ? multiplyAmountByRate(record.amount, rate.cnyRate) : null}
-      })
-      .filter(point => point.cnyAmount !== null)
-})
-const accountHistoryChartOption = computed<EChartsCoreOption>(() => ({
-  animation: !isDark.value,
-  backgroundColor: 'transparent',
-  grid: {top: 24, right: 20, bottom: 48, left: 76, containLabel: true},
-  tooltip: {
-    trigger: 'axis',
-    confine: true,
-    axisPointer: {type: 'cross', lineStyle: {color: isDark.value ? '#84908d' : '#8a9692'}},
-    formatter: (params: unknown) => {
-      const item = (Array.isArray(params) ? params[0] : params) as { dataIndex?: number; axisValue?: string }
-      const point = accountHistoryChartPoints.value[item.dataIndex ?? 0]
-      if (!point) return item.axisValue ?? ''
-      return `${point.record.date}<br>原币余额 <b>${formatOriginal(point.record.amount, accountHistoryChartAccount.value?.currency ?? 'CNY')}</b><br>CNY 金额 <b>${formatCny(point.cnyAmount ?? '0')}</b>`
-    },
-  },
-  xAxis: {
-    type: 'category',
-    boundaryGap: false,
-    name: '月份',
-    nameLocation: 'middle',
-    nameGap: 30,
-    data: accountHistoryChartPoints.value.map(point => point.record.date),
-    axisLine: {lineStyle: {color: isDark.value ? '#555d5b' : '#cfd6d4'}},
-    axisLabel: {color: isDark.value ? '#a9b0ae' : '#68716f'},
-    axisTick: {alignWithLabel: true},
-  },
-  yAxis: {
-    type: 'value',
-    name: '金额（CNY）',
-    nameLocation: 'middle',
-    nameGap: 56,
-    axisLabel: {color: isDark.value ? '#a9b0ae' : '#68716f', formatter: (value: number) => formatChartAxisCny(value)},
-    splitLine: {lineStyle: {color: isDark.value ? '#303635' : '#edf0ef'}},
-  },
-  series: [{
-    name: '账户余额',
-    type: 'line',
-    data: accountHistoryChartPoints.value.map(point => Number(point.cnyAmount)),
-    smooth: true,
-    showSymbol: true,
-    symbol: 'circle',
-    symbolSize: 8,
-    lineStyle: {width: 3, color: '#5b8def'},
-    itemStyle: {color: '#5b8def', borderColor: isDark.value ? '#202425' : '#ffffff', borderWidth: 2},
-    areaStyle: {color: '#5b8def', opacity: isDark.value ? 0.14 : 0.1},
-  }],
-}))
-const historyChartOption = computed<EChartsCoreOption>(() => ({
-  animation: !isDark.value,
-  backgroundColor: 'transparent',
-  grid: {top: 24, right: 20, bottom: 48, left: 76, containLabel: true},
-  tooltip: {
-    trigger: 'axis',
-    confine: true,
-    axisPointer: {type: 'cross', lineStyle: {color: isDark.value ? '#84908d' : '#8a9692'}},
-    formatter: (params: unknown) => {
-      const item = (Array.isArray(params) ? params[0] : params) as { axisValue?: string; value?: number | string }
-      return `${item.axisValue ?? ''}<br>净资产 <b>${formatCny(String(item.value ?? 0))}</b>`
-    },
-  },
-  xAxis: {
-    type: 'category',
-    boundaryGap: false,
-    name: '月份',
-    nameLocation: 'middle',
-    nameGap: 30,
-    data: historyPoints.value.map(point => point.date),
-    axisLine: {lineStyle: {color: isDark.value ? '#555d5b' : '#cfd6d4'}},
-    axisLabel: {color: isDark.value ? '#a9b0ae' : '#68716f'},
-    axisTick: {alignWithLabel: true},
-  },
-  yAxis: {
-    type: 'value',
-    name: '金额（CNY）',
-    nameLocation: 'middle',
-    nameGap: 56,
-    axisLabel: {color: isDark.value ? '#a9b0ae' : '#68716f', formatter: (value: number) => formatChartAxisCny(value)},
-    splitLine: {lineStyle: {color: isDark.value ? '#303635' : '#edf0ef'}},
-  },
-  series: [{
-    name: '净资产',
-    type: 'line',
-    data: historyPoints.value.map(point => Number(point.netWorth)),
-    smooth: true,
-    showSymbol: true,
-    symbol: 'circle',
-    symbolSize: 8,
-    lineStyle: {width: 3, color: '#2f9e93'},
-    itemStyle: {color: '#2f9e93', borderColor: isDark.value ? '#202425' : '#ffffff', borderWidth: 2},
-    areaStyle: {color: '#2f9e93', opacity: isDark.value ? 0.14 : 0.1},
-  }],
-}))
 const selectedAccount = computed(() => ledger.value.accounts.find(account => account.id === selectedAccountId.value) ?? null)
 const isEditingAccount = computed(() => Boolean(editingAccountId.value))
 const editingAccount = computed(() => ledger.value.accounts.find(account => account.id === editingAccountId.value) ?? null)
 const editingHasBalances = computed(() => Boolean(editingAccount.value && accountHasBalances(ledger.value, editingAccount.value.id)))
 
-const accountRows = computed(() => ledger.value.accounts
-    .map(account => {
-      const record = latestBalance(ledger.value, account.id, todayMonthISO())
-      const rate = record ? rateForRecord(ledger.value, account, record) : null
-      return {
-        account,
-        record,
-        rate,
-        cnyAmount: record && rate ? multiplyAmountByRate(record.amount, rate.cnyRate) : '0'
-      }
-    })
-    .sort((a, b) => Number(a.account.status === 'inactive') - Number(b.account.status === 'inactive') || a.account.name.localeCompare(b.account.name, 'zh-CN')))
-
-const assetRows = computed(() => accountRows.value.filter(row => row.account.type === 'asset'))
-const liabilityRows = computed(() => accountRows.value.filter(row => row.account.type === 'liability'))
 const accountAction = computed(() => ledger.value.accounts.find(account => account.id === accountActionId.value) ?? null)
-const accountActionRow = computed(() => accountRows.value.find(row => row.account.id === accountActionId.value) ?? null)
-const assetPieData = computed(() => assetRows.value
-    .filter(row => row.account.status === 'active' && row.record && row.rate)
-    .map(row => ({name: row.account.name, value: Number(row.cnyAmount)}))
-    .filter(item => Number.isFinite(item.value) && item.value > 0))
-const assetPieOption = computed<EChartsCoreOption>(() => ({
-  animation: !isDark.value,
-  backgroundColor: 'transparent',
-  tooltip: {
-    trigger: 'item',
-    confine: true,
-    formatter: (params: unknown) => {
-      const item = params as { name?: string; value?: number; percent?: number }
-      return `${item.name ?? '账户'}<br><b>${formatCny(String(item.value ?? 0))}</b>（${(item.percent ?? 0).toFixed(1)}%）`
-    },
-  },
-  legend: {
-    type: 'scroll',
-    orient: 'vertical',
-    right: 0,
-    top: 'middle',
-    height: '80%',
-    textStyle: {color: isDark.value ? '#a9b0ae' : '#68716f', fontSize: 11},
-  },
-  series: [{
-    name: '资产分布',
-    type: 'pie',
-    center: ['34%', '50%'],
-    radius: ['38%', '68%'],
-    avoidLabelOverlap: true,
-    itemStyle: {borderColor: isDark.value ? '#202425' : '#ffffff', borderWidth: 2},
-    label: {show: false},
-    emphasis: {label: {show: true, fontSize: 12, fontWeight: 700}},
-    data: assetPieData.value,
-  }],
-}))
+// 父组件只为当前操作账户投影一行数据，完整列表与汇总留在 OverviewView 内部。
+const accountActionRow = computed(() => {
+  const account = accountAction.value
+  if (!account) return null
+  const record = latestBalance(ledger.value, account.id, todayMonthISO())
+  const rate = record ? rateForRecord(ledger.value, account, record) : null
+  return {
+    account,
+    record,
+    rate,
+    cnyAmount: record && rate ? multiplyAmountByRate(record.amount, rate.cnyRate) : '0',
+  }
+})
 
 watch([() => accountForm.nextDueDate, () => accountForm.remainingPeriods], () => {
+  // 到期月份是计划的派生值，随下期日期或剩余期数变化自动保持一致。
   if (accountForm.balanceMode !== 'installment' || !accountForm.nextDueDate || accountForm.remainingPeriods < 1) return
   accountForm.maturityDate = calculateMaturityDate(accountForm.nextDueDate, accountForm.remainingPeriods)
 })
@@ -328,87 +129,10 @@ watch([() => accountForm.nextDueDate, () => accountForm.remainingPeriods], () =>
 onMounted(async () => {
   try {
     ledger.value = await loadLedger()
-    if (historyDates.value.length) historyDate.value = historyDates.value[historyDates.value.length - 1]
-    historyAccountId.value = historyAccountOptions.value[0]?.id ?? null
     ready.value = true
   } catch (error) {
     loadError.value = error instanceof Error ? error.message : '无法读取本地账本。'
   }
-})
-
-watch(historyDates, dates => {
-  if (dates.length && !dates.includes(historyDate.value)) historyDate.value = dates[dates.length - 1]
-})
-
-watch(historyAccountOptions, options => {
-  if (!options.some(account => account.id === historyAccountId.value)) historyAccountId.value = options[0]?.id ?? null
-})
-
-function renderAssetPie(): void {
-  if (!assetPieRoot.value) {
-    assetPieObserver?.disconnect()
-    assetPieObserver = undefined
-    assetPieChart?.dispose()
-    assetPieChart = undefined
-    return
-  }
-  if (!assetPieChart) assetPieChart = init(assetPieRoot.value, undefined, {renderer: 'canvas'})
-  if (!assetPieObserver) {
-    assetPieObserver = new ResizeObserver(() => assetPieChart?.resize())
-    assetPieObserver.observe(assetPieRoot.value)
-  }
-  assetPieChart.setOption(assetPieOption.value, {notMerge: true, lazyUpdate: true})
-}
-
-watch([assetPieData, isDark], () => nextTick(renderAssetPie), {deep: true})
-watch(assetPieRoot, () => nextTick(renderAssetPie))
-onMounted(() => renderAssetPie())
-
-function renderHistoryChart(): void {
-  if (!historyChartRoot.value) {
-    historyChartObserver?.disconnect()
-    historyChartObserver = undefined
-    historyChart?.dispose()
-    historyChart = undefined
-    return
-  }
-  if (!historyChart) historyChart = init(historyChartRoot.value, undefined, {renderer: 'canvas'})
-  if (!historyChartObserver) {
-    historyChartObserver = new ResizeObserver(() => historyChart?.resize())
-    historyChartObserver.observe(historyChartRoot.value)
-  }
-  historyChart.setOption(historyChartOption.value, {notMerge: true, lazyUpdate: true})
-}
-
-watch([historyPoints, isDark], () => nextTick(renderHistoryChart), {deep: true})
-watch(historyChartRoot, () => nextTick(renderHistoryChart))
-onMounted(() => renderHistoryChart())
-
-function renderAccountHistoryChart(): void {
-  if (!accountHistoryChartRoot.value) {
-    accountHistoryChartObserver?.disconnect()
-    accountHistoryChartObserver = undefined
-    accountHistoryChart?.dispose()
-    accountHistoryChart = undefined
-    return
-  }
-  if (!accountHistoryChart) accountHistoryChart = init(accountHistoryChartRoot.value, undefined, {renderer: 'canvas'})
-  if (!accountHistoryChartObserver) {
-    accountHistoryChartObserver = new ResizeObserver(() => accountHistoryChart?.resize())
-    accountHistoryChartObserver.observe(accountHistoryChartRoot.value)
-  }
-  accountHistoryChart.setOption(accountHistoryChartOption.value, {notMerge: true, lazyUpdate: true})
-}
-
-watch([accountHistoryChartPoints, isDark], () => nextTick(renderAccountHistoryChart), {deep: true})
-watch(accountHistoryChartRoot, () => nextTick(renderAccountHistoryChart))
-onBeforeUnmount(() => {
-  assetPieObserver?.disconnect()
-  assetPieChart?.dispose()
-  historyChartObserver?.disconnect()
-  historyChart?.dispose()
-  accountHistoryChartObserver?.disconnect()
-  accountHistoryChart?.dispose()
 })
 
 function setStatus(message: string): void {
@@ -419,6 +143,7 @@ function setStatus(message: string): void {
 }
 
 async function commit(next: Ledger, successMessage = '已保存'): Promise<void> {
+  // 先持久化再替换响应式状态，写入失败时页面仍保留最后一份可靠账本。
   const normalized = {...next, updatedAt: new Date().toISOString()}
   await saveLedger(normalized)
   ledger.value = normalized
@@ -457,14 +182,6 @@ function closeAccountActions(): void {
   accountActionId.value = null
 }
 
-function openHistoryAccountChart(account: Account): void {
-  accountHistoryChartId.value = account.id
-}
-
-function closeHistoryAccountChart(): void {
-  accountHistoryChartId.value = null
-}
-
 function openEditAccount(account: Account): void {
   closeAccountActions()
   const plan = account.installment
@@ -496,6 +213,7 @@ function openBalanceEditor(account: Account, date = todayMonthISO(), correction 
   if (account.status === 'inactive') return
   closeAccountActions()
   selectedAccountId.value = account.id
+  // 历史修正沿用同一编辑器；切回总览可避免弹层关闭后停留在已变化的历史表。
   if (correction) viewMode.value = 'overview'
   editorMode.value = 'balance'
   historyCorrection.value = correction
@@ -507,6 +225,10 @@ function openBalanceEditor(account: Account, date = todayMonthISO(), correction 
   void loadRate()
 }
 
+function openHistoryBalanceEditor(account: Account, date: string): void {
+  openBalanceEditor(account, date, true)
+}
+
 async function loadRate(): Promise<void> {
   const account = selectedAccount.value
   if (!account) return
@@ -516,6 +238,7 @@ async function loadRate(): Promise<void> {
     rateSource.value = 'manual'
     return
   }
+  // 优先使用该月已确认汇率，只有缺失时才访问外部服务。
   const stored = ledger.value.exchangeRates.find(rate => rate.currency === account.currency && rate.date === balanceForm.date)
   if (stored) {
     balanceForm.rate = stored.cnyRate
@@ -544,6 +267,7 @@ function normalizeFormRate(): string {
 async function saveBalance(): Promise<void> {
   const account = selectedAccount.value
   if (!account) return
+  // 分期当前余额由计划派生，禁止普通更新绕过剩余期数；历史纠错是唯一例外。
   if (account.balanceMode === 'installment' && !historyCorrection.value) {
     actionError.value = '分期负债请使用“已还一期”，或编辑分期计划。'
     return
@@ -552,6 +276,7 @@ async function saveBalance(): Promise<void> {
     const amount = normalizeAmount(balanceForm.amount)
     const rate = normalizeFormRate()
     let next = ledger.value
+    // 外币余额与当月汇率一起生成下一份账本，最后只执行一次持久化。
     if (account.currency !== 'CNY') {
       next = upsertExchangeRate(next, {
         date: balanceForm.date,
@@ -601,6 +326,7 @@ async function deleteHistoryRecord(accountId: string, date: string): Promise<voi
   const account = ledger.value.accounts.find(item => item.id === accountId)
   const record = ledger.value.balances.find(item => item.accountId === accountId && item.date === date)
   if (!account || !record) return
+  // 自动分期记录与计划状态成对存在，不能单独删除造成剩余期数和余额不一致。
   if (record.source !== 'manual') {
     actionError.value = '分期自动生成的余额请通过分期计划修正，不能直接删除。'
     return
@@ -620,6 +346,7 @@ async function saveAccount(): Promise<void> {
     const now = new Date().toISOString()
     const current = editingAccount.value
     if (current) {
+      // 有历史后锁定会改变旧记录解释方式的字段，名称、机构等展示资料仍可修改。
       if (editingHasBalances.value && (current.type !== accountForm.type || current.currency !== accountForm.currency || current.balanceMode !== accountForm.balanceMode)) {
         throw new Error('已有余额记录的账户不能直接修改类型、币种或余额模式。')
       }
@@ -670,6 +397,7 @@ async function saveAccount(): Promise<void> {
       updatedAt: now,
     }
     let next = {...ledger.value, accounts: [...ledger.value.accounts, account]}
+    // 初始余额可留空；分期账户必须立即生成由计划计算出的初始欠款。
     if (accountForm.initialAmount.trim() || installment) {
       const amount = installment ? installmentBalance(installment) : normalizeAmount(accountForm.initialAmount)
       if (account.currency !== 'CNY') {
@@ -705,6 +433,7 @@ async function deactivateSelected(): Promise<void> {
   const account = editingAccount.value
   if (!account || account.status === 'inactive') return
   if (!window.confirm(`停用“${account.name}”？历史数据会保留。`)) return
+  // 停用是软删除：记录停用月份，历史数据和过去月份汇总继续保留。
   await commit({
     ...ledger.value, accounts: ledger.value.accounts.map(item => item.id === account.id
         ? {...item, status: 'inactive', inactiveOn: todayMonthISO(), updatedAt: new Date().toISOString()}
@@ -719,41 +448,6 @@ function closeEditor(): void {
   historyCorrection.value = false
 }
 
-function currencySymbol(currency: Currency): string {
-  return currency === 'USD' || currency === 'USDT' ? '$' : currency === 'HKD' ? 'HK$' : '¥'
-}
-
-function formatAmount(value: string, digits = 2): string {
-  const number = Number(value)
-  if (!Number.isFinite(number)) return '—'
-  return new Intl.NumberFormat('zh-CN', {minimumFractionDigits: digits, maximumFractionDigits: digits}).format(number)
-}
-
-function formatCny(value: string): string {
-  return `¥${formatAmount(value)}`
-}
-
-function formatChartAxisCny(value: number): string {
-  const absolute = Math.abs(value)
-  if (absolute >= 100_000_000) return `¥${(value / 100_000_000).toFixed(1)}亿`
-  if (absolute >= 10_000) return `¥${(value / 10_000).toFixed(1)}万`
-  return `¥${new Intl.NumberFormat('zh-CN', {maximumFractionDigits: 0}).format(value)}`
-}
-
-function formatOriginal(value: string, currency: Currency): string {
-  return `${currencySymbol(currency)}${formatAmount(value, currency === 'CNY' ? 2 : 4)}`
-}
-
-function rowIsStale(date: string | undefined): boolean {
-  if (!date) return false
-  const [year, month] = normalizeMonth(date).split('-').map(Number)
-  const [todayYear, todayMonth] = todayMonthISO().split('-').map(Number)
-  return todayYear * 12 + todayMonth - (year * 12 + month) > 0
-}
-
-function rowCny(row: { cnyAmount: string }): string {
-  return row.cnyAmount
-}
 </script>
 
 <template>
@@ -780,111 +474,11 @@ function rowCny(row: { cnyAmount: string }): string {
     <template v-else>
       <div v-if="statusMessage" class="toast" role="status">{{ statusMessage }}</div>
 
-      <section v-if="viewMode === 'overview'" class="summary-strip" aria-label="净资产摘要">
-        <div>
-          <span>净资产</span>
-          <strong class="net-worth-value">{{ formatCny(summary.netWorthCny) }}</strong>
-        </div>
-        <div>
-          <span>资产</span>
-          <strong>{{ formatCny(summary.assetsCny) }}</strong>
-        </div>
-        <div>
-          <span>负债</span>
-          <strong class="liability-value">{{ formatCny(summary.liabilitiesCny) }}</strong>
-        </div>
-      </section>
+      <OverviewView v-show="viewMode === 'overview'" :active="viewMode === 'overview'" :ledger="ledger"
+                    :selected-account-id="selectedAccountId" @new-account="openNewAccount"
+                    @open-account="openAccountActions"/>
 
-      <div v-if="viewMode === 'overview' && summary.missingRateAccounts.length" class="notice warning" role="status">
-        {{ summary.missingRateAccounts.length }} 个账户缺少汇率，暂未计入人民币折算，请补充汇率。
-      </div>
-
-      <section v-if="viewMode === 'overview' && !ledger.accounts.length && editorMode !== 'account'"
-               class="empty-state">
-        <div class="empty-mark">+</div>
-        <h2>先添加一个账户</h2>
-        <p>账户余额保存在当前浏览器。你可以稍后再连接 OneDrive 备份。</p>
-        <button class="primary-button" type="button" @click="openNewAccount">新增第一个账户</button>
-      </section>
-
-      <div v-else-if="viewMode === 'overview'" class="workspace">
-        <main class="account-column">
-          <section class="distribution-panel" aria-labelledby="asset-distribution-heading">
-            <div class="section-heading compact">
-              <div><h2 id="asset-distribution-heading">资产分布</h2>
-                <p>按各资产账户当前最新余额的 CNY 金额计算。</p></div>
-            </div>
-            <div v-if="assetPieData.length" ref="assetPieRoot" class="asset-pie-chart" role="img"
-                 aria-label="资产账户分布饼图"/>
-            <div v-else class="distribution-empty">暂无可折算的资产余额</div>
-          </section>
-          <div class="section-heading">
-            <div>
-              <h2>账户</h2>
-              <p>{{ ledger.accounts.filter(account => account.status === 'active').length }} 个启用账户 ·
-                汇总取各账户最新记录</p>
-            </div>
-            <button class="quiet-button" type="button" @click="openNewAccount">＋账户</button>
-          </div>
-
-          <section v-if="assetRows.length" class="account-group" aria-labelledby="asset-heading">
-            <h3 id="asset-heading">资产账户</h3>
-            <div class="account-table">
-              <div class="account-table-head">
-                <span>账户名称</span><span>原币余额</span><span>CNY 金额</span><span>最后更新</span>
-              </div>
-              <div v-for="row in assetRows" :key="row.account.id" class="account-row"
-                   :class="{selected: selectedAccountId === row.account.id, inactive: row.account.status === 'inactive'}"
-                   @click="openAccountActions(row.account)">
-                <div class="account-name"><span class="account-dot asset-dot"/> <span>{{
-                    row.account.name
-                  }}<small>{{
-                      row.account.status === 'inactive' ? '已停用 · 不计入当前汇总' : (row.account.institution || row.account.category)
-                    }}</small></span></div>
-                <span class="amount">{{
-                    row.account.status === 'inactive' ? '—' : (row.record ? formatOriginal(row.record.amount, row.account.currency) : '未录入')
-                  }}</span>
-                <span class="cny-amount">{{
-                    row.account.status === 'inactive' ? '不计入' : (row.record && row.rate ? formatCny(rowCny(row)) : '—')
-                  }}</span>
-                <span class="updated" :class="{stale: rowIsStale(row.record?.date)}">{{
-                    row.record?.date ?? '未录入'
-                  }}</span>
-              </div>
-            </div>
-          </section>
-
-          <section v-if="liabilityRows.length" class="account-group liabilities" aria-labelledby="liability-heading">
-            <h3 id="liability-heading">负债账户</h3>
-            <div class="account-table">
-              <div class="account-table-head">
-                <span>账户名称</span><span>原币余额</span><span>CNY 金额</span><span>最后更新</span>
-              </div>
-              <div v-for="row in liabilityRows" :key="row.account.id" class="account-row"
-                   :class="{selected: selectedAccountId === row.account.id, inactive: row.account.status === 'inactive'}"
-                   @click="openAccountActions(row.account)">
-                <div class="account-name"><span class="account-dot liability-dot"/> <span>{{ row.account.name }}<small
-                    v-if="row.account.status === 'inactive'">已停用 · 不计入当前汇总</small><small
-                    v-else-if="row.account.installment">剩余 {{
-                    formatCny(installmentBalance(row.account.installment))
-                  }} · {{ row.account.installment.remainingPeriods }}/{{ row.account.installment.totalPeriods }} 期 · 到期 {{
-                    row.account.installment.maturityDate
-                  }}</small><small v-else>{{ row.account.institution || row.account.category }}</small></span></div>
-                <span class="amount liability-value">{{
-                    row.account.status === 'inactive' ? '—' : (row.record ? `-${formatOriginal(row.record.amount, row.account.currency)}` : '未录入')
-                  }}</span>
-                <span class="cny-amount liability-value">{{
-                    row.account.status === 'inactive' ? '不计入' : (row.record && row.rate ? `-${formatCny(rowCny(row))}` : '—')
-                  }}</span>
-                <span class="updated" :class="{stale: rowIsStale(row.record?.date)}">{{
-                    row.record?.date ?? '未录入'
-                  }}</span>
-              </div>
-            </div>
-          </section>
-        </main>
-
-        <aside v-if="editorMode" class="editor-backdrop" aria-label="账户编辑" @click.self="closeEditor">
+      <aside v-if="editorMode" class="editor-backdrop" aria-label="账户编辑" @click.self="closeEditor">
           <section v-if="editorMode === 'balance' && selectedAccount" class="editor-panel">
             <div class="panel-heading">
               <div><span class="panel-kicker">更新账户余额</span>
@@ -971,11 +565,7 @@ function rowCny(row: { cnyAmount: string }): string {
           </section>
 
           <div v-if="actionError" class="notice error" role="alert">{{ actionError }}</div>
-        </aside>
-      </div>
-
-      <p v-if="viewMode === 'overview'" class="storage-note">数据保存在当前浏览器
-        IndexedDB。清除站点数据前，请先下载或备份账本。</p>
+      </aside>
 
       <div v-if="accountAction" class="account-action-backdrop" @click.self="closeAccountActions">
         <section class="account-action-modal" role="dialog" aria-modal="true"
@@ -1003,121 +593,8 @@ function rowCny(row: { cnyAmount: string }): string {
         </section>
       </div>
 
-      <div v-if="accountHistoryChartAccount" class="account-history-chart-backdrop"
-           @click.self="closeHistoryAccountChart">
-        <section class="account-history-chart-modal" role="dialog" aria-modal="true"
-                 :aria-label="`${accountHistoryChartAccount.name} 余额趋势`">
-          <div class="panel-heading">
-            <div><span class="panel-kicker">账户历史趋势</span>
-              <h2>{{ accountHistoryChartAccount.name }}</h2></div>
-            <button class="close-button" type="button" aria-label="关闭" @click="closeHistoryAccountChart">×</button>
-          </div>
-          <div v-if="accountHistoryChartPoints.length" ref="accountHistoryChartRoot" class="account-history-chart"
-               role="img" aria-label="账户余额历史折线图，可悬停查看月份和金额"/>
-          <div v-else class="distribution-empty">暂无可折算的账户历史余额</div>
-        </section>
-      </div>
-
-      <section v-if="viewMode === 'history'" class="history-view">
-        <div class="section-heading history-heading">
-          <div><h2>历史净资产</h2>
-            <p>按每个账户截至目标月份的最后一条记录计算。</p></div>
-          <label class="history-date-picker">查看月份<select v-model="historyDate" :disabled="!historyDates.length">
-            <option v-for="date in historyDates" :key="date" :value="date">{{ date }}</option>
-          </select></label>
-        </div>
-        <div v-if="!historyDates.length" class="empty-state">
-          <div class="empty-mark">—</div>
-          <h2>还没有历史记录</h2>
-          <p>保存账户余额后，这里会显示净资产变化和每个账户的来源。</p></div>
-        <template v-else>
-          <section class="summary-strip" aria-label="历史月份摘要">
-            <div><span>净资产</span><strong class="net-worth-value">{{ formatCny(historySummary.netWorthCny) }}</strong>
-            </div>
-            <div><span>资产</span><strong>{{ formatCny(historySummary.assetsCny) }}</strong></div>
-            <div><span>负债</span><strong class="liability-value">{{
-                formatCny(historySummary.liabilitiesCny)
-              }}</strong></div>
-          </section>
-          <section class="history-chart-panel">
-            <div class="section-heading compact">
-              <div><h2>净资产趋势</h2>
-                <p>{{ historyPoints.length }} 个记录月份</p></div>
-            </div>
-            <div ref="historyChartRoot" class="history-chart" role="img"
-                 aria-label="净资产历史趋势图，可悬停查看月份和金额"/>
-          </section>
-          <section class="history-table-panel">
-            <div class="section-heading compact">
-              <div><h2>{{ historyDate }} 的账户状态</h2>
-                <p>每个账户每月只保留一条余额记录，修正会覆盖当月数据。</p></div>
-            </div>
-            <div class="history-table">
-              <div class="history-table-head">
-                <span>账户</span><span>记录月份</span><span>原币余额</span><span>CNY 金额</span><span>操作</span></div>
-              <div v-for="row in historyRows" :key="row.account.id" class="history-row">
-                <button class="history-account-link account-name" type="button"
-                        @click="openHistoryAccountChart(row.account)"><span class="account-dot"
-                                                                            :class="row.account.type === 'liability' ? 'liability-dot' : 'asset-dot'"/>{{
-                    row.account.name
-                  }}
-                </button>
-                <span>{{ row.record?.date }}</span>
-                <span>{{ row.record ? formatOriginal(row.record.amount, row.account.currency) : '—' }}</span>
-                <span :class="{'liability-value': row.account.type === 'liability'}">{{
-                    row.rate ? `${row.account.type === 'liability' ? '-' : ''}${formatCny(row.cnyAmount)}` : '缺少汇率'
-                  }}</span>
-                <span class="history-actions"><button v-if="row.record?.source === 'manual'" class="row-button"
-                                                      type="button"
-                                                      @click="openBalanceEditor(row.account, row.record.date, true)">修正</button><button
-                    v-if="row.record?.source === 'manual'" class="text-danger" type="button"
-                    @click="deleteHistoryRecord(row.account.id, row.record.date)">删除</button><small
-                    v-else>分期记录</small></span>
-              </div>
-            </div>
-          </section>
-          <section class="history-table-panel account-history-panel">
-            <div class="section-heading compact">
-              <div><h2>账户历史</h2>
-                <p>
-                  <button v-if="historyAccount" class="history-account-link" type="button"
-                          @click="openHistoryAccountChart(historyAccount)">{{ historyAccount.name }}
-                  </button>
-                  的全部月度余额记录，不受上方查看月份限制。
-                </p>
-              </div>
-              <label class="history-account-picker">账户<select v-model="historyAccountId">
-                <option v-for="account in historyAccountOptions" :key="account.id" :value="account.id">{{
-                    account.name
-                  }}
-                </option>
-              </select></label>
-            </div>
-            <div v-if="!historyAccountRows.length" class="empty-state compact-empty">
-              <div class="empty-mark">—</div>
-              <p>这个账户还没有余额记录。</p></div>
-            <div v-else class="history-table">
-              <div class="account-history-head">
-                <span>月份</span><span>原币余额</span><span>CNY 金额</span><span>来源</span><span>操作</span></div>
-              <div v-for="row in historyAccountRows" :key="row.record.date" class="account-history-row">
-                <span>{{ row.record.date }}</span>
-                <span>{{ formatOriginal(row.record.amount, historyAccount?.currency ?? 'CNY') }}</span>
-                <span :class="{'liability-value': historyAccount?.type === 'liability'}">{{
-                    row.rate ? `${historyAccount?.type === 'liability' ? '-' : ''}${formatCny(row.cnyAmount)}` : '缺少汇率'
-                  }}</span>
-                <span class="history-source">{{
-                    row.record.source === 'manual' ? '手动' : row.record.source === 'installment-setup' ? '分期设置' : '分期还款'
-                  }}</span>
-                <span class="history-actions"><button v-if="row.record.source === 'manual'" class="row-button"
-                                                      type="button"
-                                                      @click="historyAccount && openBalanceEditor(historyAccount, row.record.date, true)">修正</button><button
-                    v-if="row.record.source === 'manual'" class="text-danger" type="button"
-                    @click="deleteHistoryRecord(historyAccount?.id ?? '', row.record.date)">删除</button><small v-else>自动记录</small></span>
-              </div>
-            </div>
-          </section>
-        </template>
-      </section>
+      <HistoryView v-show="viewMode === 'history'" :active="viewMode === 'history'" :ledger="ledger"
+                   @edit-balance="openHistoryBalanceEditor" @delete-record="deleteHistoryRecord"/>
 
       <BackupView v-show="viewMode === 'backup'" :ledger="ledger" @replace-ledger="ledger = $event"/>
     </template>

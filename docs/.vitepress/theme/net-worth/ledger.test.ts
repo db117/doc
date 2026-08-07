@@ -34,6 +34,7 @@ function account(overrides: Partial<Account> = {}): Account {
     }
 }
 
+// 这些测试覆盖账本最关键的持久化契约：月度唯一、历史口径、分期推进和导入兼容。
 describe('net worth ledger', () => {
     it('takes the latest balance for each account and subtracts liabilities', () => {
         const asset = account({name: '资产'})
