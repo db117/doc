@@ -14,7 +14,9 @@ const clientId = '2cb1afa5-2310-4eed-bdd9-78084173ed5e'
 const authority = 'https://login.microsoftonline.com/consumers/oauth2/v2.0'
 const scope = 'openid profile User.Read Files.ReadWrite.AppFolder'
 const fileName = 'net-worth-ledger.json'
+const sessionKey = 'net-worth-onedrive-session'
 let accessToken: string | null = null
+let accessTokenExpiresAt = 0
 // 同一页面只允许一个登录事务，避免多个弹窗互相覆盖 state/verifier。
 let pendingLogin: {
     state: string
@@ -24,6 +26,34 @@ let pendingLogin: {
     resolve: (name: string) => void
     reject: (error: Error) => void
 } | null = null
+
+function clearOneDriveSession(): void {
+    accessToken = null
+    accessTokenExpiresAt = 0
+    if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem(sessionKey)
+}
+
+function restoreOneDriveSession(): void {
+    if (accessToken && Date.now() < accessTokenExpiresAt) return
+    accessToken = null
+    accessTokenExpiresAt = 0
+    if (typeof sessionStorage === 'undefined') return
+    try {
+        const stored = JSON.parse(sessionStorage.getItem(sessionKey) ?? 'null') as {
+            accessToken?: unknown
+            expiresAt?: unknown
+        } | null
+        if (typeof stored?.accessToken === 'string' && typeof stored.expiresAt === 'number'
+            && Number.isFinite(stored.expiresAt) && Date.now() < stored.expiresAt) {
+            accessToken = stored.accessToken
+            accessTokenExpiresAt = stored.expiresAt
+        } else {
+            sessionStorage.removeItem(sessionKey)
+        }
+    } catch {
+        sessionStorage.removeItem(sessionKey)
+    }
+}
 
 function base64Url(value: ArrayBuffer): string {
     return btoa(String.fromCharCode(...new Uint8Array(value))).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '')
@@ -48,13 +78,14 @@ function graphUrl(path: string): string {
 }
 
 async function graph<T>(path: string, init: RequestInit = {}): Promise<T> {
+    restoreOneDriveSession()
     if (!accessToken) throw new Error('请先连接 OneDrive。')
     const response = await fetch(graphUrl(path), {
         ...init,
         headers: {'Authorization': `Bearer ${accessToken}`, ...(init.headers ?? {})},
     })
     if (response.status === 401) {
-        accessToken = null
+        clearOneDriveSession()
         throw new Error('OneDrive 登录已过期，请重新连接。')
     }
     // 写操作不自动重试：PUT 表示显式覆盖，失败后交给用户确认是否再次执行。
@@ -75,6 +106,7 @@ export function oneDriveConfigured(): boolean {
 }
 
 export function oneDriveConnected(): boolean {
+    restoreOneDriveSession()
     return Boolean(accessToken)
 }
 
@@ -94,9 +126,14 @@ async function exchangeCode(code: string, state: string, verifier: string): Prom
         }),
     })
     if (!response.ok) throw new Error('OneDrive 登录失败，请检查应用注册和重定向地址。')
-    const payload = await response.json() as { access_token?: string }
-    if (!payload.access_token) throw new Error('OneDrive 登录响应缺少令牌。')
+    const payload = await response.json() as { access_token?: string; expires_in?: number }
+    if (!payload.access_token || typeof payload.expires_in !== 'number'
+        || !Number.isFinite(payload.expires_in) || payload.expires_in <= 0) {
+        throw new Error('OneDrive 登录响应缺少有效令牌。')
+    }
     accessToken = payload.access_token
+    accessTokenExpiresAt = Date.now() + payload.expires_in * 1000
+    sessionStorage.setItem(sessionKey, JSON.stringify({accessToken, expiresAt: accessTokenExpiresAt}))
     const user = await graph<{ displayName?: string; userPrincipalName?: string }>(
         '/me?$select=displayName,userPrincipalName',
     )
@@ -174,7 +211,7 @@ export async function completeOneDriveLogin(): Promise<string | null> {
 }
 
 export function disconnectOneDrive(): void {
-    accessToken = null
+    clearOneDriveSession()
 }
 
 export async function getOneDriveMetadata(): Promise<OneDriveRemoteMetadata | null> {
