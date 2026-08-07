@@ -368,6 +368,7 @@ onMounted(async () => {
       oneDriveConnectedState.value = true
       oneDriveName.value = name
       remoteMetadata.value = await getOneDriveMetadata()
+      await backupToOneDrive(false)
     } else {
       oneDriveConnectedState.value = oneDriveConnected()
     }
@@ -509,10 +510,17 @@ async function onImportFile(event: Event): Promise<void> {
 }
 
 async function connectOneDrive(): Promise<void> {
+  oneDriveBusy.value = true
   try {
-    await beginOneDriveLogin()
+    const name = await beginOneDriveLogin()
+    oneDriveConnectedState.value = true
+    oneDriveName.value = name
+    remoteMetadata.value = await getOneDriveMetadata()
+    await backupToOneDrive(false)
   } catch (error) {
     actionError.value = error instanceof Error ? error.message : '无法连接 OneDrive。'
+  } finally {
+    oneDriveBusy.value = false
   }
 }
 
@@ -537,9 +545,9 @@ async function refreshOneDriveMetadata(): Promise<void> {
   }
 }
 
-async function backupToOneDrive(): Promise<void> {
+async function backupToOneDrive(confirmBeforeUpload = true): Promise<void> {
   if (!oneDriveConnectedState.value) return
-  if (!window.confirm(`用当前本地账本覆盖 OneDrive${remoteMetadata.value ? `（远程时间：${remoteMetadata.value.lastModifiedDateTime}）` : ''}吗？`)) return
+  if (confirmBeforeUpload && !window.confirm(`用当前本地账本覆盖 OneDrive${remoteMetadata.value ? `（远程时间：${remoteMetadata.value.lastModifiedDateTime}）` : ''}吗？`)) return
   oneDriveBusy.value = true
   try {
     remoteMetadata.value = await backupOneDriveFile(makeLedgerFile(ledger.value))
@@ -1308,7 +1316,7 @@ function rowCny(row: { cnyAmount: string }): string {
             </button>
           </div>
           <div v-if="oneDriveConfiguredState && !oneDriveConnectedState" class="backup-actions">
-            <button class="secondary-button" type="button" :disabled="oneDriveBusy" @click="connectOneDrive">连接
+            <button class="primary-button" type="button" :disabled="oneDriveBusy" @click="connectOneDrive">登录并备份到
               OneDrive
             </button>
           </div>

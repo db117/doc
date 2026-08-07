@@ -11,6 +11,14 @@ const authority = (import.meta.env.VITE_ONEDRIVE_AUTHORITY as string | undefined
 const scope = 'openid profile Files.ReadWrite.AppFolder'
 const fileName = 'net-worth-ledger.json'
 let accessToken: string | null = null
+let pendingLogin: {
+    state: string
+    verifier: string
+    popup: Window
+    timer: number
+    resolve: (name: string) => void
+    reject: (error: Error) => void
+} | null = null
 
 function base64Url(value: ArrayBuffer): string {
     return btoa(String.fromCharCode(...new Uint8Array(value))).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '')
@@ -62,36 +70,8 @@ export function oneDriveConnected(): boolean {
     return Boolean(accessToken)
 }
 
-export async function beginOneDriveLogin(): Promise<void> {
-    if (!clientId) throw new Error('尚未配置 VITE_ONEDRIVE_CLIENT_ID。')
-    const verifier = randomText()
-    const state = randomText()
-    sessionStorage.setItem('net-worth-onedrive-verifier', verifier)
-    sessionStorage.setItem('net-worth-onedrive-state', state)
-    const params = new URLSearchParams({
-        client_id: clientId,
-        response_type: 'code',
-        redirect_uri: redirectUri(),
-        response_mode: 'query',
-        scope,
-        state,
-        code_challenge: await pkceChallenge(verifier),
-        code_challenge_method: 'S256',
-    })
-    window.location.assign(`${authority}/authorize?${params}`)
-}
-
-export async function completeOneDriveLogin(): Promise<string | null> {
-    const params = new URLSearchParams(window.location.search)
-    const code = params.get('code')
-    if (!code) return null
-    const state = params.get('state')
-    const expectedState = sessionStorage.getItem('net-worth-onedrive-state')
-    const verifier = sessionStorage.getItem('net-worth-onedrive-verifier')
-    sessionStorage.removeItem('net-worth-onedrive-state')
-    sessionStorage.removeItem('net-worth-onedrive-verifier')
-    window.history.replaceState({}, document.title, redirectUri())
-    if (!clientId || !state || state !== expectedState || !verifier) throw new Error('OneDrive 登录校验失败。')
+async function exchangeCode(code: string, state: string, verifier: string): Promise<string> {
+    if (!clientId || !state || !verifier) throw new Error('OneDrive 登录校验失败。')
     const response = await fetch(`${authority}/token`, {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -113,6 +93,73 @@ export async function completeOneDriveLogin(): Promise<string | null> {
         userPrincipalName?: string
     }>('/me?$select=displayName,userPrincipalName')
     return user.displayName || user.userPrincipalName || 'Microsoft 账户'
+}
+
+export async function beginOneDriveLogin(): Promise<string> {
+    if (!clientId) throw new Error('尚未配置 VITE_ONEDRIVE_CLIENT_ID。')
+    if (pendingLogin) throw new Error('OneDrive 登录窗口已经打开。')
+    const verifier = randomText()
+    const state = randomText()
+    sessionStorage.setItem('net-worth-onedrive-verifier', verifier)
+    sessionStorage.setItem('net-worth-onedrive-state', state)
+    const popup = window.open('', 'net-worth-onedrive-login', 'popup,width=520,height=720')
+    if (!popup) throw new Error('登录窗口被浏览器拦截，请允许本站打开弹窗后重试。')
+    const challenge = await pkceChallenge(verifier)
+    const params = new URLSearchParams({
+        client_id: clientId,
+        response_type: 'code',
+        redirect_uri: redirectUri(),
+        response_mode: 'query',
+        scope,
+        state,
+        code_challenge: challenge,
+        code_challenge_method: 'S256',
+    })
+    return new Promise((resolve, reject) => {
+        const timer = window.setInterval(() => {
+            if (popup.closed) {
+                window.clearInterval(timer)
+                window.removeEventListener('message', onMessage)
+                sessionStorage.removeItem('net-worth-onedrive-state')
+                sessionStorage.removeItem('net-worth-onedrive-verifier')
+                pendingLogin = null
+                reject(new Error('OneDrive 登录窗口已关闭。'))
+            }
+        }, 500)
+        const onMessage = (event: MessageEvent<{ type?: string; code?: string; state?: string }>) => {
+            if (event.origin !== window.location.origin || event.data?.type !== 'net-worth-onedrive-auth') return
+            if (!pendingLogin || event.data.state !== pendingLogin.state || !event.data.code) return
+            window.clearInterval(timer)
+            window.removeEventListener('message', onMessage)
+            const current = pendingLogin
+            pendingLogin = null
+            sessionStorage.removeItem('net-worth-onedrive-state')
+            sessionStorage.removeItem('net-worth-onedrive-verifier')
+            void exchangeCode(event.data.code, event.data.state, current.verifier).then(current.resolve).catch(current.reject)
+        }
+        pendingLogin = {state, verifier, popup, timer, resolve, reject}
+        window.addEventListener('message', onMessage)
+        popup.location.href = `${authority}/authorize?${params}`
+    })
+}
+
+export async function completeOneDriveLogin(): Promise<string | null> {
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get('code')
+    if (!code) return null
+    const state = params.get('state')
+    if (window.opener && window.opener !== window) {
+        window.opener.postMessage({type: 'net-worth-onedrive-auth', code, state}, window.location.origin)
+        window.close()
+        return null
+    }
+    const expectedState = sessionStorage.getItem('net-worth-onedrive-state')
+    const verifier = sessionStorage.getItem('net-worth-onedrive-verifier')
+    sessionStorage.removeItem('net-worth-onedrive-state')
+    sessionStorage.removeItem('net-worth-onedrive-verifier')
+    window.history.replaceState({}, document.title, redirectUri())
+    if (!clientId || !state || state !== expectedState || !verifier) throw new Error('OneDrive 登录校验失败。')
+    return exchangeCode(code, state, verifier)
 }
 
 export function disconnectOneDrive(): void {
