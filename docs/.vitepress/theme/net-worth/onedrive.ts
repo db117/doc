@@ -9,10 +9,10 @@ export interface OneDriveRemoteMetadata {
     size: number
 }
 
-// 只申请应用目录读写权限；令牌仅保存在内存，刷新或关闭页面后需要重新登录。
+// 文件只访问应用目录；User.Read 仅用于在连接状态中展示当前账户名称。
 const clientId = '2cb1afa5-2310-4eed-bdd9-78084173ed5e'
 const authority = 'https://login.microsoftonline.com/consumers/oauth2/v2.0'
-const scope = 'openid profile Files.ReadWrite.AppFolder'
+const scope = 'openid profile User.Read Files.ReadWrite.AppFolder'
 const fileName = 'net-worth-ledger.json'
 let accessToken: string | null = null
 // 同一页面只允许一个登录事务，避免多个弹窗互相覆盖 state/verifier。
@@ -97,10 +97,9 @@ async function exchangeCode(code: string, state: string, verifier: string): Prom
     const payload = await response.json() as { access_token?: string }
     if (!payload.access_token) throw new Error('OneDrive 登录响应缺少令牌。')
     accessToken = payload.access_token
-    const user = await graph<{
-        displayName?: string;
-        userPrincipalName?: string
-    }>('/me?$select=displayName,userPrincipalName')
+    const user = await graph<{ displayName?: string; userPrincipalName?: string }>(
+        '/me?$select=displayName,userPrincipalName',
+    )
     return user.displayName || user.userPrincipalName || 'Microsoft 账户'
 }
 
