@@ -6,8 +6,8 @@ export interface OneDriveRemoteMetadata {
     size: number
 }
 
-const clientId = import.meta.env.VITE_ONEDRIVE_CLIENT_ID as string | undefined
-const authority = (import.meta.env.VITE_ONEDRIVE_AUTHORITY as string | undefined) ?? 'https://login.microsoftonline.com/consumers/oauth2/v2.0'
+const clientId = '2cb1afa5-2310-4eed-bdd9-78084173ed5e'
+const authority = 'https://login.microsoftonline.com/consumers/oauth2/v2.0'
 const scope = 'openid profile Files.ReadWrite.AppFolder'
 const fileName = 'net-worth-ledger.json'
 let accessToken: string | null = null
