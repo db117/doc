@@ -4,7 +4,7 @@ import {useData} from 'vitepress'
 import type {ECharts, EChartsCoreOption} from 'echarts/core'
 import {init, use} from 'echarts/core'
 import {LineChart} from 'echarts/charts'
-import {GridComponent, TooltipComponent} from 'echarts/components'
+import {GridComponent, LegendComponent, TooltipComponent} from 'echarts/components'
 import {CanvasRenderer} from 'echarts/renderers'
 import {
   accountHasBalances,
@@ -20,7 +20,7 @@ import {
 } from './ledger'
 import {formatChartAxisCny, formatCny, formatOriginal} from './format'
 
-use([LineChart, GridComponent, TooltipComponent, CanvasRenderer])
+use([LineChart, GridComponent, LegendComponent, TooltipComponent, CanvasRenderer])
 
 // 月份选择与图表弹层由历史页内聚；父组件只处理会修改账本的事件。
 const props = defineProps<{ ledger: Ledger; active: boolean }>()
@@ -33,9 +33,12 @@ const historyDate = ref(todayMonthISO())
 const historyAccountId = ref<string | null>(null)
 const accountHistoryChartId = ref<string | null>(null)
 const historyChartRoot = ref<HTMLElement | null>(null)
+const assetLiabilityChartRoot = ref<HTMLElement | null>(null)
 const accountHistoryChartRoot = ref<HTMLElement | null>(null)
 let historyChart: ECharts | undefined
 let historyChartObserver: ResizeObserver | undefined
+let assetLiabilityChart: ECharts | undefined
+let assetLiabilityChartObserver: ResizeObserver | undefined
 let accountHistoryChart: ECharts | undefined
 let accountHistoryChartObserver: ResizeObserver | undefined
 
@@ -71,12 +74,15 @@ const historyRows = computed(() => props.ledger.accounts
         rate,
         cnyAmount: rate ? multiplyAmountByRate(record.amount, rate.cnyRate) : '0',
       }]
-    }))
+    })
+    .sort((a, b) => Number(!a.rate) - Number(!b.rate)
+        || Number(b.cnyAmount) - Number(a.cnyAmount)
+        || a.account.name.localeCompare(b.account.name, 'zh-CN')))
 // 趋势只绘制实际存在余额记录的月份，不虚构没有采样的数据点。
-const historyPoints = computed(() => historyDates.value.map(date => ({
-  date,
-  netWorth: summarize(props.ledger, date).netWorthCny,
-})))
+const historyPoints = computed(() => historyDates.value.map(date => {
+  const summary = summarize(props.ledger, date)
+  return {date, netWorth: summary.netWorthCny, assets: summary.assetsCny, liabilities: summary.liabilitiesCny}
+}))
 const accountHistoryChartAccount = computed(() => props.ledger.accounts.find(account => account.id === accountHistoryChartId.value) ?? null)
 const accountHistoryChartPoints = computed(() => {
   const account = accountHistoryChartAccount.value
@@ -100,7 +106,7 @@ function balanceSourceLabel(source: BalanceSource): string {
                       : '分期终止'
 }
 
-// 两张折线图共享坐标轴规范，保证金额单位和暗色主题表现一致。
+// 折线图共享坐标轴规范，保证金额单位和暗色主题表现一致。
 const chartAxes = computed(() => ({
   xAxis: {
     type: 'category',
@@ -147,6 +153,50 @@ const historyChartOption = computed<EChartsCoreOption>(() => ({
     itemStyle: {color: '#2f9e93', borderColor: isDark.value ? '#202425' : '#ffffff', borderWidth: 2},
     areaStyle: {color: '#2f9e93', opacity: isDark.value ? 0.14 : 0.1},
   }],
+}))
+const assetLiabilityChartOption = computed<EChartsCoreOption>(() => ({
+  animation: !isDark.value,
+  backgroundColor: 'transparent',
+  grid: {top: 50, right: 20, bottom: 48, left: 76, containLabel: true},
+  legend: {top: 8, textStyle: {color: isDark.value ? '#a9b0ae' : '#68716f'}},
+  tooltip: {
+    trigger: 'axis',
+    confine: true,
+    axisPointer: {type: 'cross', lineStyle: {color: isDark.value ? '#84908d' : '#8a9692'}},
+    formatter: (params: unknown) => {
+      const items = (Array.isArray(params) ? params : [params]) as Array<{
+        axisValue?: string
+        marker?: string
+        seriesName?: string
+        value?: number | string
+      }>
+      return [items[0]?.axisValue ?? '', ...items.map(item => `${item.marker ?? ''}${item.seriesName ?? ''} <b>${formatCny(String(item.value ?? 0))}</b>`)].join('<br>')
+    },
+  },
+  xAxis: {...chartAxes.value.xAxis, data: historyPoints.value.map(point => point.date)},
+  yAxis: chartAxes.value.yAxis,
+  series: [
+    {
+      name: '总资产',
+      type: 'line',
+      data: historyPoints.value.map(point => Number(point.assets)),
+      showSymbol: true,
+      symbol: 'circle',
+      symbolSize: 8,
+      lineStyle: {width: 3, color: '#2f9e93'},
+      itemStyle: {color: '#2f9e93', borderColor: isDark.value ? '#202425' : '#ffffff', borderWidth: 2},
+    },
+    {
+      name: '总负债',
+      type: 'line',
+      data: historyPoints.value.map(point => Number(point.liabilities)),
+      showSymbol: true,
+      symbol: 'circle',
+      symbolSize: 8,
+      lineStyle: {width: 3, color: '#d76a5f'},
+      itemStyle: {color: '#d76a5f', borderColor: isDark.value ? '#202425' : '#ffffff', borderWidth: 2},
+    },
+  ],
 }))
 const accountHistoryChartOption = computed<EChartsCoreOption>(() => ({
   animation: !isDark.value,
@@ -205,6 +255,24 @@ function renderHistoryChart(): void {
   historyChart.resize()
 }
 
+function renderAssetLiabilityChart(): void {
+  if (!assetLiabilityChartRoot.value) {
+    assetLiabilityChartObserver?.disconnect()
+    assetLiabilityChartObserver = undefined
+    assetLiabilityChart?.dispose()
+    assetLiabilityChart = undefined
+    return
+  }
+  if (!props.active) return
+  if (!assetLiabilityChart) assetLiabilityChart = init(assetLiabilityChartRoot.value, undefined, {renderer: 'canvas'})
+  if (!assetLiabilityChartObserver) {
+    assetLiabilityChartObserver = new ResizeObserver(() => assetLiabilityChart?.resize())
+    assetLiabilityChartObserver.observe(assetLiabilityChartRoot.value)
+  }
+  assetLiabilityChart.setOption(assetLiabilityChartOption.value, {notMerge: true, lazyUpdate: true})
+  assetLiabilityChart.resize()
+}
+
 function renderAccountHistoryChart(): void {
   // 账户弹层每次关闭都会移除容器，因此需销毁旧实例，重开时绑定新 DOM。
   if (!accountHistoryChartRoot.value) {
@@ -235,12 +303,16 @@ function closeHistoryAccountChart(): void {
 // nextTick 确保 Vue 已完成显隐和尺寸更新，再让 ECharts 读取容器。
 watch([historyPoints, isDark, () => props.active], () => nextTick(renderHistoryChart), {deep: true})
 watch(historyChartRoot, () => nextTick(renderHistoryChart))
+watch([historyPoints, isDark, () => props.active], () => nextTick(renderAssetLiabilityChart), {deep: true})
+watch(assetLiabilityChartRoot, () => nextTick(renderAssetLiabilityChart))
 watch([accountHistoryChartPoints, isDark, () => props.active], () => nextTick(renderAccountHistoryChart), {deep: true})
 watch(accountHistoryChartRoot, () => nextTick(renderAccountHistoryChart))
 onMounted(() => renderHistoryChart())
 onBeforeUnmount(() => {
   historyChartObserver?.disconnect()
   historyChart?.dispose()
+  assetLiabilityChartObserver?.disconnect()
+  assetLiabilityChart?.dispose()
   accountHistoryChartObserver?.disconnect()
   accountHistoryChart?.dispose()
 })
@@ -275,6 +347,14 @@ onBeforeUnmount(() => {
         </div>
         <div ref="historyChartRoot" class="history-chart" role="img"
              aria-label="净资产历史趋势图，可悬停查看月份和金额"/>
+      </section>
+      <section class="history-chart-panel">
+        <div class="section-heading compact">
+          <div><h2>资产与负债趋势</h2>
+            <p>总资产与总负债的月度对比</p></div>
+        </div>
+        <div ref="assetLiabilityChartRoot" class="history-chart" role="img"
+             aria-label="总资产与总负债历史趋势图，可悬停查看月份和金额"/>
       </section>
       <section class="history-table-panel">
         <div class="section-heading compact">
