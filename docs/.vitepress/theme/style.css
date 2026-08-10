@@ -255,8 +255,9 @@
     padding-inline: 0;
 }
 
-/* Keep the linked strategy page as the parent while making its guide visibly nested. */
-.VPSidebarItem.level-1 .VPLink[href*="/tools/options-strategy-local-setup"] {
+/* Keep each linked tool page as the parent while making its guide visibly nested. */
+.VPSidebarItem.level-1 .VPLink[href*="/tools/options-strategy-local-setup"],
+.VPSidebarItem.level-1 .VPLink[href*="/tools/net-worth-guide"] {
   padding-left: 16px;
 }
 
