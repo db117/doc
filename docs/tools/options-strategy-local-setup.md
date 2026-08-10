@@ -1,11 +1,12 @@
 ---
-title: 期权策略构建器本地使用指南
-description: 安装并登录 Futu OpenD，启动本地 futu_bridge，并连接美股期权策略构建器。
+title: OpenD 在线工具本地使用指南
+description: 安装并登录 Futu OpenD，启动本地 futu_bridge，并连接美股期权策略与波动率曲面工具。
 ---
 
-# 期权策略构建器本地使用指南
+# OpenD 在线工具本地使用指南
 
-本指南用于准备[美股期权策略构建器](./options-strategy.md)所需的本地行情环境。
+本指南用于准备[美股期权策略构建器](./options-strategy.md)和[美股期权 3D 波动率曲面](./options-volatility-surface.md)
+所需的本地行情环境。
 
 ## 工作方式
 

@@ -8,6 +8,7 @@ export default {
 	'/infrastructure/database/': scanDir('infrastructure/database'),
 	'/infrastructure/ops/': scanDir('infrastructure/ops'),
 	'/tools/': [
+        {text: '美股期权 3D 波动率曲面', link: '/tools/options-volatility-surface'},
 		{
 			text: '美股期权策略构建器',
 			link: '/tools/options-strategy',

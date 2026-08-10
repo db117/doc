@@ -16,6 +16,7 @@ const nav: DefaultTheme.NavItem[] = [
 		text: '在线工具',
 		items: [
 			{text: '美股期权策略构建器', link: '/tools/options-strategy'},
+            {text: '美股期权 3D 波动率曲面', link: '/tools/options-volatility-surface'},
             {text: '个人净资产追踪', link: '/tools/net-worth'},
 			{ text: 'V2Ray 转 Clash 订阅', link: '/tools/v2ray-to-clash' },
 		],

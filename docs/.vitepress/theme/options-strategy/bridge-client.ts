@@ -165,6 +165,23 @@ export class FutuBridgeClient {
         }
     }
 
+    async optionChains(symbol: string, expiries: string[]): Promise<{ chains: OptionChain[], failureCount: number }> {
+        const chains: OptionChain[] = []
+        let failureCount = 0
+        let firstError: unknown
+        // OpenD 的完整期权链很重，顺序读取避免密集到期标的并发争抢同一个行情上下文。
+        for (const expiry of expiries) {
+            try {
+                chains.push(await this.optionChain(symbol, expiry))
+            } catch (error) {
+                firstError ??= error
+                failureCount++
+            }
+        }
+        if (!chains.length && firstError) throw firstError
+        return {chains, failureCount}
+    }
+
     private async get<T>(path: string, params: Record<string, string> = {}): Promise<T> {
         // 单次请求不自动重试；重试和定时刷新由页面统一控制，避免故障时成倍压垮本机 Bridge。
         const url = new URL(`${this.baseUrl}${path}`)

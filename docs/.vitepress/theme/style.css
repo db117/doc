@@ -213,29 +213,29 @@
  * Options strategy workbench
  * -------------------------------------------------------------------------- */
 
-.Layout.options-strategy-page .VPDoc .container,
-.Layout.options-strategy-page .VPDoc .content,
-.Layout.options-strategy-page .VPDoc .content-container,
-.Layout.options-strategy-page .VPDoc .vp-doc {
+.Layout:is(.options-strategy-page, .options-surface-page) .VPDoc .container,
+.Layout:is(.options-strategy-page, .options-surface-page) .VPDoc .content,
+.Layout:is(.options-strategy-page, .options-surface-page) .VPDoc .content-container,
+.Layout:is(.options-strategy-page, .options-surface-page) .VPDoc .vp-doc {
   max-width: none;
 }
 
-.Layout.options-strategy-page .VPDoc .content {
+.Layout:is(.options-strategy-page, .options-surface-page) .VPDoc .content {
   padding-inline: 24px;
 }
 
-.Layout.options-strategy-page .vp-doc > div > h1 {
+.Layout:is(.options-strategy-page, .options-surface-page) .vp-doc > div > h1 {
   margin-bottom: 6px;
   font-size: 26px;
 }
 
-.Layout.options-strategy-page .vp-doc > div > h1 + p {
+.Layout:is(.options-strategy-page, .options-surface-page) .vp-doc > div > h1 + p {
   margin: 0;
   color: var(--vp-c-text-2);
   font-size: 14px;
 }
 
-.Layout.options-strategy-page .vp-doc > div > .warning {
+.Layout:is(.options-strategy-page, .options-surface-page) .vp-doc > div > .warning {
   margin-top: 14px;
   font-size: 12px;
 }
@@ -273,13 +273,13 @@
 }
 
 @media (min-width: 1600px) {
-  .Layout.options-strategy-page .VPDoc .content {
+    .Layout:is(.options-strategy-page, .options-surface-page) .VPDoc .content {
     padding-inline: 36px;
   }
 }
 
 @media (max-width: 640px) {
-  .Layout.options-strategy-page .VPDoc .content {
+    .Layout:is(.options-strategy-page, .options-surface-page) .VPDoc .content {
     padding-inline: 16px;
   }
 }
