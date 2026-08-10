@@ -90,8 +90,7 @@ async function connectOneDrive(): Promise<void> {
     oneDriveName.value = await beginOneDriveLogin()
     oneDriveConnectedState.value = true
     remoteMetadata.value = await getOneDriveMetadata()
-    // “登录并备份”是一个明确动作，授权成功后直接覆盖远端，无需重复确认。
-    await backupToOneDrive(false)
+    actionError.value = ''
   } catch (error) {
     actionError.value = error instanceof Error ? error.message : '无法连接 OneDrive。'
   } finally {
@@ -120,10 +119,10 @@ async function refreshOneDriveMetadata(): Promise<void> {
   }
 }
 
-async function backupToOneDrive(confirmBeforeUpload = true): Promise<void> {
+async function backupToOneDrive(): Promise<void> {
   if (!oneDriveConnectedState.value) return
   // 常规备份会覆盖远端，显示远端时间帮助用户判断是否误覆盖。
-  if (confirmBeforeUpload && !window.confirm(`用当前本地账本覆盖 OneDrive${remoteMetadata.value ? `（远程时间：${remoteMetadata.value.lastModifiedDateTime}）` : ''}吗？`)) return
+  if (!window.confirm(`用当前本地账本覆盖 OneDrive${remoteMetadata.value ? `（远程时间：${remoteMetadata.value.lastModifiedDateTime}）` : ''}吗？`)) return
   oneDriveBusy.value = true
   try {
     remoteMetadata.value = await backupOneDriveFile(makeLedgerFile(props.ledger))
@@ -191,7 +190,6 @@ onMounted(async () => {
       oneDriveConnectedState.value = true
       oneDriveName.value = name
       remoteMetadata.value = await getOneDriveMetadata()
-      await backupToOneDrive(false)
     } else {
       oneDriveConnectedState.value = oneDriveConnected()
     }
@@ -223,7 +221,7 @@ onMounted(async () => {
       </div>
       <div v-if="oneDriveConfiguredState && !oneDriveConnectedState" class="backup-actions">
         <button class="primary-button" type="button" :disabled="oneDriveBusy" @click="connectOneDrive">
-          登录并备份到 OneDrive
+          连接 OneDrive
         </button>
       </div>
       <div v-if="oneDriveConnectedState" class="backup-actions">
