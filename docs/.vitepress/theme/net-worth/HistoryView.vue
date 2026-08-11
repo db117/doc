@@ -223,9 +223,17 @@ const accountHistoryChartOption = computed<EChartsCoreOption>(() => ({
     axisPointer: {type: 'cross', lineStyle: {color: isDark.value ? '#84908d' : '#8a9692'}},
     formatter: (params: unknown) => {
       const item = (Array.isArray(params) ? params[0] : params) as { dataIndex?: number; axisValue?: string }
-      const point = accountHistoryChartPoints.value[item.dataIndex ?? 0]
+      const index = item.dataIndex ?? 0
+      const point = accountHistoryChartPoints.value[index]
       if (!point) return item.axisValue ?? ''
-      return `${point.record.date}<br>原币余额 <b>${formatOriginal(point.record.amount, accountHistoryChartAccount.value?.currency ?? 'CNY')}</b><br>CNY 金额 <b>${formatCny(point.cnyAmount ?? '0')}</b>`
+      const currency = accountHistoryChartAccount.value?.currency ?? 'CNY'
+      const previousAmount = accountHistoryChartPoints.value[index - 1]?.cnyAmount ?? undefined
+      return [
+        point.record.date,
+        `原币余额 <b>${formatOriginal(point.record.amount, currency)}</b>`,
+        `CNY 金额 <b>${formatCny(point.cnyAmount ?? '0')}</b>`,
+        `较上月 <b>${formatMonthOverMonth(point.cnyAmount ?? 0, previousAmount)}</b>`,
+      ].join('<br>')
     },
   },
   xAxis: {...chartAxes.value.xAxis, data: accountHistoryChartPoints.value.map(point => point.record.date)},
@@ -460,7 +468,7 @@ onBeforeUnmount(() => {
             <button class="close-button" type="button" aria-label="关闭" @click="closeHistoryAccountChart">×</button>
           </div>
           <div v-if="accountHistoryChartPoints.length" ref="accountHistoryChartRoot" class="account-history-chart"
-               role="img" aria-label="账户余额历史折线图，可悬停查看月份和金额"/>
+               role="img" aria-label="账户余额历史折线图，可悬停查看月份、金额和环比"/>
           <div v-else class="distribution-empty">暂无可折算的账户历史余额</div>
         </section>
       </div>
