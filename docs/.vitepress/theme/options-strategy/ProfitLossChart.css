@@ -1,0 +1,10 @@
+.profit-chart {
+  width: 100%;
+  height: 280px;
+}
+
+@media (max-width: 540px) {
+  .profit-chart {
+    height: 240px;
+  }
+}

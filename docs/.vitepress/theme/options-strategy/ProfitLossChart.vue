@@ -139,15 +139,4 @@ defineExpose({resetZoom})
   <div ref="root" class="profit-chart" role="img" aria-label="策略理论盈亏曲线，可使用鼠标滚轮缩放并拖动平移"/>
 </template>
 
-<style scoped>
-.profit-chart {
-  width: 100%;
-  height: 280px;
-}
-
-@media (max-width: 540px) {
-  .profit-chart {
-    height: 240px;
-  }
-}
-</style>
+<style scoped src="./ProfitLossChart.css"></style>
