@@ -128,11 +128,8 @@ net-worth-ledger.json
 history/YYYY/net-worth-ledger-YYYY-MM-DD.json
 ```
 
-Google Drive 仅申请 `drive.file` 权限，访问令牌只保留在当前浏览器会话；会话到期后需要重新连接。部署站点前需为当前域名创建 Google OAuth Web 客户端，并在构建环境配置：
-
-```bash
-VITE_GOOGLE_DRIVE_CLIENT_ID=你的客户端ID
-```
+Google Drive 仅申请 `drive.file` 权限，访问令牌只保留在当前浏览器会话；会话到期后需要重新连接。站点已内置 Google OAuth 客户端
+ID，无需配置环境变量。部署到新域名时，需要在 Google Auth Platform 的 OAuth 客户端中添加该站点的“已获授权的 JavaScript 来源”。
 
 ### 每日历史与恢复
 

@@ -10,7 +10,6 @@ import {
     type RemoteSnapshot,
 } from './cloud'
 
-const clientId = import.meta.env.VITE_GOOGLE_DRIVE_CLIENT_ID as string | undefined
 const scope = 'https://www.googleapis.com/auth/drive.file'
 const folderName = '个人净资产追踪'
 const sessionKey = 'net-worth-google-drive-session'
@@ -95,7 +94,7 @@ function loadGoogleIdentity(): Promise<void> {
 
 /** 判断当前构建是否配置了 Google OAuth 客户端 ID。 */
 export function googleDriveConfigured(): boolean {
-    return Boolean(clientId)
+    return true
 }
 
 /** 判断当前浏览器会话是否已连接 Google Drive。 */
@@ -106,11 +105,10 @@ export function googleDriveConnected(): boolean {
 
 /** 发起 Google OAuth 授权并保存会话访问令牌。 */
 export async function beginGoogleDriveLogin(): Promise<string> {
-    if (!clientId) throw new Error('尚未配置 VITE_GOOGLE_DRIVE_CLIENT_ID。')
     if (pendingLogin) throw new Error('Google Drive 登录窗口已经打开。')
     await loadGoogleIdentity()
     tokenClient ??= window.google!.accounts.oauth2.initTokenClient({
-        client_id: clientId,
+        client_id: '939659544768-eknl9bk0pmm5dik4perk87pscbegqv3l.apps.googleusercontent.com',
         scope,
         callback: response => {
             const pending = pendingLogin
@@ -241,7 +239,7 @@ async function ensureChildFolder(parentId: string, name: string): Promise<string
 async function putFile(parentId: string, name: string, content: string, contentType: string): Promise<RemoteMetadata> {
     let file = await findChild(parentId, name)
     if (!file) {
-        file = await drive('/files?fields=id,name,modifiedTime,size,mimeType', {
+        file = await drive<DriveFile>('/files?fields=id,name,modifiedTime,size,mimeType', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({name, parents: [parentId]}),
