@@ -304,7 +304,7 @@
   margin: 0;
 }
 
-.Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul {
+.Layout.nav-page .vp-doc > div > h2:is([id="个人站点"], [id="本站工具"]) + ul {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
@@ -313,7 +313,7 @@
   list-style: none;
 }
 
-.Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li {
+.Layout.nav-page .vp-doc > div > h2:is([id="个人站点"], [id="本站工具"]) + ul > li {
   --nav-card-accent: var(--nav-accent-teal);
 
   min-height: 74px;
@@ -327,17 +327,17 @@
   transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
-.Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li + li {
+.Layout.nav-page .vp-doc > div > h2:is([id="个人站点"], [id="本站工具"]) + ul > li + li {
   margin-top: 0;
 }
 
-.Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li:hover {
+.Layout.nav-page .vp-doc > div > h2:is([id="个人站点"], [id="本站工具"]) + ul > li:hover {
   border-color: var(--nav-card-accent);
   background: color-mix(in oklch, var(--nav-card-accent) 11%, var(--vp-c-bg-soft));
   transform: translateY(-1px);
 }
 
-.Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li > a {
+.Layout.nav-page .vp-doc > div > h2:is([id="个人站点"], [id="本站工具"]) + ul > li > a {
   display: inline-block;
   margin-bottom: 4px;
   color: color-mix(in oklch, var(--nav-card-accent) 42%, var(--vp-c-text-1));
@@ -476,18 +476,18 @@
     font-size: 22px;
   }
 
-  .Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul {
+  .Layout.nav-page .vp-doc > div > h2:is([id="个人站点"], [id="本站工具"]) + ul {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
   }
 
-  .Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li {
+  .Layout.nav-page .vp-doc > div > h2:is([id="个人站点"], [id="本站工具"]) + ul > li {
     min-height: 0;
     padding: 11px 12px;
     font-size: 12px;
   }
 
-  .Layout.nav-page .vp-doc > div > h2[id="个人站点"] + ul > li > a {
+  .Layout.nav-page .vp-doc > div > h2:is([id="个人站点"], [id="本站工具"]) + ul > li > a {
     margin-bottom: 2px;
     font-size: 14px;
   }

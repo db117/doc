@@ -22,6 +22,17 @@ outline: false
 - [ProcessOn](https://www.processon.com/u/5aaa7a7ee4b0a84684088ded)  
   流程图与架构图
 
+## 本站工具
+
+- [美股期权策略构建器](/tools/options-strategy)<br>
+  构建单到期日期权组合并分析理论盈亏
+- [美股期权 3D 波动率曲面](/tools/options-volatility-surface)<br>
+  查看行权价、期限与隐含波动率的三维关系
+- [个人净资产追踪](/tools/net-worth)<br>
+  记录资产、负债和分期余额，查看最新净资产
+- [V2Ray 转 Clash 订阅](/tools/v2ray-to-clash)<br>
+  在浏览器本地生成 Clash Verge Rev 配置
+
 > ## AI
 >
 > 对话、模型、提示词与 AI 工具。

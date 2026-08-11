@@ -8,7 +8,19 @@ export default {
   title: "大兵个人主页",
   description: "大兵的技术导航，收录常用工具、AI、Java、数据库、运维、学习资源与开发文档。",
   head: head,
-    ignoreDeadLinks: true,
+  ignoreDeadLinks: true,
+  vite: {
+    server: {
+      warmup: {
+        clientFiles: [
+          './tools/options-strategy.md',
+          './tools/options-volatility-surface.md',
+          './tools/net-worth.md',
+          './tools/v2ray-to-clash.md',
+        ],
+      },
+    },
+  },
   // lastUpdated: true,
   themeConfig: themeConfig,
 };
