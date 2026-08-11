@@ -18,7 +18,7 @@ import {
   type BalanceSource,
   type Ledger,
 } from './ledger'
-import {formatChartAxisCny, formatCny, formatOriginal} from './format'
+import {formatChartAxisCny, formatCny, formatMonthOverMonth, formatOriginal} from './format'
 
 use([LineChart, GridComponent, LegendComponent, TooltipComponent, CanvasRenderer])
 
@@ -136,8 +136,10 @@ const historyChartOption = computed<EChartsCoreOption>(() => ({
     confine: true,
     axisPointer: {type: 'cross', lineStyle: {color: isDark.value ? '#84908d' : '#8a9692'}},
     formatter: (params: unknown) => {
-      const item = (Array.isArray(params) ? params[0] : params) as { axisValue?: string; value?: number | string }
-      return `${item.axisValue ?? ''}<br>净资产 <b>${formatCny(String(item.value ?? 0))}</b>`
+      const item = (Array.isArray(params) ? params[0] : params) as { dataIndex?: number; axisValue?: string; value?: number | string }
+      const index = item.dataIndex ?? 0
+      const point = historyPoints.value[index]
+      return `${item.axisValue ?? ''}<br>净资产 <b>${formatCny(String(item.value ?? 0))}</b><br>较上月 <b>${formatMonthOverMonth(point?.netWorth ?? 0, historyPoints.value[index - 1]?.netWorth)}</b>`
     },
   },
   xAxis: {...chartAxes.value.xAxis, data: historyPoints.value.map(point => point.date)},
@@ -169,8 +171,13 @@ const assetLiabilityChartOption = computed<EChartsCoreOption>(() => ({
         marker?: string
         seriesName?: string
         value?: number | string
+        dataIndex?: number
       }>
-      return [items[0]?.axisValue ?? '', ...items.map(item => `${item.marker ?? ''}${item.seriesName ?? ''} <b>${formatCny(String(item.value ?? 0))}</b>`)].join('<br>')
+      return [items[0]?.axisValue ?? '', ...items.map(item => {
+        const index = item.dataIndex ?? 0
+        const field: 'assets' | 'liabilities' = item.seriesName === '总负债' ? 'liabilities' : 'assets'
+        return `${item.marker ?? ''}${item.seriesName ?? ''} <b>${formatCny(String(item.value ?? 0))}</b><br>较上月 <b>${formatMonthOverMonth(historyPoints.value[index]?.[field] ?? 0, historyPoints.value[index - 1]?.[field])}</b>`
+      })].join('<br>')
     },
   },
   xAxis: {...chartAxes.value.xAxis, data: historyPoints.value.map(point => point.date)},
@@ -346,7 +353,7 @@ onBeforeUnmount(() => {
             <p>{{ historyPoints.length }} 个记录月份</p></div>
         </div>
         <div ref="historyChartRoot" class="history-chart" role="img"
-             aria-label="净资产历史趋势图，可悬停查看月份和金额"/>
+             aria-label="净资产历史趋势图，可悬停查看月份、金额和环比"/>
       </section>
       <section class="history-chart-panel">
         <div class="section-heading compact">
@@ -354,7 +361,7 @@ onBeforeUnmount(() => {
             <p>总资产与总负债的月度对比</p></div>
         </div>
         <div ref="assetLiabilityChartRoot" class="history-chart" role="img"
-             aria-label="总资产与总负债历史趋势图，可悬停查看月份和金额"/>
+             aria-label="总资产与总负债历史趋势图，可悬停查看月份、金额和环比"/>
       </section>
       <section class="history-table-panel">
         <div class="section-heading compact">
