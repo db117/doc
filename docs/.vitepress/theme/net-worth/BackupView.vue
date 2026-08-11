@@ -67,6 +67,7 @@ interface MergePreviewState {
   result: MergeResult
 }
 
+// 云端提供商连接与文件状态
 const providers = reactive<ProviderState[]>([oneDriveProvider, googleDriveProvider].map(provider => ({
   provider,
   configured: provider.configured(),
@@ -76,13 +77,19 @@ const providers = reactive<ProviderState[]>([oneDriveProvider, googleDriveProvid
   metadata: null,
   snapshots: [],
 })))
+
+// 当前操作的反馈信息
 const actionError = ref('')
 const actionWarning = ref('')
 const statusMessage = ref('')
+
+// 导入、覆盖、合并和失败重试状态
 const fileInput = ref<HTMLInputElement | null>(null)
 const replacePreview = ref<ReplacePreview | null>(null)
 const mergePreview = ref<MergePreviewState | null>(null)
 const retryTarget = ref<{state: ProviderState; ledger: Ledger} | null>(null)
+
+// 本地历史与单步回退状态
 const rollbackAvailable = ref(false)
 const localSnapshots = ref<LedgerSnapshot[]>([])
 

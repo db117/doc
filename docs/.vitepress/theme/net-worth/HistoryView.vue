@@ -29,9 +29,13 @@ const emit = defineEmits<{
   deleteRecord: [accountId: string, date: string]
 }>()
 const {isDark} = useData()
+
+// 历史月份、账户明细和弹层选择
 const historyDate = ref(todayMonthISO())
 const historyAccountId = ref<string | null>(null)
 const accountHistoryChartId = ref<string | null>(null)
+
+// 三个折线图的容器、实例和尺寸观察器
 const historyChartRoot = ref<HTMLElement | null>(null)
 const assetLiabilityChartRoot = ref<HTMLElement | null>(null)
 const accountHistoryChartRoot = ref<HTMLElement | null>(null)
@@ -42,6 +46,7 @@ let assetLiabilityChartObserver: ResizeObserver | undefined
 let accountHistoryChart: ECharts | undefined
 let accountHistoryChartObserver: ResizeObserver | undefined
 
+// 历史表格与账户余额明细
 const historyDates = computed(() => [...new Set(props.ledger.balances.map(record => record.date))].sort())
 const historyAccountOptions = computed(() => props.ledger.accounts
     .filter(account => accountHasBalances(props.ledger, account.id))
@@ -78,6 +83,8 @@ const historyRows = computed(() => props.ledger.accounts
     .sort((a, b) => Number(!a.rate) - Number(!b.rate)
         || Number(b.cnyAmount) - Number(a.cnyAmount)
         || a.account.name.localeCompare(b.account.name, 'zh-CN')))
+
+// 净资产趋势和账户历史曲线数据
 // 趋势只绘制实际存在余额记录的月份，不虚构没有采样的数据点。
 const historyPoints = computed(() => historyDates.value.map(date => {
   const summary = summarize(props.ledger, date)
@@ -107,7 +114,7 @@ function balanceSourceLabel(source: BalanceSource): string {
                       : '分期终止'
 }
 
-// 折线图共享坐标轴规范，保证金额单位和暗色主题表现一致。
+// 折线图坐标轴与配置；共享坐标轴规范保证金额单位和暗色主题表现一致。
 const chartAxes = computed(() => ({
   xAxis: {
     type: 'category',

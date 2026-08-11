@@ -15,13 +15,18 @@ import {
   type RuleOptions,
 } from './types'
 
+// 订阅地址与手工输入状态
 const subscriptionUrl = ref('')
 const manualContent = ref('')
 const manualOpen = ref(false)
+
+// 转换过程反馈
 const busy = ref(false)
 const errorMessage = ref('')
 const statusMessage = ref('')
 const fetchFailureKind = ref<FetchFailureKind | null>(null)
+
+// 解析结果、配置文本和规则选项
 const result = ref<ParseSubscriptionResult | null>(null)
 const yaml = ref('')
 const ruleOptions = reactive<RuleOptions>({ ...DEFAULT_RULE_OPTIONS })
@@ -35,6 +40,7 @@ const fetchMessages: Record<FetchFailureKind, string> = {
   empty: '订阅服务返回了空内容，请确认地址是否有效。',
 }
 
+// 与当前输入和错误信息保持一致的操作能力
 const activeFetchFailureKind = computed<FetchFailureKind | null>(() => {
   const kind = fetchFailureKind.value
   return kind !== null && errorMessage.value === fetchMessages[kind] ? kind : null
@@ -45,6 +51,7 @@ const canOpenSubscription = computed(() => (
   && parseHttpSubscriptionUrl(subscriptionUrl.value) !== null
 ))
 
+/** 解析订阅内容并生成当前规则选项对应的 Mihomo YAML。 */
 function convert(content: string): void {
   errorMessage.value = ''
   statusMessage.value = ''
@@ -67,6 +74,7 @@ function convert(content: string): void {
   }
 }
 
+/** 从用户填写的地址读取并转换订阅。 */
 async function readSubscription(): Promise<void> {
   busy.value = true
   errorMessage.value = ''
@@ -89,11 +97,13 @@ async function readSubscription(): Promise<void> {
   }
 }
 
+/** 转换用户手工粘贴的订阅内容。 */
 function convertManual(): void {
   convert(manualContent.value)
   if (yaml.value) fetchFailureKind.value = null
 }
 
+/** 用户修改地址时清除仍与旧输入匹配的读取错误。 */
 function clearFetchFailure(): void {
   if (fetchFailureKind.value === null) return
   fetchFailureKind.value = null
@@ -101,6 +111,7 @@ function clearFetchFailure(): void {
   statusMessage.value = ''
 }
 
+/** 清空输入、结果、提示和规则选项。 */
 function reset(): void {
   subscriptionUrl.value = ''
   manualContent.value = ''
@@ -114,6 +125,7 @@ function reset(): void {
   Object.assign(ruleOptions, DEFAULT_RULE_OPTIONS)
 }
 
+/** 在隔离的新标签页中打开校验通过的订阅地址。 */
 function openSubscription(): void {
   const safeUrl = parseHttpSubscriptionUrl(subscriptionUrl.value)
   if (!safeUrl) {
@@ -127,6 +139,7 @@ function openSubscription(): void {
   if (popup) popup.opener = null
 }
 
+/** 将生成的配置复制到系统剪贴板。 */
 async function copyConfig(): Promise<void> {
   try {
     await navigator.clipboard.writeText(yaml.value)
@@ -138,6 +151,7 @@ async function copyConfig(): Promise<void> {
   }
 }
 
+/** 将生成的配置下载为 `config.yaml`。 */
 function downloadConfig(): void {
   try {
     const href = URL.createObjectURL(new Blob([yaml.value], { type: 'application/yaml;charset=utf-8' }))

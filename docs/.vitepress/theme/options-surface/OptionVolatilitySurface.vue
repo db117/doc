@@ -13,9 +13,11 @@ import {formatNumber, formatPercent, renderSurfaceChart} from './chart'
 const DEFAULT_BRIDGE_URL = 'http://127.0.0.1:8765'
 const DEFAULT_SYMBOL = 'US.MU'
 
-// 页面输入、OpenD 连接状态和图表实例集中在这里；图表配置由 chart.ts 独立负责。
+// 图表容器与实例
 const chartElement = ref<HTMLElement | null>(null)
 const chart = shallowRef<ECharts | null>(null)
+
+// Bridge 连接与曲面查询条件
 const bridgeUrl = ref(DEFAULT_BRIDGE_URL)
 const bridgeInput = ref(DEFAULT_BRIDGE_URL)
 const symbolInput = ref('MU')
@@ -25,15 +27,20 @@ const showOpenInterest = ref(false)
 const expiryHorizon = ref(180)
 const strikeRange = ref(.2)
 const chains = shallowRef<OptionChain[]>([])
+
+// 行情读取反馈
 const loading = ref(true)
 const errorMessage = ref('')
 const failedExpiries = ref(0)
 const lastUpdated = ref<Date | null>(null)
+
+// 图表生命周期和并发请求协调
 let resizeObserver: ResizeObserver | null = null
 let themeObserver: MutationObserver | null = null
 let requestId = 0
 
 // 原始期权链是唯一数据源，切换 Call/Put 或行权价范围只在浏览器内重新计算。
+// 曲面、持仓量和无障碍摘要派生状态
 const surface = computed(() => buildVolatilitySurface(chains.value, optionType.value, strikeRange.value))
 const openInterest = computed(() => surface.value
     ? collectOpenInterest(chains.value, surface.value.strikeMin, surface.value.strikeMax)
@@ -49,17 +56,20 @@ const chartSummary = computed(() => surface.value
     ? `${selectedSymbol.value} ${optionType.value} 隐含波动率曲面，共 ${surface.value.expiryCount} 个期限，最远 ${maxDte.value} 天，${surface.value.strikeCount} 个行权价，波动率范围 ${ivRangeLabel.value}。`
     : '暂无可展示的隐含波动率数据。')
 
+/** 将未知异常转换为可展示的行情错误信息。 */
 function describeError(error: unknown): string {
   if (error instanceof BridgeError) return error.message
   return error instanceof Error ? error.message : '本地行情服务发生未知错误。'
 }
 
+/** 将用户输入规范化为富途美股代码。 */
 function normalizedSymbol(): string {
   const ticker = symbolInput.value.trim().toUpperCase().replace(/^US\./, '')
   if (!/^[A-Z][A-Z0-9.-]{0,9}$/.test(ticker)) throw new Error('请输入有效的美股代码，例如 MU 或 AAPL。')
   return `US.${ticker}`
 }
 
+/** 从 Bridge 读取多个期限并刷新曲面数据源。 */
 async function loadSurface(): Promise<void> {
   // 用户可在前一次请求完成前再次查询；requestId 防止旧响应覆盖新标的。
   const id = ++requestId
@@ -93,6 +103,7 @@ async function loadSurface(): Promise<void> {
   }
 }
 
+/** 将当前曲面状态绘制到 ECharts 实例。 */
 function renderChart(): void {
   if (!chart.value || !surface.value || !chartElement.value) {
     chart.value?.clear()

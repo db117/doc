@@ -39,8 +39,11 @@ import {fetchCnyRate} from './rates'
 import {formatCny, formatOriginal} from './format'
 import {loadLedger, saveLedger} from './storage'
 
+/** 当前打开的编辑器类型。 */
 type EditorMode = 'account' | 'balance' | 'installment' | null
+/** 净资产工具的主视图类型。 */
 type ViewMode = 'overview' | 'history' | 'backup'
+/** 分期编辑器当前执行的业务操作。 */
 type InstallmentAction = 'new' | 'correct' | 'terminate'
 
 /** 账户编辑器使用的表单状态；金额保留为字符串并交给领域层校验。 */
@@ -126,26 +129,37 @@ function blankInstallmentForm(): InstallmentForm {
   }
 }
 
+// 账本加载与全局操作反馈
 const ledger = ref<Ledger>(emptyLedger())
 const ready = ref(false)
 const loadError = ref('')
 const actionError = ref('')
 const statusMessage = ref('')
+
+// 编辑器选择与账户操作状态
 const editorMode = ref<EditorMode>(null)
 const editingAccountId = ref<string | null>(null)
 const selectedAccountId = ref<string | null>(null)
 const accountActionId = ref<string | null>(null)
 const installmentAction = ref<InstallmentAction>('new')
 const editingInstallmentId = ref<string | null>(null)
+
+// 页面导航与历史修正状态
 const viewMode = ref<ViewMode>('overview')
 const historyCorrection = ref(false)
+
+// 汇率读取与手工录入状态
 const rateLoading = ref(false)
 const rateSource = ref<RateSource | null>(null)
 const rateMessage = ref('')
 const manualRateTouched = ref(false)
+
+// 编辑器表单模型
 const accountForm = reactive<AccountForm>(blankAccountForm())
 const installmentForm = reactive<InstallmentForm>(blankInstallmentForm())
 const balanceForm = reactive<BalanceForm>({date: todayMonthISO(), amount: '', rate: ''})
+
+// 当前选择和编辑账户的派生状态
 const selectedAccount = computed(() => ledger.value.accounts.find(account => account.id === selectedAccountId.value) ?? null)
 const isEditingAccount = computed(() => Boolean(editingAccountId.value))
 const editingAccount = computed(() => ledger.value.accounts.find(account => account.id === editingAccountId.value) ?? null)
@@ -154,6 +168,7 @@ const installmentMaturityMonth = computed(() => installmentForm.nextDueMonth && 
     ? calculateMaturityDate(installmentForm.nextDueMonth, installmentForm.remainingPeriods)
     : '')
 
+// 账户操作面板的派生状态
 const accountAction = computed(() => ledger.value.accounts.find(account => account.id === accountActionId.value) ?? null)
 const activeActionPlans = computed(() => accountAction.value?.installments?.filter(plan => plan.status === 'active' || plan.status === 'overdue') ?? [])
 const endedActionPlans = computed(() => accountAction.value?.installments?.filter(plan => plan.status === 'completed' || plan.status === 'terminated') ?? [])

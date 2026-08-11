@@ -10,6 +10,7 @@ import {
     type RemoteSnapshot,
 } from './cloud'
 
+/** OneDrive 当前账本文件的通用云端元数据。 */
 export type OneDriveRemoteMetadata = RemoteMetadata
 
 // 文件只访问应用目录；User.Read 仅用于在连接状态中展示当前账户名称。
@@ -336,6 +337,7 @@ export async function downloadOneDriveSnapshot(snapshot: RemoteSnapshot): Promis
     return parseLedgerFile(await graph<unknown>(`/me/drive/items/${encodeURIComponent(snapshot.id)}/content`))
 }
 
+/** 备份页使用的 OneDrive 云端提供商实现。 */
 export const oneDriveProvider: CloudProvider = {
     id: 'onedrive',
     label: 'OneDrive',

@@ -1,14 +1,21 @@
 import type { NetworkType, TlsOptions, TransportOptions } from '../types'
 import { NodeParseError, parsePort, requireText } from './errors'
 
+/** VLESS 与 Trojan URI 共用的基础解析结果。 */
 export interface ParsedUrlNode {
+  /** URI 中的 UUID 或密码。 */
   identity: string
+  /** 节点服务器域名或 IP。 */
   server: string
+  /** 节点服务器端口。 */
   port: number
+  /** 用户可识别的节点名称。 */
   name: string
+  /** 尚未消费的 URI 查询参数。 */
   params: URLSearchParams
 }
 
+/** 解码 URI 字段并统一处理无效百分号编码。 */
 function decodePart(value: string, field: string): string {
   try {
     return decodeURIComponent(value)
@@ -17,6 +24,7 @@ function decodePart(value: string, field: string): string {
   }
 }
 
+/** 解析 VLESS 或 Trojan URI 的共用身份和地址字段。 */
 export function parseUrlNode(uri: string, protocol: 'vless' | 'trojan'): ParsedUrlNode {
   let url: URL
   try {
@@ -37,6 +45,7 @@ export function parseUrlNode(uri: string, protocol: 'vless' | 'trojan'): ParsedU
   }
 }
 
+/** 将 URI 查询参数转换为受支持的传输配置。 */
 export function parseTransport(params: URLSearchParams): TransportOptions {
   const network = params.get('type') || 'tcp'
   if (!['tcp', 'ws', 'http', 'grpc'].includes(network)) {
@@ -50,6 +59,7 @@ export function parseTransport(params: URLSearchParams): TransportOptions {
   return { network: network as NetworkType }
 }
 
+/** 将 URI 查询参数转换为可选 TLS 或 Reality 配置。 */
 export function parseTls(params: URLSearchParams): TlsOptions | undefined {
   const security = params.get('security')
   if (!security || security === 'none') return undefined

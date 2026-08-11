@@ -3,16 +3,19 @@ import type {ExpirationStatistics, ProfitLossPoint, StrategyLeg,} from './types'
 
 const EPSILON = 1e-7
 
+/** 计算策略建仓的净成本，正数为支出、负数为收入。 */
 export function netCost(legs: readonly StrategyLeg[]): number {
     return legs.reduce((total, leg) => total + leg.quantity * leg.entryPrice * leg.multiplier, 0)
 }
 
+/** 计算组合在到期标的价格下的总盈亏。 */
 export function expirationProfitLoss(legs: readonly StrategyLeg[], spot: number): number {
     return legs.reduce((total, leg) => total + leg.quantity * (
         intrinsicValue(leg.type, spot, leg.strike) - leg.entryPrice
     ) * leg.multiplier, 0)
 }
 
+/** 精确统计同到期日组合的成本、极值和盈亏平衡点。 */
 export function expirationStatistics(legs: readonly StrategyLeg[]): ExpirationStatistics {
     const cost = netCost(legs)
     if (legs.length === 0) return {netCost: cost, maxProfit: 0, maxLoss: 0, breakevens: []}
@@ -50,6 +53,7 @@ export function expirationStatistics(legs: readonly StrategyLeg[]): ExpirationSt
     }
 }
 
+/** 收集一段线性盈亏区间中的零点。 */
 function collectLinearRoot(
     x1: number,
     y1: number,
@@ -61,12 +65,14 @@ function collectLinearRoot(
     if (y1 * y2 < 0) roots.push(x1 + (x2 - x1) * (-y1) / (y2 - y1))
 }
 
+/** 对数值排序并合并浮点误差范围内的重复值。 */
 function deduplicate(values: readonly number[]): number[] {
     return [...values].sort((a, b) => a - b).filter((value, index, sorted) => (
         index === 0 || Math.abs(value - sorted[index - 1]) > 1e-5
     ))
 }
 
+/** 查找最接近现价的有效 Call/Put 平均隐含波动率。 */
 export function atTheMoneyIv(
     rows: readonly { strike: number, call: { iv: number | null } | null, put: { iv: number | null } | null }[],
     spot: number,
@@ -86,19 +92,29 @@ export function atTheMoneyIv(
     return best
 }
 
+/** 理论盈亏曲线的情景输入。 */
 interface ProfitLossCurveInput {
+    /** 需要估值的策略腿。 */
     legs: readonly StrategyLeg[]
+    /** 曲线采样的最低标的价格。 */
     minimumPrice: number
+    /** 曲线采样的最高标的价格。 */
     maximumPrice: number
+    /** 曲线采样点数量；缺省为 241。 */
     points?: number
     /** 情景日固定为 YYYY-MM-DD；每条腿再按自己的到期日计算剩余期限。 */
     scenarioDate: string
+    /** 当前平值隐含波动率，以小数表示。 */
     currentAtmIv: number | null
+    /** 情景平值隐含波动率，以小数表示。 */
     scenarioAtmIv: number | null
+    /** 情景估值使用的无风险利率。 */
     riskFreeRate: number
+    /** 情景估值使用的股息率。 */
     dividendYield: number
 }
 
+/** 按情景日期、价格和波动率生成策略理论盈亏曲线。 */
 export function theoreticalProfitLossCurve(input: ProfitLossCurveInput): ProfitLossPoint[] {
     const count = Math.max(2, Math.trunc(input.points ?? 241))
     const step = (input.maximumPrice - input.minimumPrice) / (count - 1)
@@ -130,6 +146,7 @@ export function theoreticalProfitLossCurve(input: ProfitLossCurveInput): ProfitL
     })
 }
 
+/** 统计采样价格区间内的盈亏极值和零点。 */
 export function curveStatistics(legs: readonly StrategyLeg[], points: readonly ProfitLossPoint[]): ExpirationStatistics {
     // 跨期曲线没有简单的全局封闭解；这里只报告用户当前价格范围内的采样极值和交点。
     if (!points.length) return {netCost: netCost(legs), maxProfit: 0, maxLoss: 0, breakevens: []}
@@ -152,6 +169,7 @@ export function curveStatistics(legs: readonly StrategyLeg[], points: readonly P
     }
 }
 
+/** 计算两个日期之间的非负年化期限。 */
 function yearsBetween(from: string, to: string): number {
     // 使用 UTC 中午消除浏览器时区/DST 差异；无效日期按已到期处理，避免定价函数收到 NaN。
     const fromTime = Date.parse(`${from}T12:00:00Z`)

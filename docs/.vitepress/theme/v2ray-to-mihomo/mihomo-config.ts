@@ -5,6 +5,7 @@ import {
   type RuleOptions,
 } from './types'
 
+/** Mihomo 配置树使用的通用对象结构。 */
 type ConfigRecord = Record<string, unknown>
 
 const GROUP_NAMES = ['节点选择', '自动选择', '故障转移'] as const
@@ -48,13 +49,16 @@ const PROVIDERS = {
   ],
 } as const
 
+/** Mihomo 配置生成或校验失败时抛出的领域错误。 */
 export class MihomoConfigError extends Error {
+  /** 创建一条带可展示信息的配置错误。 */
   constructor(message: string) {
     super(message)
     this.name = 'MihomoConfigError'
   }
 }
 
+/** 根据代理节点和规则选项构建 Mihomo 配置对象。 */
 export function buildMihomoConfig(
   nodes: ProxyNode[],
   options: RuleOptions = DEFAULT_RULE_OPTIONS,
@@ -125,6 +129,7 @@ export function buildMihomoConfig(
   }
 }
 
+/** 生成并回读校验完整的 Mihomo YAML。 */
 export function generateMihomoYaml(
   nodes: ProxyNode[],
   options: RuleOptions = DEFAULT_RULE_OPTIONS,
@@ -144,6 +149,7 @@ export function generateMihomoYaml(
   return yaml
 }
 
+/** 校验 Mihomo 配置中的节点、策略组和规则引用完整性。 */
 export function validateMihomoConfig(config: unknown): void {
   if (!isRecord(config)) {
     fail('config', '配置必须是对象')
@@ -252,6 +258,7 @@ export function validateMihomoConfig(config: unknown): void {
   }
 }
 
+/** 将统一代理节点转换为 Mihomo 单节点配置。 */
 function toMihomoProxy(node: ProxyNode): ConfigRecord {
   const result: ConfigRecord = {
     name: node.name,
@@ -330,6 +337,7 @@ function toMihomoProxy(node: ProxyNode): ConfigRecord {
   return result
 }
 
+/** 将可选规则开关归一为每个规则提供者的启用状态。 */
 function getEnabledProviders(options: RuleOptions): Record<keyof typeof PROVIDERS, boolean> {
   return {
     private: options.enablePrivateDomain ?? true,
@@ -341,6 +349,7 @@ function getEnabledProviders(options: RuleOptions): Record<keyof typeof PROVIDER
   }
 }
 
+/** 为已启用规则集构建 Mihomo 规则提供者配置。 */
 function buildRuleProviders(enabledProviders: Record<keyof typeof PROVIDERS, boolean>): ConfigRecord {
   const providers: ConfigRecord = {}
   for (const [name, [behavior, path, url]] of Object.entries(PROVIDERS)) {
@@ -357,16 +366,19 @@ function buildRuleProviders(enabledProviders: Record<keyof typeof PROVIDERS, boo
   return providers
 }
 
+/** 校验规则引用的目标策略是否存在。 */
 function assertRuleTarget(target: string, allowed: Set<string>, ruleIndex: number): void {
   if (!allowed.has(target)) {
     fail(`rules[${ruleIndex}]`, '规则引用不存在的策略')
   }
 }
 
+/** 判断未知值是否为可读取的普通配置对象。 */
 function isRecord(value: unknown): value is ConfigRecord {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
+/** 抛出带字段路径的 Mihomo 配置错误。 */
 function fail(field: string, message: string): never {
   throw new MihomoConfigError(`${field}: ${message}`)
 }

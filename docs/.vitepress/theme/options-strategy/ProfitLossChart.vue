@@ -106,6 +106,7 @@ const option = computed<EChartsCoreOption>(() => ({
   ],
 }))
 
+/** 创建或更新当前盈亏图表。 */
 function render(): void {
   if (!root.value) return
   if (!chart) chart = init(root.value, undefined, {renderer: 'canvas'})
@@ -113,6 +114,7 @@ function render(): void {
   chart.setOption(option.value, {notMerge: true, lazyUpdate: true})
 }
 
+/** 将用户缩放的盈亏横轴恢复为完整范围。 */
 function resetZoom(): void {
   chart?.dispatchAction({type: 'dataZoom', start: 0, end: 100})
 }

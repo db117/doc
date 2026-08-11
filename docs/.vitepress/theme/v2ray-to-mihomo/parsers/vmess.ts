@@ -4,6 +4,7 @@ import { NodeParseError, parsePort, requireText } from './errors'
 
 const SUPPORTED_NETWORKS = new Set(['tcp', 'ws', 'http', 'grpc'])
 
+/** 从 VMess JSON 字段构建受支持的传输配置。 */
 function transportOf(data: Record<string, unknown>): TransportOptions {
   const network = String(data.net || 'tcp') as NetworkType
   if (!SUPPORTED_NETWORKS.has(network)) {
@@ -17,6 +18,7 @@ function transportOf(data: Record<string, unknown>): TransportOptions {
   return { network: 'tcp' }
 }
 
+/** 从 VMess JSON 字段构建可选 TLS 配置。 */
 function tlsOf(data: Record<string, unknown>): TlsOptions | undefined {
   if (data.tls !== 'tls') return undefined
 
@@ -35,6 +37,7 @@ function tlsOf(data: Record<string, unknown>): TlsOptions | undefined {
   }
 }
 
+/** 解码并解析 VMess URI 为统一节点结构。 */
 export function parseVmessUri(uri: string): VmessNode {
   const encoded = uri.startsWith('vmess://') ? uri.slice('vmess://'.length) : uri
   let data: Record<string, unknown>

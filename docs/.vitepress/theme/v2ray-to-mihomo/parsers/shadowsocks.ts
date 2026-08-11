@@ -2,6 +2,7 @@ import { decodeBase64Utf8 } from '../codec'
 import type { ShadowsocksNode } from '../types'
 import { NodeParseError, parsePort, requireText } from './errors'
 
+/** 解码 URI 片段并将编码异常转换为节点错误。 */
 function decodeUriComponent(value: string, field: string): string {
   try {
     return decodeURIComponent(value)
@@ -10,6 +11,7 @@ function decodeUriComponent(value: string, field: string): string {
   }
 }
 
+/** 拆分 Shadowsocks 加密方式和密码。 */
 function splitCredential(value: string): { cipher: string; password: string } {
   const colon = value.indexOf(':')
   if (colon <= 0 || colon === value.length - 1) {
@@ -21,6 +23,7 @@ function splitCredential(value: string): { cipher: string; password: string } {
   }
 }
 
+/** 拆分支持 IPv4、域名和 IPv6 的服务器地址与端口。 */
 function splitServer(value: string): { server: string; port: number } {
   if (value.startsWith('[')) {
     const closingBracket = value.indexOf(']')
@@ -41,6 +44,7 @@ function splitServer(value: string): { server: string; port: number } {
   }
 }
 
+/** 解析 SIP002 Shadowsocks URI 为统一节点结构。 */
 export function parseShadowsocksUri(uri: string): ShadowsocksNode {
   const source = uri.startsWith('ss://') ? uri.slice('ss://'.length) : uri
   const hash = source.indexOf('#')

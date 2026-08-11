@@ -19,12 +19,15 @@ const OVERSCAN = 8
 const QUOTE_COLUMN_WIDTH = 68
 const CALL_COLUMN_COUNT = 10
 const STRIKE_COLUMN_WIDTH = 112
+
+// 虚拟列表容器、滚动位置和可视高度
 const scroller = ref<HTMLElement | null>(null)
 const headerScroller = ref<HTMLElement | null>(null)
 const scrollTop = ref(0)
 const viewportHeight = ref(560)
 let observer: ResizeObserver | undefined
 
+// 可见窗口和现价定位锚点
 const startIndex = computed(() => Math.max(0, Math.floor(scrollTop.value / ROW_HEIGHT) - OVERSCAN))
 const visibleCount = computed(() => Math.ceil(viewportHeight.value / ROW_HEIGHT) + OVERSCAN * 2)
 const endIndex = computed(() => Math.min(props.chain.rows.length, startIndex.value + visibleCount.value))
@@ -42,12 +45,14 @@ const spotRowIndex = computed(() => {
   return best
 })
 
+/** 将虚拟期权链滚动到最接近标的现价的行。 */
 function scrollToSpot(): void {
   if (!scroller.value || spotRowIndex.value < 0) return
   scroller.value.scrollTop = Math.max(0, spotRowIndex.value * ROW_HEIGHT - scroller.value.clientHeight / 2)
   centerStrikeColumn()
 }
 
+/** 将 T 型链的行权价中轴水平居中。 */
 function centerStrikeColumn(): void {
   if (!scroller.value) return
   // 初始只把中轴行权价居中；不使用 sticky 覆盖相邻报价，横向比较时不会遮挡数据。
@@ -56,6 +61,7 @@ function centerStrikeColumn(): void {
   if (headerScroller.value) headerScroller.value.scrollLeft = scroller.value.scrollLeft
 }
 
+/** 同步虚拟列表纵向位置和固定表头横向位置。 */
 function onScroll(event: Event): void {
   const target = event.currentTarget as HTMLElement
   scrollTop.value = target.scrollTop
@@ -63,10 +69,12 @@ function onScroll(event: Event): void {
   if (headerScroller.value) headerScroller.value.scrollLeft = target.scrollLeft
 }
 
+/** 读取指定合约当前已加入策略的有符号数量。 */
 function quantity(option: OptionQuote | null): number {
   return option ? props.quantities.get(option.code) ?? 0 : 0
 }
 
+/** 将有效买卖报价转换为一笔策略操作。 */
 function trade(option: OptionQuote | null, side: 'ask' | 'bid'): void {
   if (!option || (side === 'ask' ? option.ask : option.bid) === null) return
   emit('trade', option, side)

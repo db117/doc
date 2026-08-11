@@ -2,11 +2,13 @@ import type {ECharts} from 'echarts'
 import type {OptionType} from '../options-strategy/types'
 import type {OpenInterestPoint, SurfaceCell, VolatilitySurface} from './surface'
 
+/** ECharts 3D 持仓量柱使用的数据结构。 */
 interface OpenInterestBar extends OpenInterestPoint {
     /** ECharts 柱坐标；高度是归一化视觉值，不代表真实 IV 或持仓量单位。 */
     value: [strike: number, dte: number, visualHeight: number]
 }
 
+/** 渲染隐含波动率曲面所需的完整界面状态。 */
 export interface SurfaceChartInput {
     /** 已整理成矩形网格的 IV 曲面数据。 */
     data: VolatilitySurface
@@ -24,16 +26,19 @@ export interface SurfaceChartInput {
     dark: boolean
 }
 
+/** 格式化图表数值，无有效值时显示“暂无”。 */
 export function formatNumber(value: number | null, digits = 2): string {
     return value === null || !Number.isFinite(value)
         ? '暂无'
         : new Intl.NumberFormat('zh-CN', {maximumFractionDigits: digits}).format(value)
 }
 
+/** 将小数比例格式化为一位百分数。 */
 export function formatPercent(value: number): string {
     return `${(value * 100).toFixed(1)}%`
 }
 
+/** 生成曲面或持仓量数据点的 Tooltip 内容。 */
 function tooltip(
     params: { seriesType?: string, data?: SurfaceCell | OpenInterestBar, value?: number[] },
     selectedSymbol: string,

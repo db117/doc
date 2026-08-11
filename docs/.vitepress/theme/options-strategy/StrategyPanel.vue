@@ -48,15 +48,18 @@ const legGroups = computed(() => {
       .map(([expiry, legs]) => ({expiry, legs}))
 })
 
+/** 从数值输入事件中读取当前值。 */
 function inputNumber(event: Event): number {
   return Number((event.target as HTMLInputElement).value)
 }
 
+/** 将组合净成本描述为支出或收入。 */
 function describeNetCost(): string {
   if (Math.abs(props.statistics.netCost) < 0.005) return '$0'
   return `${formatMoney(Math.abs(props.statistics.netCost))} ${props.statistics.netCost > 0 ? '净支出' : '净收入'}`
 }
 
+/** 汇总并描述单个到期日分组的净成本。 */
 function groupNetCost(legs: StrategyLeg[]): string {
   // quantity 已带多空符号：正数成本是支出，负数成本是卖权收入。
   const cost = legs.reduce((total, leg) => total + leg.quantity * leg.entryPrice * leg.multiplier, 0)
@@ -64,6 +67,7 @@ function groupNetCost(legs: StrategyLeg[]): string {
   return `${formatMoney(Math.abs(cost))} ${cost > 0 ? '支出' : '收入'}`
 }
 
+/** 计算到期日距离本地今天的非负天数。 */
 function daysToExpiry(expiry: string): number {
   // 与日期栏使用同一“本地中午”口径，避免同一到期日在两处显示不同 DTE。
   const today = new Date()
@@ -72,6 +76,7 @@ function daysToExpiry(expiry: string): number {
   return Math.max(0, Math.round((target.getTime() - today.getTime()) / 86_400_000))
 }
 
+/** 恢复默认情景价格范围和图表缩放。 */
 function resetRange(): void {
   emit('update:rangePercent', 12)
   chart.value?.resetZoom()

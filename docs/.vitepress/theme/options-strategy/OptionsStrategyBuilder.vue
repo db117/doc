@@ -14,12 +14,15 @@ const DEFAULT_SYMBOL = 'US.MU'
 // 页面只通过本机只读 Bridge 取行情；轮询由页面统一调度，避免客户端重试叠加请求。
 const POLL_INTERVAL_MS = 5_000
 
+// Bridge 连接与标的搜索状态
 const bridgeUrl = ref(DEFAULT_BRIDGE_URL)
 const bridgeInput = ref(DEFAULT_BRIDGE_URL)
 const client = shallowRef<FutuBridgeClient | null>(null)
 const stocks = ref<StockItem[]>([])
 const searchText = ref('MU')
 const searchOpen = ref(false)
+
+// 当前标的、期权链和策略腿
 const selectedSymbol = ref(DEFAULT_SYMBOL)
 const expirations = ref<string[]>([])
 const selectedExpiry = ref('')
@@ -27,22 +30,29 @@ const chain = shallowRef<OptionChain | null>(null)
 const legs = ref<StrategyLeg[]>([])
 // 缓存已加载到期日的合约报价，供跨期腿同步和方向反转即时取价；切换标的时整体清空。
 const quoteCache = shallowRef<ReadonlyMap<string, OptionQuote>>(new Map())
+
+// 行情请求与页面反馈状态
 const loading = ref(true)
 const refreshing = ref(false)
 const loadingStocks = ref(false)
 const errorMessage = ref('')
 const stale = ref(false)
 const lastUpdated = ref<Date | null>(null)
+
+// 盈亏情景输入
 const scenarioIv = ref(0)
 const ivTouched = ref(false)
 const scenarioDay = ref(0)
 const rangePercent = ref(12)
 const riskFreeRate = ref(0.045)
+
+// 宽屏模式、轮询和并发请求协调
 const wideMode = ref(false)
 let pollTimer: ReturnType<typeof setInterval> | undefined
 // 标的、到期日切换可能并发；只有最后一次请求可以提交状态，防止慢响应覆盖新选择。
 let requestId = 0
 
+// 标的搜索结果
 const stockResults = computed(() => {
   const query = searchText.value.trim().toLowerCase().replace(/^us\./, '')
   if (!query) return stocks.value.slice(0, 30)
@@ -61,12 +71,15 @@ const stockResults = computed(() => {
   return [...exact, ...prefix, ...contains].slice(0, 30)
 })
 
+// 策略腿数量与到期日分组
 const quantities = computed(() => new Map(legs.value.map(leg => [leg.code, leg.quantity])))
 const legCountsByExpiry = computed(() => {
   const counts = new Map<string, number>()
   for (const leg of legs.value) counts.set(leg.expiry, (counts.get(leg.expiry) ?? 0) + 1)
   return counts
 })
+
+// 当前行情和情景期限派生状态
 const currentPrice = computed(() => chain.value?.underlying.last ?? 0)
 const currentAtmIv = computed(() => chain.value && currentPrice.value > 0
     ? atTheMoneyIv(chain.value.rows, currentPrice.value)
@@ -121,11 +134,13 @@ const statistics = computed(() => sameExpiryStrategy.value
     : curveStatistics(legs.value, curve.value))
 const lastUpdatedLabel = computed(() => lastUpdated.value?.toLocaleTimeString('zh-CN', {hour12: false}) ?? '—')
 
+/** 将未知异常转换为可展示的 Bridge 错误信息。 */
 function describeError(error: unknown): string {
   if (error instanceof BridgeError) return error.message
   return error instanceof Error ? error.message : '本地行情服务发生未知错误。'
 }
 
+/** 将一条期权链展开为按合约代码索引的报价表。 */
 function quotesFromChain(source: OptionChain): Map<string, OptionQuote> {
   const quotes = new Map<string, OptionQuote>()
   for (const row of source.rows) {
@@ -135,6 +150,7 @@ function quotesFromChain(source: OptionChain): Map<string, OptionQuote> {
   return quotes
 }
 
+/** 合并最新报价缓存并刷新已有策略腿市场数据。 */
 function applyQuotes(quotes: ReadonlyMap<string, OptionQuote>): void {
   const merged = new Map(quoteCache.value)
   for (const [code, quote] of quotes) merged.set(code, quote)
@@ -142,6 +158,7 @@ function applyQuotes(quotes: ReadonlyMap<string, OptionQuote>): void {
   legs.value = refreshLegMarketData(legs.value, quotes)
 }
 
+/** 刷新当前未展示到期日中的跨期策略腿报价。 */
 async function refreshOtherExpiryLegs(activeClient: FutuBridgeClient, id: number): Promise<void> {
   const otherExpiries = [...new Set(legs.value.map(leg => leg.expiry))]
       .filter(expiry => expiry !== selectedExpiry.value)
@@ -157,6 +174,7 @@ async function refreshOtherExpiryLegs(activeClient: FutuBridgeClient, id: number
   }
 }
 
+/** 连接本机 Bridge 并加载当前标的的初始行情。 */
 async function connect(): Promise<void> {
   const id = ++requestId
   loading.value = !chain.value
@@ -190,6 +208,7 @@ async function connect(): Promise<void> {
   }
 }
 
+/** 后台加载可搜索的美股正股和 ETF 列表。 */
 async function loadStocks(activeClient: FutuBridgeClient): Promise<void> {
   loadingStocks.value = true
   try {
@@ -203,6 +222,7 @@ async function loadStocks(activeClient: FutuBridgeClient): Promise<void> {
   }
 }
 
+/** 切换标的并加载其最近期权链。 */
 async function loadSymbol(symbol: string, shouldConfirm = true, id = ++requestId): Promise<void> {
   if (!client.value) return
   // 策略不支持跨标的组合；切换标的必须显式确认并清空原有合约腿。
@@ -231,6 +251,7 @@ async function loadSymbol(symbol: string, shouldConfirm = true, id = ++requestId
   }
 }
 
+/** 保留策略腿并切换当前浏览的到期日。 */
 async function changeExpiry(expiry: string): Promise<void> {
   if (expiry === selectedExpiry.value) return
   selectedExpiry.value = expiry
@@ -242,6 +263,7 @@ async function changeExpiry(expiry: string): Promise<void> {
   loading.value = false
 }
 
+/** 读取当前到期日行情并同步情景与跨期策略腿。 */
 async function loadChain(background = false, id = requestId, resetScenario = false): Promise<void> {
   // 后台刷新不并发；主动切换仍由 requestId 隔离过期响应。
   if (!client.value || !selectedExpiry.value || (background && refreshing.value)) return
@@ -274,17 +296,20 @@ async function loadChain(background = false, id = requestId, resetScenario = fal
   }
 }
 
+/** 从搜索结果选择并加载标的。 */
 function selectStock(stock: StockItem): void {
   searchOpen.value = false
   void loadSymbol(stock.code)
 }
 
+/** 根据搜索框内容加载完全匹配或直接输入的标的。 */
 function submitSearch(): void {
   searchOpen.value = false
   const exact = stockResults.value.find(stock => stock.code.slice(3).toLowerCase() === searchText.value.trim().toLowerCase().replace(/^us\./, ''))
   void loadSymbol(exact?.code ?? searchText.value)
 }
 
+/** 将期权链中的买卖报价加入当前策略。 */
 function addTrade(option: OptionQuote, side: 'ask' | 'bid'): void {
   // 按真实可成交方向记账：点卖价代表买入，点买价代表卖出。
   const price = side === 'ask' ? option.ask : option.bid
@@ -292,39 +317,47 @@ function addTrade(option: OptionQuote, side: 'ask' | 'bid'): void {
   legs.value = adjustLegAtQuote(legs.value, option, side === 'ask' ? 1 : -1, price, selectedExpiry.value)
 }
 
+/** 修改策略腿数量并立即同步新方向报价。 */
 function editStrategyLeg(code: string, field: 'quantity', value: number): void {
   const edited = editLeg(legs.value, code, {[field]: value})
   // 数量手工跨过零轴时，立即切换到新方向的 Bid/Ask，不等待下一轮轮询。
   legs.value = refreshLegMarketData(edited, quoteCache.value)
 }
 
+/** 反转策略腿方向并采用当前方向对应报价。 */
 function reverseStrategyLeg(code: string): void {
   legs.value = reverseLeg(legs.value, code, quoteCache.value.get(code))
 }
 
+/** 从当前策略移除指定合约腿。 */
 function removeLeg(code: string): void {
   legs.value = legs.value.filter(leg => leg.code !== code)
 }
 
+/** 清空当前策略的全部合约腿。 */
 function clearLegs(): void {
   legs.value = []
 }
 
+/** 保存新的 Bridge 地址并重新连接。 */
 function applyBridgeUrl(): void {
   bridgeUrl.value = bridgeInput.value.trim()
   localStorage.setItem('options-strategy.bridge-url', bridgeUrl.value)
   void connect()
 }
 
+/** 更新情景隐含波动率并标记为用户输入。 */
 function updateScenarioIv(value: number): void {
   scenarioIv.value = value
   ivTouched.value = true
 }
 
+/** 在情景分析可用时更新情景天数。 */
 function updateScenarioDay(value: number): void {
   if (currentAtmIv.value) scenarioDay.value = value
 }
 
+/** 页面重新可见时触发一次后台行情刷新。 */
 function onVisibilityChange(): void {
   if (!document.hidden) void loadChain(true)
 }
@@ -333,11 +366,13 @@ watch(totalDays, value => {
   if (scenarioDay.value > value) scenarioDay.value = value
 })
 
+/** 切换策略构建器的宽屏展示模式。 */
 function setWideMode(enabled: boolean): void {
   wideMode.value = enabled
   document.documentElement.classList.toggle('options-strategy-wide', enabled)
 }
 
+/** 使用 Escape 键退出宽屏展示。 */
 function onKeydown(event: KeyboardEvent): void {
   if (event.key === 'Escape' && wideMode.value) setWideMode(false)
 }

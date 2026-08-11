@@ -33,6 +33,7 @@ const SAFE_NODE_ERROR_MESSAGES: Record<string, string> = {
   'invalid-vmess-json': 'VMess 内容格式无效',
 }
 
+/** 为重复或保留名称分配稳定且唯一的节点名称。 */
 function allocateName(name: string, usedNames: Set<string>): string {
   if (!usedNames.has(name)) {
     usedNames.add(name)
@@ -49,10 +50,12 @@ function allocateName(name: string, usedNames: Set<string>): string {
   return candidate
 }
 
+/** 创建一条结构化订阅解析警告。 */
 function warning(line: number, protocol: string, code: string, message: string): ParseWarning {
   return { line, protocol, code, message }
 }
 
+/** 将内部节点解析错误映射为不泄露原始订阅内容的警告。 */
 function safeNodeWarning(line: number, protocol: string, error: NodeParseError): ParseWarning {
   if (!Object.hasOwn(SAFE_NODE_ERROR_MESSAGES, error.code)) {
     return warning(line, protocol, 'parse-failed', '节点格式无效')
@@ -60,6 +63,7 @@ function safeNodeWarning(line: number, protocol: string, error: NodeParseError):
   return warning(line, protocol, error.code, SAFE_NODE_ERROR_MESSAGES[error.code])
 }
 
+/** 解码并逐行解析订阅，同时保留可恢复的警告和协议统计。 */
 export function parseSubscription(input: string): ParseSubscriptionResult {
   const result: ParseSubscriptionResult = {
     nodes: [],

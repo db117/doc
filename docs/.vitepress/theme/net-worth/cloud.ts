@@ -1,7 +1,10 @@
 import {todayISO, type LedgerFile} from './ledger'
 
+/** 云端目录中当前账本的固定文件名。 */
 export const CLOUD_LEDGER_NAME = 'net-worth-ledger.json'
+/** 云端目录中使用说明的固定文件名。 */
 export const CLOUD_README_NAME = 'README.txt'
+/** 写入云端目录的账本与历史恢复说明。 */
 export const CLOUD_README = `个人净资产追踪云端副本
 
 此目录由“个人净资产追踪”创建，包含当前账本和按天保存的历史版本。

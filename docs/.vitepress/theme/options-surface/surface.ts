@@ -1,5 +1,6 @@
 import type {ExpirationItem, OptionChain, OptionQuote, OptionType} from '../options-strategy/types'
 
+/** 波动率曲面上的单个网格点。 */
 export interface SurfaceCell {
     /** ECharts 坐标，依次为行权价、日历日 DTE、以小数保存的 IV。 */
     value: [strike: number, dte: number, iv: number]
@@ -15,6 +16,7 @@ export interface SurfaceCell {
     interpolated: boolean
 }
 
+/** 构建完成的隐含波动率曲面及其显示边界。 */
 export interface VolatilitySurface {
     /** 按到期日、行权价排列的矩形曲面网格。 */
     cells: SurfaceCell[]
@@ -34,6 +36,7 @@ export interface VolatilitySurface {
     expiryCount: number
 }
 
+/** 用于曲面底部持仓量柱的真实合约数据点。 */
 export interface OpenInterestPoint {
     /** 期权行权价。 */
     strike: number
@@ -47,6 +50,7 @@ export interface OpenInterestPoint {
     openInterest: number
 }
 
+/** 单个到期日的有效期权报价切片。 */
 interface ExpirySlice {
     /** 当前切片的到期日，格式为 `YYYY-MM-DD`。 */
     expiry: string
@@ -59,8 +63,10 @@ interface ExpirySlice {
 const DAY_MS = 86_400_000
 const MAX_IV = 3
 // OpenD 的期权链接口每 30 秒最多请求 10 次。
+/** 单次曲面刷新允许读取的最大到期日数量。 */
 export const MAX_SURFACE_EXPIRIES = 10
 
+/** 计算到期日距离本地今天的非负日历天数。 */
 export function daysToExpiry(expiry: string, today = new Date()): number {
     const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(expiry)
     if (!match) return 0
@@ -69,6 +75,7 @@ export function daysToExpiry(expiry: string, today = new Date()): number {
     return Math.max(0, Math.round((expiryDay - currentDay) / DAY_MS))
 }
 
+/** 在期限范围和请求上限内均匀选取曲面到期日。 */
 export function selectSurfaceExpirations(
     expirations: ExpirationItem[],
     horizonDays: number,
@@ -87,6 +94,7 @@ export function selectSurfaceExpirations(
     )
 }
 
+/** 读取精确行权价的数据详情，或标记可插值点。 */
 function quoteAtStrike(quotes: OptionQuote[], strike: number): Omit<SurfaceCell, 'value' | 'expiry'> | null {
     const exact = quotes.find(quote => quote.strike === strike)
     if (exact?.iv) return {
@@ -109,6 +117,7 @@ function quoteAtStrike(quotes: OptionQuote[], strike: number): Omit<SurfaceCell,
     }
 }
 
+/** 读取或线性插值得到指定行权价的隐含波动率。 */
 function ivAtStrike(quotes: OptionQuote[], strike: number): number | null {
     const exact = quotes.find(quote => quote.strike === strike)
     if (exact?.iv) return exact.iv
@@ -121,6 +130,7 @@ function ivAtStrike(quotes: OptionQuote[], strike: number): number | null {
     return lower.iv + (upper.iv - lower.iv) * ratio
 }
 
+/** 将多期限期权链整理为可绘制的矩形隐含波动率曲面。 */
 export function buildVolatilitySurface(
     chains: OptionChain[],
     optionType: OptionType,
@@ -173,6 +183,7 @@ export function buildVolatilitySurface(
     }
 }
 
+/** 收集指定行权价范围内的真实 Call/Put 未平仓量。 */
 export function collectOpenInterest(
     chains: OptionChain[],
     strikeMin: number,

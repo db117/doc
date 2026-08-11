@@ -1,5 +1,6 @@
 import type {OptionQuote, StrategyLeg} from './types'
 
+/** 解析期权合约乘数，并标记是否使用市场惯例估算。 */
 export function resolveMultiplier(option: OptionQuote): { value: number, estimated: boolean } {
     // 数据源优先级固定为合约乘数、每手数量、市场惯例 100；兜底值必须显式标记为估算。
     if (option.contractSize !== null && option.contractSize > 0) {
@@ -11,6 +12,7 @@ export function resolveMultiplier(option: OptionQuote): { value: number, estimat
     return {value: 100, estimated: true}
 }
 
+/** 按一手买卖操作新增、加仓、减仓或翻转策略腿。 */
 export function adjustLegAtQuote(
     legs: readonly StrategyLeg[],
     option: OptionQuote,
@@ -56,6 +58,7 @@ export function adjustLegAtQuote(
         : leg)
 }
 
+/** 应用用户对策略腿数量或成本价的手工修改。 */
 export function editLeg(
     legs: readonly StrategyLeg[],
     code: string,
@@ -71,12 +74,14 @@ export function editLeg(
     })
 }
 
+/** 读取当前持仓方向对应的可成交买卖价。 */
 function executablePrice(option: OptionQuote, quantity: number): number | null {
     // 买入按卖价、卖出按买价估算真实可成交成本；单边缺报价时不能用另一侧冒充。
     const price = quantity > 0 ? option.ask : option.bid
     return price !== null && Number.isFinite(price) && price >= 0 ? price : null
 }
 
+/** 反转指定策略腿的多空方向，并尽量采用新方向报价。 */
 export function reverseLeg(
     legs: readonly StrategyLeg[],
     code: string,
@@ -90,6 +95,7 @@ export function reverseLeg(
     })
 }
 
+/** 使用最新合约报价刷新现有策略腿的成本价和隐含波动率。 */
 export function refreshLegMarketData(
     legs: readonly StrategyLeg[],
     quotes: ReadonlyMap<string, OptionQuote>,

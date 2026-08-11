@@ -8,9 +8,12 @@ import type {
     UnderlyingQuote,
 } from './types'
 
+/** Bridge 请求失败的稳定错误分类。 */
 export type BridgeErrorKind = 'invalid-url' | 'timeout' | 'connection' | 'http' | 'invalid-response'
 
+/** 携带失败分类和可选 HTTP 状态的 Bridge 请求错误。 */
 export class BridgeError extends Error {
+    /** 创建一个可供界面分类展示的 Bridge 错误。 */
     constructor(
         public readonly kind: BridgeErrorKind,
         message: string,
@@ -21,25 +24,32 @@ export class BridgeError extends Error {
     }
 }
 
+/** 可注入的 fetch 函数类型。 */
 type FetchLike = typeof fetch
 
+/** Bridge 客户端的可测试配置。 */
 interface ClientOptions {
+    /** 替代全局 fetch 的请求实现。 */
     fetchImpl?: FetchLike
+    /** 单次请求超时时间，单位为毫秒。 */
     timeoutMs?: number
 }
 
 const DEFAULT_TIMEOUT_MS = 15_000
 
+/** 将未知值归一为有限数值，无效值返回 `null`。 */
 function finiteNumber(value: unknown): number | null {
     // Bridge 字段可能为空或为字符串；非法值归一为 null，避免 NaN 扩散到表格和定价模型。
     const number = typeof value === 'number' ? value : Number(value)
     return Number.isFinite(number) ? number : null
 }
 
+/** 将未知值归一为空安全字符串。 */
 function textValue(value: unknown): string {
     return typeof value === 'string' ? value : ''
 }
 
+/** 校验并规范化 Bridge HTTP(S) 根地址。 */
 function normalizeBaseUrl(value: string): string {
     let url: URL
     try {
@@ -53,6 +63,7 @@ function normalizeBaseUrl(value: string): string {
     return url.href.replace(/\/$/, '')
 }
 
+/** 将 Bridge 原始合约数据转换为期权报价。 */
 function optionQuote(raw: unknown, strike: number): OptionQuote | null {
     if (!raw || typeof raw !== 'object') return null
     const item = raw as Record<string, unknown>
@@ -86,6 +97,7 @@ function optionQuote(raw: unknown, strike: number): OptionQuote | null {
     }
 }
 
+/** 将 Bridge 原始标的数据转换为标的报价。 */
 function underlyingQuote(raw: unknown): UnderlyingQuote {
     const item = raw && typeof raw === 'object' ? raw as Record<string, unknown> : {}
     return {
@@ -99,11 +111,13 @@ function underlyingQuote(raw: unknown): UnderlyingQuote {
     }
 }
 
+/** 访问本机只读富途行情 Bridge 的浏览器客户端。 */
 export class FutuBridgeClient {
     readonly baseUrl: string
     private readonly fetchImpl: FetchLike
     private readonly timeoutMs: number
 
+    /** 创建并校验一个 Bridge 客户端。 */
     constructor(baseUrl: string, options: ClientOptions = {}) {
         this.baseUrl = normalizeBaseUrl(baseUrl)
         // 部分浏览器/扩展会校验 Window 接收者，绑定 globalThis 以兼容原生 fetch 和测试注入。
@@ -111,10 +125,12 @@ export class FutuBridgeClient {
         this.timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
     }
 
+    /** 检查 Bridge 与 OpenD 的健康状态。 */
     health(): Promise<{ status: string, opend: string }> {
         return this.get('/health')
     }
 
+    /** 获取可选的美股正股或 ETF 列表。 */
     async stocks(type: 'STOCK' | 'ETF'): Promise<StockItem[]> {
         const data = await this.get<Record<string, unknown>>('/api/stocks', {market: 'US', type})
         if (!Array.isArray(data.stocks)) throw new BridgeError('invalid-response', '股票列表格式无效。')
@@ -128,6 +144,7 @@ export class FutuBridgeClient {
         })
     }
 
+    /** 获取指定标的的期权到期日列表。 */
     async expirations(symbol: string): Promise<ExpirationItem[]> {
         const data = await this.get<Record<string, unknown>>('/api/option-expirations', {symbol})
         if (!Array.isArray(data.expirations)) throw new BridgeError('invalid-response', '到期日格式无效。')
@@ -144,6 +161,7 @@ export class FutuBridgeClient {
         })
     }
 
+    /** 获取指定标的和到期日的完整期权链。 */
     async optionChain(symbol: string, expiry: string): Promise<OptionChain> {
         const data = await this.get<Record<string, unknown>>('/api/option-chain', {symbol, expiry})
         if (!Array.isArray(data.rows)) throw new BridgeError('invalid-response', '期权链格式无效。')
@@ -165,6 +183,7 @@ export class FutuBridgeClient {
         }
     }
 
+    /** 顺序读取多个到期日的期权链并统计失败数量。 */
     async optionChains(symbol: string, expiries: string[]): Promise<{ chains: OptionChain[], failureCount: number }> {
         const chains: OptionChain[] = []
         let failureCount = 0
@@ -182,6 +201,7 @@ export class FutuBridgeClient {
         return {chains, failureCount}
     }
 
+    /** 发起带超时和统一错误映射的只读 GET 请求。 */
     private async get<T>(path: string, params: Record<string, string> = {}): Promise<T> {
         // 单次请求不自动重试；重试和定时刷新由页面统一控制，避免故障时成倍压垮本机 Bridge。
         const url = new URL(`${this.baseUrl}${path}`)

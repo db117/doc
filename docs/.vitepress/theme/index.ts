@@ -13,7 +13,7 @@ export default {
   Layout: () => {
     const {isDark} = useData()
 
-    // 配置vitepress-mermaid-renderer
+    /** 按当前主题配置 Mermaid 渲染器及工具栏。 */
     const initMermaid = () => {
       const mermaidRenderer = createMermaidRenderer({
         theme: isDark.value ? 'dark' : 'forest',
@@ -52,6 +52,7 @@ export default {
       // https://vitepress.dev/guide/extending-default-theme#layout-slots
     })
   },
+  /** 预留 VitePress 应用增强入口。 */
   enhanceApp({ app, router, siteData }) {
     // ...
 

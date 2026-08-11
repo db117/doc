@@ -24,10 +24,13 @@ use([PieChart, LegendComponent, TooltipComponent, CanvasRenderer])
 const props = defineProps<{ ledger: Ledger; active: boolean; selectedAccountId: string | null }>()
 const emit = defineEmits<{ newAccount: []; openAccount: [account: Account] }>()
 const {isDark} = useData()
+
+// 资产饼图实例与尺寸观察器
 const assetPieRoot = ref<HTMLElement | null>(null)
 let assetPieChart: ECharts | undefined
 let assetPieObserver: ResizeObserver | undefined
 
+// 净资产汇总与账户分类
 const summary = computed(() => summarize(props.ledger))
 // 每个账户只展示截至当前月的最新一条记录，同类按 CNY 金额降序，停用账户固定排在末尾。
 const accountRows = computed(() => props.ledger.accounts
@@ -46,6 +49,8 @@ const accountRows = computed(() => props.ledger.accounts
         || a.account.name.localeCompare(b.account.name, 'zh-CN')))
 const assetRows = computed(() => accountRows.value.filter(row => row.account.type === 'asset'))
 const liabilityRows = computed(() => accountRows.value.filter(row => row.account.type === 'liability'))
+
+// 资产饼图数据与配置
 // 饼图只接受可折算的正资产；缺汇率和零余额不应制造误导扇区。
 const assetPieData = computed(() => assetRows.value
     .filter(row => row.account.status === 'active' && row.record && row.rate)

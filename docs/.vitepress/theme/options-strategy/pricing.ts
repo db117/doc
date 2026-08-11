@@ -1,17 +1,26 @@
 import type {OptionType} from './types'
 
+/** 美式或欧式期权定价所需的统一输入。 */
 export interface OptionPricingInput {
+    /** 期权看涨或看跌方向。 */
     type: OptionType
+    /** 标的当前价格。 */
     spot: number
+    /** 合约行权价。 */
     strike: number
+    /** 距离到期的年化时间。 */
     timeToExpiry: number
+    /** 年化波动率，以小数表示。 */
     volatility: number
+    /** 连续复利无风险利率，以小数表示。 */
     riskFreeRate: number
+    /** 连续复利股息率，以小数表示。 */
     dividendYield: number
 }
 
 const SQRT_TWO_PI = Math.sqrt(2 * Math.PI)
 
+/** 近似计算标准正态分布的累积分布函数。 */
 export function normalCdf(value: number): number {
     if (value <= -8) return 0
     if (value >= 8) return 1
@@ -24,6 +33,7 @@ export function normalCdf(value: number): number {
     return value >= 0 ? 1 - tail : tail
 }
 
+/** 使用五点 Gauss-Legendre 近似计算二元标准正态累积分布。 */
 function bivariateNormalCdf(a: number, b: number, correlation: number): number {
     // 保持参考 Y2002 模型的五点 Gauss-Legendre 近似，避免不同积分实现造成价格漂移。
     const weights = [0.018854042, 0.038088059, 0.0452707394, 0.038088059, 0.018854042]
@@ -39,6 +49,7 @@ function bivariateNormalCdf(a: number, b: number, correlation: number): number {
     return correlation * correction + normalCdf(a) * normalCdf(b)
 }
 
+/** 使用 Black-Scholes 公式计算欧式期权理论价格。 */
 export function europeanOptionPrice(input: OptionPricingInput): number {
     const {type, spot, strike, timeToExpiry, volatility, riskFreeRate, dividendYield} = input
     if (timeToExpiry <= 0) return intrinsicValue(type, spot, strike)
@@ -62,6 +73,7 @@ export function europeanOptionPrice(input: OptionPricingInput): number {
         : strikePv * normalCdf(-d2) - spotPv * normalCdf(-d1)
 }
 
+/** 使用 Bjerksund-Stensland 2002 近似计算美式期权理论价格。 */
 export function americanOptionPrice(input: OptionPricingInput): number {
     const {type, spot, strike, timeToExpiry, volatility, riskFreeRate} = input
     // 无分红美式 Call 不会提前行权，直接走欧式公式可避开近零分红率的数值不稳定。
@@ -88,10 +100,12 @@ export function americanOptionPrice(input: OptionPricingInput): number {
     return Number.isFinite(price) ? Math.max(intrinsic, price) : intrinsic
 }
 
+/** 计算期权在给定标的价格下的内在价值。 */
 export function intrinsicValue(type: OptionType, spot: number, strike: number): number {
     return type === 'CALL' ? Math.max(spot - strike, 0) : Math.max(strike - spot, 0)
 }
 
+/** 计算 Bjerksund-Stensland 2002 模型中的美式看涨价格。 */
 function americanCall2002(
     spot: number,
     strike: number,
@@ -140,6 +154,7 @@ function americanCall2002(
     )
 }
 
+/** 估算美式期权提前行权边界。 */
 function exerciseBoundary(
     time: number,
     carry: number,
@@ -155,6 +170,7 @@ function exerciseBoundary(
     return zero + (infinity - zero) * (1 - Math.exp(exponent))
 }
 
+/** 计算 Bjerksund-Stensland 模型的单边辅助项。 */
 function phi(
     spot: number,
     time: number,
@@ -175,6 +191,7 @@ function phi(
         * (first - (upperBoundary / spot) ** kappa * second)
 }
 
+/** 计算 Bjerksund-Stensland 模型的双边辅助项。 */
 function psi(
     spot: number,
     time: number,

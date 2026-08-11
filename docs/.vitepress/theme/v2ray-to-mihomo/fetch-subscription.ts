@@ -1,3 +1,4 @@
+/** 浏览器读取订阅失败的稳定错误分类。 */
 export type FetchFailureKind =
   | 'invalid-url'
   | 'mixed-content'
@@ -6,7 +7,9 @@ export type FetchFailureKind =
   | 'network-or-cors'
   | 'empty'
 
+/** 携带失败分类和可选 HTTP 状态的订阅读取错误。 */
 export class FetchSubscriptionError extends Error {
+  /** 创建一条可供界面分类处理的订阅读取错误。 */
   constructor(
     public readonly kind: FetchFailureKind,
     message: string,
@@ -17,12 +20,17 @@ export class FetchSubscriptionError extends Error {
   }
 }
 
+/** 订阅请求的环境与测试配置。 */
 export interface FetchSubscriptionOptions {
+  /** 当前页面协议，用于提前阻止混合内容请求。 */
   pageProtocol?: string
+  /** 请求超时时间，单位为毫秒。 */
   timeoutMs?: number
+  /** 替代全局 fetch 的请求实现。 */
   fetchImpl?: typeof fetch
 }
 
+/** 安全读取 HTTP(S) 订阅文本并统一映射网络错误。 */
 export async function fetchSubscription(
   url: string,
   options: FetchSubscriptionOptions = {},

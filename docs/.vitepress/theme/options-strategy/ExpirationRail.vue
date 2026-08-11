@@ -31,10 +31,12 @@ const groups = computed(() => {
   return result
 })
 
+/** 提取到期日中的日期数字。 */
 function day(expiry: string): string {
   return String(Number(expiry.slice(8, 10)))
 }
 
+/** 计算到期日距离本地今天的非负天数。 */
 function daysToExpiry(expiry: string): number {
   // 使用本地中午计算自然日，避开午夜时区和夏令时边界。
   const today = new Date()
@@ -43,15 +45,18 @@ function daysToExpiry(expiry: string): number {
   return Math.max(0, Math.round((target.getTime() - today.getTime()) / 86_400_000))
 }
 
+/** 生成包含期限和策略腿数量的无障碍标签。 */
 function expiryLabel(expiry: string): string {
   const count = props.legCounts.get(expiry) ?? 0
   return `${expiry}，${daysToExpiry(expiry)} 天到期${count ? `，已选 ${count} 腿` : ''}`
 }
 
+/** 在页面空闲时切换当前浏览的到期日。 */
 function selectExpiry(expiry: string): void {
   if (expiry !== props.selectedExpiry && !props.loading) emit('select', expiry)
 }
 
+/** 滚动日期栏以显示当前选中的到期日。 */
 async function revealSelected(): Promise<void> {
   await nextTick()
   // 跨期腿可能跳到视口外的月份，选择后主动揭示但不抢占键盘焦点。

@@ -36,6 +36,7 @@ interface GoogleTokenClient {
 }
 
 declare global {
+    /** Google Identity Services 注入到浏览器的全局类型。 */
     interface Window {
         /** Google Identity Services 注入的全局对象。 */
         google?: {accounts: {oauth2: {
@@ -309,6 +310,7 @@ export async function listGoogleDriveSnapshots(): Promise<RemoteSnapshot[]> {
     return snapshots.sort((a, b) => b.date.localeCompare(a.date))
 }
 
+/** 备份页使用的 Google Drive 云端提供商实现。 */
 export const googleDriveProvider: CloudProvider = {
     id: 'google-drive',
     label: 'Google Drive',

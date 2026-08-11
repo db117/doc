@@ -1,5 +1,7 @@
+/** 期权合约的看涨或看跌方向。 */
 export type OptionType = 'CALL' | 'PUT'
 
+/** 可在策略构建器中选择的美股标的。 */
 export interface StockItem {
     /** 富途标准证券代码，例如 `US.SPY`。 */
     code: string
@@ -9,6 +11,7 @@ export interface StockItem {
     stockType: 'STOCK' | 'ETF'
 }
 
+/** 标的可交易的期权到期日。 */
 export interface ExpirationItem {
     /** 期权到期日，格式为 `YYYY-MM-DD`。 */
     date: string
@@ -18,6 +21,7 @@ export interface ExpirationItem {
     cycle: string
 }
 
+/** 标的证券的最新市场报价。 */
 export interface UnderlyingQuote {
     /** 标的的富途标准证券代码。 */
     code: string
@@ -35,6 +39,7 @@ export interface UnderlyingQuote {
     previousClose: number | null
 }
 
+/** 单个期权合约的行情、希腊值和合约规格。 */
 export interface OptionQuote {
     /** 期权合约的富途标准证券代码。 */
     code: string
@@ -78,6 +83,7 @@ export interface OptionQuote {
     lotSize: number | null
 }
 
+/** T 型期权链中同一行权价的一行报价。 */
 export interface OptionChainRow {
     /** T 型期权链当前行的行权价。 */
     strike: number
@@ -87,6 +93,7 @@ export interface OptionChainRow {
     put: OptionQuote | null
 }
 
+/** 指定标的和到期日的完整期权链。 */
 export interface OptionChain {
     /** 期权链所属标的的标准证券代码。 */
     symbol: string
@@ -98,6 +105,7 @@ export interface OptionChain {
     rows: OptionChainRow[]
 }
 
+/** 用户策略中的一条期权持仓腿。 */
 export interface StrategyLeg {
     /** 策略腿对应的期权合约代码。 */
     code: string
@@ -121,6 +129,7 @@ export interface StrategyLeg {
     marketIv: number | null
 }
 
+/** 组合盈亏统计和盈亏平衡点。 */
 export interface ExpirationStatistics {
     /** 组合净支出；正数为支出，负数为收入。 */
     netCost: number
@@ -132,6 +141,7 @@ export interface ExpirationStatistics {
     breakevens: number[]
 }
 
+/** 盈亏曲线上的一个采样点。 */
 export interface ProfitLossPoint {
     /** 盈亏曲线横轴的假设标的价格。 */
     price: number

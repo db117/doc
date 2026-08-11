@@ -1,9 +1,16 @@
+/** 账户在净资产汇总中的资产或负债方向。 */
 export type AccountType = 'asset' | 'liability'
+/** 账户当前启用或停用状态。 */
 export type AccountStatus = 'active' | 'inactive'
+/** 账户余额由手工录入还是分期计划生成。 */
 export type BalanceMode = 'manual' | 'installment'
+/** 账本支持的固定币种。 */
 export type Currency = 'CNY' | 'USD' | 'HKD' | 'USDT'
+/** 分期计划的生命周期状态。 */
 export type InstallmentStatus = 'active' | 'completed' | 'terminated' | 'overdue'
+/** 分期计划相对当前月份的完整应还状态。 */
 export type InstallmentDueState = 'scheduled' | 'pending' | InstallmentStatus
+/** 余额记录的创建或变更来源。 */
 export type BalanceSource =
     'manual'
     | 'installment-setup'
@@ -11,6 +18,7 @@ export type BalanceSource =
     | 'installment-backfill'
     | 'installment-correction'
     | 'installment-termination'
+/** 月度汇率的数据来源。 */
 export type RateSource = 'automatic' | 'manual' | 'usd-default'
 
 /** 分期负债账户下的等额月供项目；金额为十进制字符串，月份统一到 `YYYY-MM`。 */
@@ -167,8 +175,11 @@ const RATE_DIGITS = 8
 const MONEY_SCALE = 10n ** BigInt(MONEY_DIGITS)
 const RATE_SCALE = 10n ** BigInt(RATE_DIGITS)
 
+/** 账本和编辑器支持的固定币种列表。 */
 export const CURRENCIES: Currency[] = ['CNY', 'USD', 'HKD', 'USDT']
+/** 账户编辑器支持的固定业务分类。 */
 export const ACCOUNT_CATEGORIES = ['券商', '银行', '现金', '数字资产', '期货/期权', '其他']
+/** 账户编辑器支持的固定地区选项。 */
 export const REGIONS = ['境内', '境外', '香港', '其他']
 
 /** 返回设备本地时区中的今日日期。 */

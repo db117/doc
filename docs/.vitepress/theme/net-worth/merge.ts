@@ -29,6 +29,7 @@ export interface MergeResult {
     preview: MergePreview
 }
 
+/** 具备最后修改时间、可参与冲突比较的记录。 */
 type Versioned = { updatedAt: string }
 
 /** 按业务键和更新时间合并一类记录。 */
@@ -120,6 +121,7 @@ export function mergeLedgers(localInput: Ledger, cloudInput: Ledger, now = new D
 
 /** 比较两份账本的业务内容是否相同，忽略账本顶层更新时间。 */
 export function sameLedgerContents(left: Ledger, right: Ledger): boolean {
+    /** 生成忽略账本整体更新时间的可比较内容。 */
     const comparable = (ledger: Ledger) => ({...validateLedger(ledger), updatedAt: ''})
     return JSON.stringify(comparable(left)) === JSON.stringify(comparable(right))
 }

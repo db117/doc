@@ -1,6 +1,7 @@
 import type { VlessNode } from '../types'
 import { parseTls, parseTransport, parseUrlNode } from './url-options'
 
+/** 解析 VLESS URI 为统一节点结构。 */
 export function parseVlessUri(uri: string): VlessNode {
   const parsed = parseUrlNode(uri, 'vless')
   const flow = parsed.params.get('flow') || undefined
