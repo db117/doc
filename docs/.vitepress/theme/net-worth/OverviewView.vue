@@ -83,6 +83,7 @@ const assetPieOption = computed<EChartsCoreOption>(() => ({
   }],
 }))
 
+/** 初始化或刷新当前资产分布饼图。 */
 function renderAssetPie(): void {
   // 隐藏元素宽度为 0，等视图激活后再初始化或 resize 才能得到正确布局。
   if (!props.active || !assetPieRoot.value) return
@@ -103,6 +104,7 @@ onBeforeUnmount(() => {
   assetPieChart?.dispose()
 })
 
+/** 汇总分期账户的进行中、待确认和逾期数量。 */
 function installmentSummary(account: Account): string {
   const plans = account.installments?.filter(plan => plan.status === 'active' || plan.status === 'overdue') ?? []
   if (!plans.length) return '暂无进行中的分期'

@@ -2,6 +2,7 @@ import {normalizeMonth, normalizeRate, type Currency, type RateSource} from './l
 
 const API_ROOT = 'https://api.frankfurter.dev/v2'
 
+/** 外部汇率查询返回的账本可用结果。 */
 export interface RateResult {
     /** 用户账户币种；不包含无需查询的 CNY。 */
     currency: Exclude<Currency, 'CNY'>
@@ -13,6 +14,7 @@ export interface RateResult {
     source: RateSource
 }
 
+/** 获取指定币种和月份的人民币参考汇率。 */
 export async function fetchCnyRate(currency: Exclude<Currency, 'CNY'>, date: string): Promise<RateResult> {
     // 账本按月统计，因此固定查询月初汇率；USDT 暂按 USD 等值是当前业务约定。
     const queryCurrency = currency === 'USDT' ? 'USD' : currency

@@ -67,7 +67,7 @@ h3 {
     filter: brightness(1.05);
 }
 
-.primary-button:disabled {
+.primary-button:disabled, .secondary-button:disabled, .quiet-button:disabled {
     cursor: not-allowed;
     opacity: .5;
 }
@@ -89,6 +89,12 @@ h3 {
     border-color: color-mix(in oklch, var(--vp-c-red-1) 35%, var(--nw-border));
     background: var(--vp-c-red-soft);
     color: var(--vp-c-red-1);
+}
+
+.notice.warning {
+    border-color: color-mix(in oklch, var(--vp-c-yellow-1) 35%, var(--nw-border));
+    background: var(--vp-c-yellow-soft);
+    color: var(--vp-c-yellow-1);
 }
 
 .toast {
@@ -123,16 +129,74 @@ h3 {
     flex-wrap: wrap;
 }
 
-/* OneDrive 状态独立成卡片，避免与本地文件入口混淆。 */
-.onedrive-panel {
+/* 每个存储位置使用同一层级，避免把云端能力误解为后台自动同步。 */
+.backup-panel {
     border: 1px solid var(--nw-border);
     border-radius: 10px;
     padding: 16px;
     background: var(--vp-c-bg);
 }
 
-.onedrive-panel h3 {
+.backup-panel h3 {
     margin-bottom: 4px;
+}
+
+.history-disclosure {
+    margin-top: 14px;
+    border-top: 1px solid var(--nw-border);
+    padding-top: 12px;
+    color: var(--nw-muted);
+    font-size: 13px;
+}
+
+.history-disclosure summary {
+    width: fit-content;
+    cursor: pointer;
+    color: var(--vp-c-text-1);
+    font-weight: 650;
+}
+
+.history-list {
+    display: grid;
+    gap: 8px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.history-list li, .preview-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.preview-heading h3 {
+    margin-bottom: 0;
+}
+
+.merge-counts {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0 0 14px;
+}
+
+.merge-counts div {
+    border-left: 2px solid var(--nw-accent);
+    padding-left: 8px;
+}
+
+.merge-counts dt {
+    color: var(--nw-muted);
+    font-size: 12px;
+}
+
+.merge-counts dd {
+    margin: 2px 0 0;
+    color: var(--vp-c-text-1);
+    font-size: 18px;
+    font-weight: 750;
 }
 
 /* 覆盖预览和单槽回退使用同一提示层级。 */
@@ -173,5 +237,9 @@ h3 {
         bottom: 12px;
         left: 12px;
         text-align: center;
+    }
+
+    .merge-counts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }

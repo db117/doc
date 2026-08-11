@@ -97,6 +97,7 @@ const accountHistoryChartPoints = computed(() => {
       .filter(point => point.cnyAmount !== null)
 })
 
+/** 将余额来源代码转换为历史表中的中文标签。 */
 function balanceSourceLabel(source: BalanceSource): string {
   return source === 'manual' ? '手动'
       : source === 'installment-setup' ? '分期设置'
@@ -243,6 +244,7 @@ watch(historyAccountOptions, options => {
   if (!options.some(account => account.id === historyAccountId.value)) historyAccountId.value = options[0]?.id ?? null
 }, {immediate: true})
 
+/** 初始化或刷新净资产历史折线图。 */
 function renderHistoryChart(): void {
   // DOM 被条件移除时必须释放实例；仅 v-show 隐藏时保留实例和当前交互状态。
   if (!historyChartRoot.value) {
@@ -262,6 +264,7 @@ function renderHistoryChart(): void {
   historyChart.resize()
 }
 
+/** 初始化或刷新总资产与总负债折线图。 */
 function renderAssetLiabilityChart(): void {
   if (!assetLiabilityChartRoot.value) {
     assetLiabilityChartObserver?.disconnect()
@@ -280,6 +283,7 @@ function renderAssetLiabilityChart(): void {
   assetLiabilityChart.resize()
 }
 
+/** 初始化或刷新账户余额历史折线图。 */
 function renderAccountHistoryChart(): void {
   // 账户弹层每次关闭都会移除容器，因此需销毁旧实例，重开时绑定新 DOM。
   if (!accountHistoryChartRoot.value) {
@@ -299,10 +303,12 @@ function renderAccountHistoryChart(): void {
   accountHistoryChart.resize()
 }
 
+/** 打开指定账户的历史趋势弹层。 */
 function openHistoryAccountChart(account: Account): void {
   accountHistoryChartId.value = account.id
 }
 
+/** 关闭当前账户历史趋势弹层。 */
 function closeHistoryAccountChart(): void {
   accountHistoryChartId.value = null
 }

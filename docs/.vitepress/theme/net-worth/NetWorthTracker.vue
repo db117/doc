@@ -43,36 +43,59 @@ type EditorMode = 'account' | 'balance' | 'installment' | null
 type ViewMode = 'overview' | 'history' | 'backup'
 type InstallmentAction = 'new' | 'correct' | 'terminate'
 
-// 表单保留字符串金额，统一交给 ledger 层做定点校验，避免输入阶段引入浮点数。
+/** 账户编辑器使用的表单状态；金额保留为字符串并交给领域层校验。 */
 interface AccountForm {
+  /** 账户名称。 */
   name: string
+  /** 开户机构或平台。 */
   institution: string
+  /** 资产或负债类型。 */
   type: AccountType
+  /** 账户业务分类。 */
   category: string
+  /** 账户所属地区。 */
   region: string
+  /** 账户固定币种。 */
   currency: Currency
+  /** 手工余额或分期余额模式。 */
   balanceMode: BalanceMode
+  /** 账户开始参与统计的月份。 */
   openedOn: string
+  /** 新建普通账户时可选的初始余额。 */
   initialAmount: string
+  /** 新建外币账户时可选的初始汇率。 */
   initialRate: string
+  /** 账户补充说明。 */
   note: string
 }
 
+/** 分期编辑器使用的表单状态。 */
 interface InstallmentForm {
+  /** 分期项目名称。 */
   name: string
+  /** 每期应还金额。 */
   periodAmount: string
+  /** 合同约定总期数。 */
   totalPeriods: number
+  /** 当前或修正后的剩余期数。 */
   remainingPeriods: number
+  /** 新建或修正开始生效的月份。 */
   effectiveMonth: string
+  /** 下一期计划还款月份。 */
   nextDueMonth: string
 }
 
+/** 余额编辑器使用的表单状态。 */
 interface BalanceForm {
+  /** 余额对应月份。 */
   date: string
+  /** 用户输入的原币余额。 */
   amount: string
+  /** 外币折算使用的人民币汇率。 */
   rate: string
 }
 
+/** 创建一份带默认值的账户表单。 */
 function blankAccountForm(): AccountForm {
   const date = todayMonthISO()
   return {
@@ -90,6 +113,7 @@ function blankAccountForm(): AccountForm {
   }
 }
 
+/** 创建一份带默认期数的分期表单。 */
 function blankInstallmentForm(): InstallmentForm {
   const month = todayMonthISO()
   return {
@@ -160,6 +184,7 @@ onMounted(async () => {
   }
 })
 
+/** 显示一条会自动消失的成功状态。 */
 function setStatus(message: string): void {
   statusMessage.value = message
   window.setTimeout(() => {
@@ -167,6 +192,7 @@ function setStatus(message: string): void {
   }, 2600)
 }
 
+/** 先持久化账本，再更新页面状态并提示成功。 */
 async function commit(next: Ledger, successMessage = '已保存'): Promise<void> {
   // 先持久化再替换响应式状态，写入失败时页面仍保留最后一份可靠账本。
   const normalized = {...next, updatedAt: new Date().toISOString()}
@@ -176,14 +202,17 @@ async function commit(next: Ledger, successMessage = '已保存'): Promise<void>
   setStatus(successMessage)
 }
 
+/** 将账户表单恢复为新增账户默认值。 */
 function resetAccountForm(): void {
   Object.assign(accountForm, blankAccountForm())
 }
 
+/** 将分期表单恢复为默认值。 */
 function resetInstallmentForm(): void {
   Object.assign(installmentForm, blankInstallmentForm())
 }
 
+/** 清空余额和汇率编辑状态。 */
 function resetBalanceForm(): void {
   balanceForm.date = todayMonthISO()
   balanceForm.amount = ''
@@ -193,6 +222,7 @@ function resetBalanceForm(): void {
   manualRateTouched.value = false
 }
 
+/** 打开新增账户编辑器。 */
 function openNewAccount(): void {
   accountActionId.value = null
   resetAccountForm()
@@ -202,15 +232,18 @@ function openNewAccount(): void {
   actionError.value = ''
 }
 
+/** 打开指定账户的快捷操作面板。 */
 function openAccountActions(account: Account): void {
   selectedAccountId.value = account.id
   accountActionId.value = account.id
 }
 
+/** 关闭当前账户快捷操作面板。 */
 function closeAccountActions(): void {
   accountActionId.value = null
 }
 
+/** 将账户资料载入表单并打开编辑器。 */
 function openEditAccount(account: Account): void {
   closeAccountActions()
   Object.assign(accountForm, {
@@ -232,6 +265,7 @@ function openEditAccount(account: Account): void {
   actionError.value = ''
 }
 
+/** 打开新增、修正或终止分期的编辑器。 */
 function openInstallmentEditor(action: InstallmentAction, plan?: InstallmentPlan): void {
   if (!accountAction.value || accountAction.value.status === 'inactive') return
   resetInstallmentForm()
@@ -249,6 +283,7 @@ function openInstallmentEditor(action: InstallmentAction, plan?: InstallmentPlan
   actionError.value = ''
 }
 
+/** 将分期领域状态转换为界面文案。 */
 function installmentStatusText(plan: InstallmentPlan): string {
   const state = installmentDueState(plan)
   return state === 'pending' ? '本月待确认'
@@ -258,6 +293,7 @@ function installmentStatusText(plan: InstallmentPlan): string {
                   : '进行中'
 }
 
+/** 打开指定账户和月份的余额编辑器。 */
 function openBalanceEditor(account: Account, date = todayMonthISO(), correction = false): void {
   if (account.status === 'inactive') return
   closeAccountActions()
@@ -274,10 +310,12 @@ function openBalanceEditor(account: Account, date = todayMonthISO(), correction 
   void loadRate()
 }
 
+/** 从历史页进入指定月份的余额修正流程。 */
 function openHistoryBalanceEditor(account: Account, date: string): void {
   openBalanceEditor(account, date, true)
 }
 
+/** 优先读取已存汇率，缺失时调用外部汇率服务。 */
 async function loadRate(): Promise<void> {
   const account = selectedAccount.value
   if (!account) return
@@ -307,12 +345,14 @@ async function loadRate(): Promise<void> {
   }
 }
 
+/** 校验并规范化当前余额表单中的汇率。 */
 function normalizeFormRate(): string {
   if (selectedAccount.value?.currency === 'CNY') return '1'
   if (!balanceForm.rate.trim()) throw new Error('请填写汇率，或等待自动汇率加载。')
   return normalizeRate(balanceForm.rate)
 }
 
+/** 尝试为账本补充指定账户月份的外币汇率。 */
 async function addRateIfAvailable(next: Ledger, account: Account, month: string): Promise<Ledger> {
   if (account.currency === 'CNY' || next.exchangeRates.some(rate => rate.currency === account.currency && rate.date === month)) return next
   try {
@@ -328,6 +368,7 @@ async function addRateIfAvailable(next: Ledger, account: Account, month: string)
   }
 }
 
+/** 校验余额表单并保存余额及所需汇率。 */
 async function saveBalance(): Promise<void> {
   const account = selectedAccount.value
   if (!account) return
@@ -364,6 +405,7 @@ async function saveBalance(): Promise<void> {
   }
 }
 
+/** 确认指定分期已还一期并保存账本。 */
 async function confirmPlan(plan: InstallmentPlan): Promise<void> {
   const account = accountAction.value
   if (!account) return
@@ -377,6 +419,7 @@ async function confirmPlan(plan: InstallmentPlan): Promise<void> {
   }
 }
 
+/** 删除符合条件的当月误建分期。 */
 async function deletePlan(plan: InstallmentPlan): Promise<void> {
   const account = accountAction.value
   if (!account || !window.confirm(`删除误建的“${plan.name}”？`)) return
@@ -387,6 +430,7 @@ async function deletePlan(plan: InstallmentPlan): Promise<void> {
   }
 }
 
+/** 根据当前动作新增、修正或终止分期。 */
 async function saveInstallment(): Promise<void> {
   const account = accountAction.value
   if (!account) return
@@ -422,6 +466,7 @@ async function saveInstallment(): Promise<void> {
   }
 }
 
+/** 删除指定账户月份的手工余额记录。 */
 async function deleteHistoryRecord(accountId: string, date: string): Promise<void> {
   const account = ledger.value.accounts.find(item => item.id === accountId)
   const record = ledger.value.balances.find(item => item.accountId === accountId && item.date === date)
@@ -438,6 +483,7 @@ async function deleteHistoryRecord(accountId: string, date: string): Promise<voi
   }, '历史记录已删除')
 }
 
+/** 校验账户表单并新增或更新账户资料。 */
 async function saveAccount(): Promise<void> {
   try {
     const name = accountForm.name.trim()
@@ -520,6 +566,7 @@ async function saveAccount(): Promise<void> {
   }
 }
 
+/** 软停用当前编辑账户并保留全部历史。 */
 async function deactivateSelected(): Promise<void> {
   const account = editingAccount.value
   if (!account || account.status === 'inactive') return
@@ -537,6 +584,7 @@ async function deactivateSelected(): Promise<void> {
   editorMode.value = null
 }
 
+/** 关闭当前编辑器并清理临时错误状态。 */
 function closeEditor(): void {
   editorMode.value = null
   actionError.value = ''

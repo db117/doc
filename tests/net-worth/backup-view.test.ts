@@ -18,20 +18,28 @@ vi.mock('vue', async importOriginal => ({
 }))
 
 vi.mock('../../docs/.vitepress/theme/net-worth/storage', () => ({
+    listLedgerSnapshots: vi.fn().mockResolvedValue([]),
+    loadLedgerSnapshot: vi.fn(),
     loadRollback: vi.fn().mockResolvedValue(null),
     saveLedger: vi.fn(),
     saveRollback: vi.fn(),
 }))
 
 vi.mock('../../docs/.vitepress/theme/net-worth/onedrive', () => ({
-    backupToOneDrive: mocks.backupToOneDrive,
-    beginOneDriveLogin: mocks.beginOneDriveLogin,
-    completeOneDriveLogin: mocks.completeOneDriveLogin,
-    disconnectOneDrive: vi.fn(),
-    downloadFromOneDrive: vi.fn(),
-    getOneDriveMetadata: mocks.getOneDriveMetadata,
-    oneDriveConfigured: () => true,
-    oneDriveConnected: () => false,
+    oneDriveProvider: {
+        id: 'onedrive',
+        label: 'OneDrive',
+        configured: () => true,
+        connected: () => false,
+        connect: mocks.beginOneDriveLogin,
+        completeLogin: mocks.completeOneDriveLogin,
+        disconnect: vi.fn(),
+        metadata: mocks.getOneDriveMetadata,
+        download: vi.fn(),
+        save: mocks.backupToOneDrive,
+        snapshots: vi.fn().mockResolvedValue([]),
+        downloadSnapshot: vi.fn(),
+    },
 }))
 
 import BackupView from '../../docs/.vitepress/theme/net-worth/BackupView.vue'
@@ -46,6 +54,7 @@ function setup() {
 beforeEach(() => {
     vi.clearAllMocks()
     mocks.getOneDriveMetadata.mockResolvedValue({
+        id: 'ledger',
         name: 'net-worth-ledger.json',
         lastModifiedDateTime: '2026-08-10',
         size: 1
@@ -55,7 +64,8 @@ beforeEach(() => {
 test('connecting OneDrive never uploads until the user explicitly chooses backup', async () => {
     mocks.beginOneDriveLogin.mockResolvedValue('Tester')
     const view = setup()
-    await (view.connectOneDrive as () => Promise<void>)()
+    const state = (view.providers as Array<object>)[0]
+    await (view.connectProvider as (state: object) => Promise<void>)(state)
     expect(mocks.getOneDriveMetadata).toHaveBeenCalledOnce()
     expect(mocks.backupToOneDrive).not.toHaveBeenCalled()
 
