@@ -193,8 +193,8 @@ describe('generateMihomoYaml', () => {
       'RULE-SET,private,DIRECT',
       'RULE-SET,private-ip,DIRECT,no-resolve',
       ...(options.blockAds ? ['RULE-SET,ads,REJECT'] : []),
-      `RULE-SET,cn-domain,${chinaTarget}`,
       'RULE-SET,non-cn,节点选择',
+      `RULE-SET,cn-domain,${chinaTarget}`,
       `RULE-SET,cn-ip,${chinaTarget},no-resolve`,
       `MATCH,${unmatchedTarget}`,
     ]
@@ -212,8 +212,8 @@ describe('generateMihomoYaml', () => {
       'RULE-SET,private,DIRECT',
       'RULE-SET,private-ip,DIRECT,no-resolve',
       'RULE-SET,ads,REJECT',
-      'RULE-SET,cn-domain,DIRECT',
       'RULE-SET,non-cn,节点选择',
+      'RULE-SET,cn-domain,DIRECT',
       'RULE-SET,cn-ip,DIRECT,no-resolve',
       'MATCH,节点选择',
     ])
@@ -241,8 +241,8 @@ describe('generateMihomoYaml', () => {
       'RULE-SET,private,DIRECT',
       'RULE-SET,private-ip,DIRECT,no-resolve',
       'RULE-SET,ads,REJECT',
-      'RULE-SET,cn-domain,DIRECT',
       'RULE-SET,non-cn,节点选择',
+      'RULE-SET,cn-domain,DIRECT',
       'RULE-SET,cn-ip,DIRECT,no-resolve',
       'MATCH,节点选择',
     ])
