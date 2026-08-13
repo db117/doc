@@ -117,34 +117,46 @@ export interface ParseSubscriptionResult {
   counts: Record<Protocol, number>
 }
 
-/** Mihomo 规则集启用状态和最终分流策略。 */
+/** 可在规则面板中调整顺序的规则项标识。 */
+export type RuleId = 'private' | 'ads' | 'google' | 'non-cn' | 'cn'
+
+/** 规则命中后使用的 Mihomo 出站策略。 */
+export type RuleTarget = 'direct' | 'proxy' | 'reject'
+
+/** 一条规则集的启用状态和出站策略。 */
+export interface RuleItem {
+  /** 规则集的稳定标识。 */
+  id: RuleId
+  /** 是否生成该规则集。 */
+  enabled: boolean
+  /** 命中规则后的出站策略。 */
+  target: RuleTarget
+}
+
+/** Mihomo 规则集顺序、启用状态、出站策略和未匹配流量策略。 */
 export interface RuleOptions {
-  /** 是否启用私有域名直连规则。 */
-  enablePrivateDomain?: boolean
-  /** 是否启用私有 IP 直连规则。 */
-  enablePrivateIp?: boolean
-  /** 是否启用广告拦截规则。 */
-  blockAds: boolean
-  /** 是否启用中国域名规则。 */
-  enableChinaDomain?: boolean
-  /** 是否启用中国 IP 规则。 */
-  enableChinaIp?: boolean
-  /** 是否启用非中国域名代理规则。 */
-  enableNonChina?: boolean
-  /** 中国流量是否直连，否则交给节点选择。 */
-  directChina: boolean
+  /** 按界面顺序排列的规则集。 */
+  rules: RuleItem[]
   /** 未匹配流量最终使用代理还是直连。 */
   unmatched: 'proxy' | 'direct'
 }
 
-/** 新转换任务使用的默认规则开关。 */
+/** 新转换任务使用的默认规则选项。 */
 export const DEFAULT_RULE_OPTIONS: RuleOptions = {
-  enablePrivateDomain: true,
-  enablePrivateIp: true,
-  blockAds: true,
-  enableChinaDomain: true,
-  enableChinaIp: true,
-  enableNonChina: true,
-  directChina: true,
+  rules: [
+    {id: 'private', enabled: true, target: 'direct'},
+    {id: 'ads', enabled: true, target: 'reject'},
+    {id: 'google', enabled: true, target: 'proxy'},
+    {id: 'non-cn', enabled: true, target: 'proxy'},
+    {id: 'cn', enabled: true, target: 'direct'},
+  ],
   unmatched: 'proxy',
+}
+
+/** 创建一份独立的默认规则选项，避免拖动时修改默认值。 */
+export function createDefaultRuleOptions(): RuleOptions {
+  return {
+    rules: DEFAULT_RULE_OPTIONS.rules.map(rule => ({...rule})),
+    unmatched: DEFAULT_RULE_OPTIONS.unmatched,
+  }
 }

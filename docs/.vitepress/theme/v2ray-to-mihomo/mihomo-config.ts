@@ -2,7 +2,9 @@ import { parse, stringify } from 'yaml'
 import {
   DEFAULT_RULE_OPTIONS,
   type ProxyNode,
+  type RuleId,
   type RuleOptions,
+  type RuleTarget,
 } from './types'
 
 /** Mihomo 配置树使用的通用对象结构。 */
@@ -59,6 +61,21 @@ const PROVIDERS = {
   ],
 } as const
 
+const RULE_PROVIDER_GROUPS: Record<RuleId, readonly (keyof typeof PROVIDERS)[]> = {
+  private: ['private', 'private-ip'],
+  ads: ['ads'],
+  google: ['google-domain', 'google-ip'],
+  'non-cn': ['non-cn'],
+  cn: ['cn-domain', 'cn-ip'],
+}
+
+const IP_PROVIDERS = new Set<keyof typeof PROVIDERS>(['private-ip', 'google-ip', 'cn-ip'])
+const TARGET_NAMES: Record<RuleTarget, string> = {
+  direct: 'DIRECT',
+  proxy: '节点选择',
+  reject: 'REJECT',
+}
+
 /** Mihomo 配置生成或校验失败时抛出的领域错误。 */
 export class MihomoConfigError extends Error {
   /** 创建一条带可展示信息的配置错误。 */
@@ -74,7 +91,6 @@ export function buildMihomoConfig(
   options: RuleOptions = DEFAULT_RULE_OPTIONS,
 ): Record<string, unknown> {
   const names = nodes.map(node => node.name)
-  const chinaTarget = options.directChina ? 'DIRECT' : '节点选择'
   const unmatchedTarget = options.unmatched === 'proxy' ? '节点选择' : 'DIRECT'
   const enabledProviders = getEnabledProviders(options)
 
@@ -89,28 +105,7 @@ export function buildMihomoConfig(
     profile: {
       'store-selected': true,
     },
-    dns: {
-      enable: true,
-      ipv6: false,
-      'respect-rules': true,
-      'enhanced-mode': 'fake-ip',
-      'fake-ip-range': '198.18.0.1/16',
-      'default-nameserver': ['223.5.5.5', '119.29.29.29'],
-      'nameserver-policy': {
-        'rule-set:google-domain': [
-          'https://dns.google/dns-query#节点选择',
-          'https://cloudflare-dns.com/dns-query#节点选择',
-        ],
-      },
-      nameserver: [
-        'https://dns.alidns.com/dns-query',
-        'https://doh.pub/dns-query',
-      ],
-      'proxy-server-nameserver': [
-        'https://dns.alidns.com/dns-query',
-        'https://doh.pub/dns-query',
-      ],
-    },
+    dns: buildDnsConfig(options),
     proxies: nodes.map(toMihomoProxy),
     'proxy-groups': [
       {
@@ -134,18 +129,50 @@ export function buildMihomoConfig(
       },
     ],
     'rule-providers': buildRuleProviders(enabledProviders),
-    rules: [
-      ...(enabledProviders.private ? ['RULE-SET,private,DIRECT'] : []),
-      ...(enabledProviders['private-ip'] ? ['RULE-SET,private-ip,DIRECT,no-resolve'] : []),
-      ...(enabledProviders.ads ? ['RULE-SET,ads,REJECT'] : []),
-      ...(enabledProviders['google-domain'] ? ['RULE-SET,google-domain,节点选择'] : []),
-      ...(enabledProviders['non-cn'] ? ['RULE-SET,non-cn,节点选择'] : []),
-      ...(enabledProviders['google-ip'] ? ['RULE-SET,google-ip,节点选择,no-resolve'] : []),
-      ...(enabledProviders['cn-domain'] ? [`RULE-SET,cn-domain,${chinaTarget}`] : []),
-      ...(enabledProviders['cn-ip'] ? [`RULE-SET,cn-ip,${chinaTarget},no-resolve`] : []),
-      `MATCH,${unmatchedTarget}`,
-    ],
+    rules: buildRules(options, unmatchedTarget),
   }
+}
+
+/** 构建按 Google 规则集分流的 DNS 配置。 */
+function buildDnsConfig(options: RuleOptions): ConfigRecord {
+  const googleRule = options.rules.find(rule => rule.id === 'google' && rule.enabled)
+  const domesticNameservers = [
+    'https://dns.alidns.com/dns-query',
+    'https://doh.pub/dns-query',
+  ]
+
+  return {
+    enable: true,
+    ipv6: false,
+    'respect-rules': true,
+    'enhanced-mode': 'fake-ip',
+    'fake-ip-range': '198.18.0.1/16',
+    'default-nameserver': ['223.5.5.5', '119.29.29.29'],
+    ...(googleRule?.target === 'proxy'
+        ? {
+          'nameserver-policy': {
+            'rule-set:google-domain': [
+              'https://dns.google/dns-query#节点选择',
+              'https://cloudflare-dns.com/dns-query#节点选择',
+            ],
+          },
+        }
+        : {}),
+    nameserver: domesticNameservers,
+    'proxy-server-nameserver': domesticNameservers,
+  }
+}
+
+/** 按界面排序生成最终规则，并为 IP 规则补充 no-resolve。 */
+function buildRules(options: RuleOptions, unmatchedTarget: string): string[] {
+  return [
+    ...options.rules
+        .filter(rule => rule.enabled)
+        .flatMap(rule => RULE_PROVIDER_GROUPS[rule.id].map(provider => (
+            `RULE-SET,${provider},${TARGET_NAMES[rule.target]}${IP_PROVIDERS.has(provider) ? ',no-resolve' : ''}`
+        ))),
+    `MATCH,${unmatchedTarget}`,
+  ]
 }
 
 /** 生成并回读校验完整的 Mihomo YAML。 */
@@ -358,16 +385,15 @@ function toMihomoProxy(node: ProxyNode): ConfigRecord {
 
 /** 将可选规则开关归一为每个规则提供者的启用状态。 */
 function getEnabledProviders(options: RuleOptions): Record<keyof typeof PROVIDERS, boolean> {
-  return {
-    private: options.enablePrivateDomain ?? true,
-    'private-ip': options.enablePrivateIp ?? true,
-    ads: options.blockAds,
-    'google-domain': true,
-    'google-ip': true,
-    'cn-domain': options.enableChinaDomain ?? true,
-    'non-cn': options.enableNonChina ?? true,
-    'cn-ip': options.enableChinaIp ?? true,
+  const enabled = Object.fromEntries(
+      Object.keys(PROVIDERS).map(provider => [provider, false]),
+  ) as Record<keyof typeof PROVIDERS, boolean>
+
+  for (const rule of options.rules) {
+    if (!rule.enabled) continue
+    for (const provider of RULE_PROVIDER_GROUPS[rule.id]) enabled[provider] = true
   }
+  return enabled
 }
 
 /** 为已启用规则集构建 Mihomo 规则提供者配置。 */

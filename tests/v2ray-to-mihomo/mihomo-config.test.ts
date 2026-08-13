@@ -44,13 +44,13 @@ const nodes: ProxyNode[] = [
 ]
 
 const standardOptions: RuleOptions = {
-  enablePrivateDomain: true,
-  enablePrivateIp: true,
-  blockAds: true,
-  enableChinaDomain: true,
-  enableChinaIp: true,
-  enableNonChina: true,
-  directChina: true,
+    rules: [
+        {id: 'private', enabled: true, target: 'direct'},
+        {id: 'ads', enabled: true, target: 'reject'},
+        {id: 'google', enabled: true, target: 'proxy'},
+        {id: 'non-cn', enabled: true, target: 'proxy'},
+        {id: 'cn', enabled: true, target: 'direct'},
+    ],
   unmatched: 'proxy',
 }
 
@@ -192,35 +192,38 @@ describe('generateMihomoYaml', () => {
   })
 
   const combinations: RuleOptions[] = [
-    { blockAds: true, directChina: true, unmatched: 'proxy' },
-    { blockAds: true, directChina: true, unmatched: 'direct' },
-    { blockAds: true, directChina: false, unmatched: 'proxy' },
-    { blockAds: true, directChina: false, unmatched: 'direct' },
-    { blockAds: false, directChina: true, unmatched: 'proxy' },
-    { blockAds: false, directChina: true, unmatched: 'direct' },
-    { blockAds: false, directChina: false, unmatched: 'proxy' },
-    { blockAds: false, directChina: false, unmatched: 'direct' },
+      standardOptions,
+      {...standardOptions, unmatched: 'direct'},
+      {
+          ...standardOptions,
+          rules: standardOptions.rules.map(rule => rule.id === 'ads' ? {...rule, enabled: false} : {...rule}),
+      },
+      {
+          ...standardOptions,
+          rules: standardOptions.rules.map(rule => rule.id === 'cn' ? {...rule, target: 'proxy'} : {...rule}),
+      },
   ]
 
   it.each(combinations)('builds the exact ordered rules for %o', options => {
     const config = parse(generateMihomoYaml(nodes, options))
-    const chinaTarget = options.directChina ? 'DIRECT' : '节点选择'
     const unmatchedTarget = options.unmatched === 'proxy' ? '节点选择' : 'DIRECT'
     const expectedRules = [
       'RULE-SET,private,DIRECT',
       'RULE-SET,private-ip,DIRECT,no-resolve',
-      ...(options.blockAds ? ['RULE-SET,ads,REJECT'] : []),
-        'RULE-SET,google-domain,节点选择',
+        ...(options.rules.find(rule => rule.id === 'ads')?.enabled ? ['RULE-SET,ads,REJECT'] : []),
+        ...(options.rules.find(rule => rule.id === 'google')?.target === 'proxy'
+            ? ['RULE-SET,google-domain,节点选择', 'RULE-SET,google-ip,节点选择,no-resolve']
+            : ['RULE-SET,google-domain,DIRECT', 'RULE-SET,google-ip,DIRECT,no-resolve']),
       'RULE-SET,non-cn,节点选择',
-        'RULE-SET,google-ip,节点选择,no-resolve',
-      `RULE-SET,cn-domain,${chinaTarget}`,
-      `RULE-SET,cn-ip,${chinaTarget},no-resolve`,
+        ...(options.rules.find(rule => rule.id === 'cn')?.target === 'proxy'
+            ? ['RULE-SET,cn-domain,节点选择', 'RULE-SET,cn-ip,节点选择,no-resolve']
+            : ['RULE-SET,cn-domain,DIRECT', 'RULE-SET,cn-ip,DIRECT,no-resolve']),
       `MATCH,${unmatchedTarget}`,
     ]
 
     expect(config.rules).toEqual(expectedRules)
     expect(Object.keys(config['rule-providers'])).toEqual(
-      options.blockAds
+        options.rules.find(rule => rule.id === 'ads')?.enabled
           ? ['private', 'private-ip', 'ads', 'google-domain', 'google-ip', 'cn-domain', 'non-cn', 'cn-ip']
           : ['private', 'private-ip', 'google-domain', 'google-ip', 'cn-domain', 'non-cn', 'cn-ip'],
     )
@@ -232,8 +235,8 @@ describe('generateMihomoYaml', () => {
       'RULE-SET,private-ip,DIRECT,no-resolve',
       'RULE-SET,ads,REJECT',
         'RULE-SET,google-domain,节点选择',
-      'RULE-SET,non-cn,节点选择',
         'RULE-SET,google-ip,节点选择,no-resolve',
+        'RULE-SET,non-cn,节点选择',
       'RULE-SET,cn-domain,DIRECT',
       'RULE-SET,cn-ip,DIRECT,no-resolve',
       'MATCH,节点选择',
@@ -264,23 +267,38 @@ describe('generateMihomoYaml', () => {
         })
     })
 
+    it('uses one target for each domain/IP rule group and preserves custom order', () => {
+        const config = parse(generateMihomoYaml(nodes, {
+            rules: [
+                {id: 'cn', enabled: true, target: 'proxy'},
+                {id: 'google', enabled: true, target: 'direct'},
+                {id: 'private', enabled: true, target: 'direct'},
+                {id: 'ads', enabled: false, target: 'reject'},
+                {id: 'non-cn', enabled: true, target: 'proxy'},
+            ],
+            unmatched: 'direct',
+        }))
+
+        expect(config.rules).toEqual([
+            'RULE-SET,cn-domain,节点选择',
+            'RULE-SET,cn-ip,节点选择,no-resolve',
+            'RULE-SET,google-domain,DIRECT',
+            'RULE-SET,google-ip,DIRECT,no-resolve',
+            'RULE-SET,private,DIRECT',
+            'RULE-SET,private-ip,DIRECT,no-resolve',
+            'RULE-SET,non-cn,节点选择',
+            'MATCH,DIRECT',
+        ])
+    })
+
     it('omits disabled rule providers while retaining forced proxy rules', () => {
     const config = parse(generateMihomoYaml(nodes, {
-      ...standardOptions,
-      enablePrivateDomain: false,
-      enablePrivateIp: false,
-      blockAds: false,
-      enableChinaDomain: false,
-      enableChinaIp: false,
-      enableNonChina: false,
+        rules: standardOptions.rules.map(rule => ({...rule, enabled: false})),
+        unmatched: 'proxy',
     }))
 
-        expect(Object.keys(config['rule-providers'])).toEqual(['google-domain', 'google-ip'])
-        expect(config.rules).toEqual([
-            'RULE-SET,google-domain,节点选择',
-            'RULE-SET,google-ip,节点选择,no-resolve',
-            'MATCH,节点选择',
-        ])
+        expect(config['rule-providers']).toEqual({})
+        expect(config.rules).toEqual(['MATCH,节点选择'])
   })
 
   it('returns an object through buildMihomoConfig without serializing it', () => {
@@ -291,8 +309,8 @@ describe('generateMihomoYaml', () => {
       'RULE-SET,private-ip,DIRECT,no-resolve',
       'RULE-SET,ads,REJECT',
         'RULE-SET,google-domain,节点选择',
-      'RULE-SET,non-cn,节点选择',
         'RULE-SET,google-ip,节点选择,no-resolve',
+        'RULE-SET,non-cn,节点选择',
       'RULE-SET,cn-domain,DIRECT',
       'RULE-SET,cn-ip,DIRECT,no-resolve',
       'MATCH,节点选择',

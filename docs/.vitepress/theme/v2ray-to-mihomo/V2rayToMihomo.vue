@@ -10,9 +10,11 @@ import { generateMihomoYaml, MihomoConfigError } from './mihomo-config'
 import { parseSubscription } from './parse-subscription'
 import { parseHttpSubscriptionUrl } from './subscription-url'
 import {
-  DEFAULT_RULE_OPTIONS,
+  createDefaultRuleOptions,
   type ParseSubscriptionResult,
+  type RuleId,
   type RuleOptions,
+  type RuleTarget,
 } from './types'
 
 // 订阅地址与手工输入状态
@@ -29,7 +31,22 @@ const fetchFailureKind = ref<FetchFailureKind | null>(null)
 // 解析结果、配置文本和规则选项
 const result = ref<ParseSubscriptionResult | null>(null)
 const yaml = ref('')
-const ruleOptions = reactive<RuleOptions>({ ...DEFAULT_RULE_OPTIONS })
+const ruleOptions = reactive<RuleOptions>(createDefaultRuleOptions())
+const draggingRuleId = ref<RuleId | null>(null)
+
+const ruleLabels: Record<RuleId, string> = {
+  private: '私有地址（域名/IP）',
+  ads: '广告规则',
+  google: 'Google 服务（域名/IP）',
+  'non-cn': '非中国域名',
+  cn: '中国地址（域名/IP）',
+}
+
+const targetLabels: Record<RuleTarget, string> = {
+  direct: '直连',
+  proxy: '节点选择',
+  reject: '拦截',
+}
 
 const fetchMessages: Record<FetchFailureKind, string> = {
   'invalid-url': '请输入有效的 HTTP 或 HTTPS 订阅地址。',
@@ -122,7 +139,32 @@ function reset(): void {
   fetchFailureKind.value = null
   result.value = null
   yaml.value = ''
-  Object.assign(ruleOptions, DEFAULT_RULE_OPTIONS)
+  Object.assign(ruleOptions, createDefaultRuleOptions())
+  draggingRuleId.value = null
+}
+
+/** 开始拖动规则项。 */
+function startRuleDrag(id: RuleId): void {
+  draggingRuleId.value = id
+}
+
+/** 将拖动中的规则项放到目标项之前。 */
+function dropRule(targetId: RuleId): void {
+  const sourceId = draggingRuleId.value
+  draggingRuleId.value = null
+  if (!sourceId || sourceId === targetId) return
+
+  const sourceIndex = ruleOptions.rules.findIndex(rule => rule.id === sourceId)
+  const targetIndex = ruleOptions.rules.findIndex(rule => rule.id === targetId)
+  if (sourceIndex < 0 || targetIndex < 0) return
+
+  const [source] = ruleOptions.rules.splice(sourceIndex, 1)
+  ruleOptions.rules.splice(targetIndex, 0, source)
+}
+
+/** 取消未完成的拖动状态。 */
+function cancelRuleDrag(): void {
+  draggingRuleId.value = null
 }
 
 /** 在隔离的新标签页中打开校验通过的订阅地址。 */
@@ -269,36 +311,47 @@ watch(ruleOptions, () => {
 
       <section class="converter-panel converter-rules" aria-labelledby="converter-rules-heading">
         <h2 id="converter-rules-heading">配置规则</h2>
-        <p class="panel-intro">规则集</p>
+        <p class="panel-intro">规则集按从上到下匹配，拖动左侧手柄调整优先级。</p>
 
-        <label class="checkbox-row">
-          <input v-model="ruleOptions.enablePrivateDomain" type="checkbox" :disabled="busy">
-          <span>私有域名直连</span>
-        </label>
-        <label class="checkbox-row">
-          <input v-model="ruleOptions.enablePrivateIp" type="checkbox" :disabled="busy">
-          <span>私有 IP 直连</span>
-        </label>
-        <label class="checkbox-row">
-          <input v-model="ruleOptions.blockAds" type="checkbox" :disabled="busy">
-          <span>拦截广告规则</span>
-        </label>
-        <label class="checkbox-row">
-          <input v-model="ruleOptions.enableChinaDomain" type="checkbox" :disabled="busy">
-          <span>国内域名规则</span>
-        </label>
-        <label class="checkbox-row">
-          <input v-model="ruleOptions.enableChinaIp" type="checkbox" :disabled="busy">
-          <span>国内 IP 规则</span>
-        </label>
-        <label class="checkbox-row">
-          <input v-model="ruleOptions.enableNonChina" type="checkbox" :disabled="busy">
-          <span>非中国域名规则</span>
-        </label>
-        <label class="checkbox-row">
-          <input v-model="ruleOptions.directChina" type="checkbox" :disabled="busy">
-          <span>国内流量直连</span>
-        </label>
+        <div class="rule-list" role="list" aria-label="可排序规则集">
+          <div
+              v-for="rule in ruleOptions.rules"
+              :key="rule.id"
+              class="rule-row"
+              :class="{ 'is-dragging': draggingRuleId === rule.id }"
+              role="listitem"
+              draggable="true"
+              @dragstart="startRuleDrag(rule.id)"
+              @dragover.prevent
+              @drop="dropRule(rule.id)"
+              @dragend="cancelRuleDrag"
+          >
+            <button
+                class="rule-drag-handle"
+                type="button"
+                :disabled="busy"
+                :aria-label="`拖动${ruleLabels[rule.id]}调整优先级`"
+                title="拖动调整优先级"
+            >
+              ⋮⋮
+            </button>
+            <label class="rule-enabled">
+              <input v-model="rule.enabled" type="checkbox" :disabled="busy">
+              <span>{{ ruleLabels[rule.id] }}</span>
+            </label>
+            <select
+                v-model="rule.target"
+                class="rule-target"
+                :aria-label="`${ruleLabels[rule.id]}的处理方式`"
+                :disabled="busy"
+            >
+              <option v-for="(label, target) in targetLabels" :key="target" :value="target">
+                {{ label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
         <label for="unmatched-rule">未匹配流量</label>
         <select id="unmatched-rule" v-model="ruleOptions.unmatched" :disabled="busy">
           <option value="proxy">使用节点选择</option>
