@@ -80,9 +80,16 @@ describe('generateMihomoYaml', () => {
     expect(config.dns).toEqual({
       enable: true,
       ipv6: false,
+        'respect-rules': true,
       'enhanced-mode': 'fake-ip',
       'fake-ip-range': '198.18.0.1/16',
       'default-nameserver': ['223.5.5.5', '119.29.29.29'],
+        'nameserver-policy': {
+            'rule-set:google-domain': [
+                'https://dns.google/dns-query#节点选择',
+                'https://cloudflare-dns.com/dns-query#节点选择',
+            ],
+        },
       nameserver: ['https://dns.alidns.com/dns-query', 'https://doh.pub/dns-query'],
       'proxy-server-nameserver': [
         'https://dns.alidns.com/dns-query',
@@ -121,6 +128,16 @@ describe('generateMihomoYaml', () => {
         url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.mrs',
         interval: 86400,
       },
+        'google-domain': {
+            type: 'http', behavior: 'domain', format: 'mrs', path: './ruleset/google-domain.mrs',
+            url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs',
+            interval: 86400,
+        },
+        'google-ip': {
+            type: 'http', behavior: 'ipcidr', format: 'mrs', path: './ruleset/google-ip.mrs',
+            url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs',
+            interval: 86400,
+        },
       'cn-domain': {
         type: 'http', behavior: 'domain', format: 'mrs', path: './ruleset/cn-domain.mrs',
         url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs',
@@ -193,7 +210,9 @@ describe('generateMihomoYaml', () => {
       'RULE-SET,private,DIRECT',
       'RULE-SET,private-ip,DIRECT,no-resolve',
       ...(options.blockAds ? ['RULE-SET,ads,REJECT'] : []),
+        'RULE-SET,google-domain,节点选择',
       'RULE-SET,non-cn,节点选择',
+        'RULE-SET,google-ip,节点选择,no-resolve',
       `RULE-SET,cn-domain,${chinaTarget}`,
       `RULE-SET,cn-ip,${chinaTarget},no-resolve`,
       `MATCH,${unmatchedTarget}`,
@@ -202,8 +221,8 @@ describe('generateMihomoYaml', () => {
     expect(config.rules).toEqual(expectedRules)
     expect(Object.keys(config['rule-providers'])).toEqual(
       options.blockAds
-        ? ['private', 'private-ip', 'ads', 'cn-domain', 'non-cn', 'cn-ip']
-        : ['private', 'private-ip', 'cn-domain', 'non-cn', 'cn-ip'],
+          ? ['private', 'private-ip', 'ads', 'google-domain', 'google-ip', 'cn-domain', 'non-cn', 'cn-ip']
+          : ['private', 'private-ip', 'google-domain', 'google-ip', 'cn-domain', 'non-cn', 'cn-ip'],
     )
   })
 
@@ -212,14 +231,40 @@ describe('generateMihomoYaml', () => {
       'RULE-SET,private,DIRECT',
       'RULE-SET,private-ip,DIRECT,no-resolve',
       'RULE-SET,ads,REJECT',
+        'RULE-SET,google-domain,节点选择',
       'RULE-SET,non-cn,节点选择',
+        'RULE-SET,google-ip,节点选择,no-resolve',
       'RULE-SET,cn-domain,DIRECT',
       'RULE-SET,cn-ip,DIRECT,no-resolve',
       'MATCH,节点选择',
     ])
   })
 
-  it('omits disabled rule providers and their associated rules', () => {
+    it('routes Google APIs through the proxy before China domain matching', () => {
+        const config = parse(generateMihomoYaml(nodes, standardOptions))
+        const rules = config.rules as string[]
+        const googleRuleIndex = rules.indexOf('RULE-SET,google-domain,节点选择')
+        const cnDomainRuleIndex = rules.indexOf('RULE-SET,cn-domain,DIRECT')
+
+        expect(googleRuleIndex).toBeGreaterThanOrEqual(0)
+        expect(googleRuleIndex).toBeLessThan(cnDomainRuleIndex)
+        expect(config['rule-providers']['google-domain']).toMatchObject({
+            behavior: 'domain',
+            format: 'mrs',
+            url: 'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs',
+        })
+        expect(config.dns).toMatchObject({
+            'respect-rules': true,
+            'nameserver-policy': {
+                'rule-set:google-domain': [
+                    'https://dns.google/dns-query#节点选择',
+                    'https://cloudflare-dns.com/dns-query#节点选择',
+                ],
+            },
+        })
+    })
+
+    it('omits disabled rule providers while retaining forced proxy rules', () => {
     const config = parse(generateMihomoYaml(nodes, {
       ...standardOptions,
       enablePrivateDomain: false,
@@ -230,8 +275,12 @@ describe('generateMihomoYaml', () => {
       enableNonChina: false,
     }))
 
-    expect(config['rule-providers']).toEqual({})
-    expect(config.rules).toEqual(['MATCH,节点选择'])
+        expect(Object.keys(config['rule-providers'])).toEqual(['google-domain', 'google-ip'])
+        expect(config.rules).toEqual([
+            'RULE-SET,google-domain,节点选择',
+            'RULE-SET,google-ip,节点选择,no-resolve',
+            'MATCH,节点选择',
+        ])
   })
 
   it('returns an object through buildMihomoConfig without serializing it', () => {
@@ -241,7 +290,9 @@ describe('generateMihomoYaml', () => {
       'RULE-SET,private,DIRECT',
       'RULE-SET,private-ip,DIRECT,no-resolve',
       'RULE-SET,ads,REJECT',
+        'RULE-SET,google-domain,节点选择',
       'RULE-SET,non-cn,节点选择',
+        'RULE-SET,google-ip,节点选择,no-resolve',
       'RULE-SET,cn-domain,DIRECT',
       'RULE-SET,cn-ip,DIRECT,no-resolve',
       'MATCH,节点选择',

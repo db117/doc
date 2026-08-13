@@ -32,6 +32,16 @@ const PROVIDERS = {
     './ruleset/ads.mrs',
     'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.mrs',
   ],
+  'google-domain': [
+    'domain',
+    './ruleset/google-domain.mrs',
+    'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs',
+  ],
+  'google-ip': [
+    'ipcidr',
+    './ruleset/google-ip.mrs',
+    'https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs',
+  ],
   'cn-domain': [
     'domain',
     './ruleset/cn-domain.mrs',
@@ -82,9 +92,16 @@ export function buildMihomoConfig(
     dns: {
       enable: true,
       ipv6: false,
+      'respect-rules': true,
       'enhanced-mode': 'fake-ip',
       'fake-ip-range': '198.18.0.1/16',
       'default-nameserver': ['223.5.5.5', '119.29.29.29'],
+      'nameserver-policy': {
+        'rule-set:google-domain': [
+          'https://dns.google/dns-query#节点选择',
+          'https://cloudflare-dns.com/dns-query#节点选择',
+        ],
+      },
       nameserver: [
         'https://dns.alidns.com/dns-query',
         'https://doh.pub/dns-query',
@@ -121,7 +138,9 @@ export function buildMihomoConfig(
       ...(enabledProviders.private ? ['RULE-SET,private,DIRECT'] : []),
       ...(enabledProviders['private-ip'] ? ['RULE-SET,private-ip,DIRECT,no-resolve'] : []),
       ...(enabledProviders.ads ? ['RULE-SET,ads,REJECT'] : []),
+      ...(enabledProviders['google-domain'] ? ['RULE-SET,google-domain,节点选择'] : []),
       ...(enabledProviders['non-cn'] ? ['RULE-SET,non-cn,节点选择'] : []),
+      ...(enabledProviders['google-ip'] ? ['RULE-SET,google-ip,节点选择,no-resolve'] : []),
       ...(enabledProviders['cn-domain'] ? [`RULE-SET,cn-domain,${chinaTarget}`] : []),
       ...(enabledProviders['cn-ip'] ? [`RULE-SET,cn-ip,${chinaTarget},no-resolve`] : []),
       `MATCH,${unmatchedTarget}`,
@@ -343,6 +362,8 @@ function getEnabledProviders(options: RuleOptions): Record<keyof typeof PROVIDER
     private: options.enablePrivateDomain ?? true,
     'private-ip': options.enablePrivateIp ?? true,
     ads: options.blockAds,
+    'google-domain': true,
+    'google-ip': true,
     'cn-domain': options.enableChinaDomain ?? true,
     'non-cn': options.enableNonChina ?? true,
     'cn-ip': options.enableChinaIp ?? true,
