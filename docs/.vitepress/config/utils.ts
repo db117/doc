@@ -3,7 +3,7 @@ import * as path_ from 'path'
 import fm from 'front-matter'
 
 const { relative, resolve } = path_
-const docsRoot = resolve(__dirname, '../..')
+const docsRoot = resolve(import.meta.dirname, '../..')
 const defaultOrder = Number.MAX_SAFE_INTEGER
 
 /** Markdown 页面用于侧边栏排序的元数据。 */
@@ -35,7 +35,7 @@ export const scanDir = (pathName: string) => {
 }
 
 /** 递归读取文档目录并返回已排序的侧边栏结构。 */
-export const getMsg = (path: string) => {
+export const getMsg = (path: string): SidebarItem[] => {
 	const entries = fs.readdirSync(path, { withFileTypes: true })
 		.filter(item => filterFile(item))
 
@@ -73,11 +73,10 @@ export const getMsg = (path: string) => {
 				}
 
 			}
-		}).sort(compareSidebarItem).map(item => {
+		}).sort(compareSidebarItem).map(({order: _order, ...item}) => {
 			if (item.link) {
 				item.link = translateDir(item.link)
 			}
-			delete item.order
 			return item
 		})
 	} else {

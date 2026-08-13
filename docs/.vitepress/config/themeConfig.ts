@@ -1,6 +1,6 @@
 import type { DefaultTheme } from 'vitepress'
-import slidebar from './sliderbar'
-import nav from './nav'
+import slidebar from './sliderbar.ts'
+import nav from './nav.ts'
 
 const themeConfig: DefaultTheme.Config = {
   outline: {

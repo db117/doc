@@ -18,7 +18,7 @@ title: macOS 使用 /etc/resolver 配置分域 DNS
 
 在 `/etc/resolver/` 下创建与目标域名同名的文件。例如，`/etc/resolver/company.internal` 的内容如下：
 
-```conf
+```ini
 nameserver 10.0.0.53
 ```
 
@@ -50,12 +50,12 @@ cat /etc/resolver/company.internal
 /etc/resolver/dev.company.internal
 ```
 
-```conf
+```ini
 # /etc/resolver/company.internal
 nameserver 10.0.0.53
 ```
 
-```conf
+```ini
 # /etc/resolver/dev.company.internal
 nameserver 10.0.0.54
 ```
@@ -65,7 +65,7 @@ nameserver 10.0.0.54
 
 ## 常用配置项
 
-```conf
+```ini
 nameserver 10.0.0.53
 nameserver 10.0.0.54
 port 53
@@ -87,7 +87,7 @@ options attempts:2
 
 若本地 DNS 服务监听在 `127.0.0.1:5353`，可创建 `/etc/resolver/test`：
 
-```conf
+```ini
 nameserver 127.0.0.1
 port 5353
 ```
@@ -132,7 +132,7 @@ sudo killall -HUP mDNSResponder
 
 Linux 的 `/etc/resolv.conf` 一般用于配置全局默认 DNS：
 
-```conf
+```ini
 nameserver 1.1.1.1
 nameserver 8.8.8.8
 ```

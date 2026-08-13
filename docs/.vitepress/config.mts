@@ -1,5 +1,5 @@
-import themeConfig from './config/themeConfig';
-import head from './config/head'
+import themeConfig from './config/themeConfig.ts';
+import head from './config/head.ts'
 
 
 // https://vitepress.dev/reference/site-config

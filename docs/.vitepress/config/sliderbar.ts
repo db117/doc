@@ -1,4 +1,4 @@
-import {scanDir} from './utils'
+import {scanDir} from './utils.ts'
 
 export default {
 
