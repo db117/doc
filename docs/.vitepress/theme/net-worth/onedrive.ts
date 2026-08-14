@@ -161,6 +161,11 @@ async function ensureReadme(): Promise<void> {
     if (!await optionalItem(CLOUD_README_NAME)) await putContent(CLOUD_README_NAME, CLOUD_README, 'text/plain; charset=utf-8')
 }
 
+/** 将附加备份步骤的失败转换为不泄露响应内容的用户提示。 */
+function auxiliaryFailure(step: string, error: unknown): string {
+    return `${step}失败${error instanceof GraphError ? `（HTTP ${error.status}）` : ''}`
+}
+
 /** 判断当前构建是否配置了 OneDrive 客户端。 */
 export function oneDriveConfigured(): boolean {
     return Boolean(clientId)
@@ -290,18 +295,26 @@ export async function backupToOneDrive(file: LedgerFile, contentChanged = true):
     if (contentChanged) await putContent(CLOUD_LEDGER_NAME, JSON.stringify(file), 'application/json')
     const metadata = await getOneDriveMetadata()
     if (!metadata) throw new Error('OneDrive 中还没有账本文件，请先执行备份。')
+    const failures: string[] = []
     try {
         await ensureReadme()
-        if (contentChanged) {
-            const snapshot = cloudSnapshotPath()
-            await ensureFolder('', 'history')
-            await ensureFolder('history', snapshot.year)
-            await putContent(`history/${snapshot.year}/${snapshot.name}`, JSON.stringify(file), 'application/json')
-        }
-        return {metadata}
-    } catch {
-        return {metadata, warning: '当前账本已保存，但 OneDrive 历史归档或说明文件写入失败。'}
+    } catch (error) {
+        failures.push(auxiliaryFailure(`${CLOUD_README_NAME} 写入`, error))
     }
+    if (contentChanged) {
+        const snapshot = cloudSnapshotPath()
+        let step = 'history 目录创建'
+        try {
+            await ensureFolder('', 'history')
+            step = `history/${snapshot.year} 目录创建`
+            await ensureFolder('history', snapshot.year)
+            step = `history/${snapshot.year}/${snapshot.name} 写入`
+            await putContent(`history/${snapshot.year}/${snapshot.name}`, JSON.stringify(file), 'application/json')
+        } catch (error) {
+            failures.push(auxiliaryFailure(step, error))
+        }
+    }
+    return failures.length ? {metadata, warning: `当前账本已保存，但 OneDrive ${failures.join('；')}。`} : {metadata}
 }
 
 /** 下载 OneDrive 当前账本及其元数据。 */
