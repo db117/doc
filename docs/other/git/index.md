@@ -6,6 +6,10 @@ title: git
 
 > [Git (git-scm.com)](http://git-scm.com/)
 
+### 子模块总是显示变更
+
+- [忽略 Git submodule 的本地变更](./submodule-ignore.md)：区分提交指针变化、工作区变化，以及本机忽略配置。
+
 ### git记住密码
 
 > ~/.gitconfig 文件中添加或修改
