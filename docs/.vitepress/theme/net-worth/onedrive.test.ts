@@ -27,19 +27,21 @@ describe('backupToOneDrive', () => {
             setItem: (key: string, value: string) => values.set(key, value),
             removeItem: (key: string) => values.delete(key),
         })
-        vi.stubGlobal('fetch', vi.fn()
-            .mockResolvedValueOnce(new Response('{}', {status: 201}))
-            .mockResolvedValueOnce(Response.json({
+        const responses = [
+            new Response('{}', {status: 201}),
+            Response.json({
                 id: 'ledger', name: 'net-worth-ledger.json',
                 lastModifiedDateTime: '2026-08-14T10:00:00.000Z', size: 1,
-            }))
-            .mockResolvedValueOnce(new Response('{}', {status: 404}))
-            .mockResolvedValueOnce(new Response('{}', {status: 415}))
-            .mockResolvedValueOnce(new Response('{}', {status: 404}))
-            .mockResolvedValueOnce(new Response('{}', {status: 201}))
-            .mockResolvedValueOnce(new Response('{}', {status: 404}))
-            .mockResolvedValueOnce(new Response('{}', {status: 201}))
-            .mockResolvedValueOnce(new Response('{}', {status: 201})))
+            }),
+            new Response('{}', {status: 404}), new Response('{}', {status: 415}),
+            new Response('{}', {status: 404}), new Response('{}', {status: 201}),
+            new Response('{}', {status: 404}), new Response('{}', {status: 201}),
+            new Response('{}', {status: 201}),
+        ]
+        vi.stubGlobal('fetch', vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+            if (typeof init?.body === 'string' && init.body.includes('conflictBehavior')) return new Response('{}', {status: 400})
+            return responses.shift()!
+        }))
 
         await expect(backupToOneDrive(file)).resolves.toMatchObject({
             warning: '当前账本已保存，但 OneDrive README.txt 写入失败（HTTP 415）。',

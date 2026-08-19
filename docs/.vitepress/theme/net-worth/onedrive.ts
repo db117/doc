@@ -149,7 +149,7 @@ async function ensureFolder(parentPath: string, name: string): Promise<void> {
         await graph(childrenPath, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({name, folder: {}, '@microsoft.graph.conflictBehavior': 'fail'}),
+            body: JSON.stringify({name, folder: {}}),
         })
     } catch (error) {
         if (!(error instanceof GraphError) || error.status !== 409) throw error
