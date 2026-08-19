@@ -47,4 +47,30 @@ describe('backupToOneDrive', () => {
             warning: '当前账本已保存，但 OneDrive README.txt 写入失败（HTTP 415）。',
         })
     })
+
+    it('内容未变化但历史目录缺失时仍补建每日快照', async () => {
+        const values = new Map([['net-worth-onedrive-session', JSON.stringify({
+            accessToken: 'test-token', expiresAt: Date.now() + 60_000,
+        })]])
+        vi.stubGlobal('sessionStorage', {
+            getItem: (key: string) => values.get(key) ?? null,
+            setItem: (key: string, value: string) => values.set(key, value),
+            removeItem: (key: string) => values.delete(key),
+        })
+        const responses = [
+            Response.json({id: 'ledger', name: 'net-worth-ledger.json', lastModifiedDateTime: '2026-08-14T10:00:00.000Z', size: 1}),
+            new Response('{}', {status: 404}),
+            Response.json({id: 'readme', name: 'README.txt', lastModifiedDateTime: '2026-08-14T10:00:00.000Z', size: 1}),
+            new Response('{}', {status: 404}), new Response('{}', {status: 201}),
+            new Response('{}', {status: 404}), new Response('{}', {status: 201}),
+            new Response('{}', {status: 201}),
+        ]
+        const fetchMock = vi.fn(async () => responses.shift()!)
+        vi.stubGlobal('fetch', fetchMock)
+
+        const result = await backupToOneDrive(file, false)
+        expect(result.warning).toBeUndefined()
+        expect(fetchMock).toHaveBeenCalledTimes(8)
+        expect(fetchMock.mock.calls.some(([, init]) => init?.method === 'POST')).toBe(true)
+    })
 })

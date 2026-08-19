@@ -18,6 +18,7 @@ const clientId = '2cb1afa5-2310-4eed-bdd9-78084173ed5e'
 const authority = 'https://login.microsoftonline.com/consumers/oauth2/v2.0'
 const scope = 'openid profile User.Read Files.ReadWrite.AppFolder'
 const sessionKey = 'net-worth-onedrive-session'
+const archiveRetryKey = 'net-worth-onedrive-archive-retry'
 let accessToken: string | null = null
 let accessTokenExpiresAt = 0
 // 同一页面只允许一个登录事务，避免多个弹窗互相覆盖 state/verifier。
@@ -34,7 +35,10 @@ let pendingLogin: {
 function clearOneDriveSession(): void {
     accessToken = null
     accessTokenExpiresAt = 0
-    if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem(sessionKey)
+    if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.removeItem(sessionKey)
+        sessionStorage.removeItem(archiveRetryKey)
+    }
 }
 
 /** 从会话存储恢复仍在有效期内的 OneDrive 令牌。 */
@@ -295,13 +299,17 @@ export async function backupToOneDrive(file: LedgerFile, contentChanged = true):
     if (contentChanged) await putContent(CLOUD_LEDGER_NAME, JSON.stringify(file), 'application/json')
     const metadata = await getOneDriveMetadata()
     if (!metadata) throw new Error('OneDrive 中还没有账本文件，请先执行备份。')
+    const retryPending = typeof sessionStorage !== 'undefined' && sessionStorage.getItem(archiveRetryKey) === '1'
+    // 主账本已成功但历史写入失败后，内容未变化的重试也必须补档；正常无变化且历史存在时不重复写入。
+    const existingHistory = !contentChanged && !retryPending ? await optionalItem('history') : null
+    const archive = contentChanged || retryPending || !existingHistory
     const failures: string[] = []
     try {
         await ensureReadme()
     } catch (error) {
         failures.push(auxiliaryFailure(`${CLOUD_README_NAME} 写入`, error))
     }
-    if (contentChanged) {
+    if (archive) {
         const snapshot = cloudSnapshotPath()
         let step = 'history 目录创建'
         try {
@@ -314,7 +322,12 @@ export async function backupToOneDrive(file: LedgerFile, contentChanged = true):
             failures.push(auxiliaryFailure(step, error))
         }
     }
-    return failures.length ? {metadata, warning: `当前账本已保存，但 OneDrive ${failures.join('；')}。`} : {metadata}
+    if (failures.length) {
+        if (typeof sessionStorage !== 'undefined') sessionStorage.setItem(archiveRetryKey, '1')
+        return {metadata, warning: `当前账本已保存，但 OneDrive ${failures.join('；')}。`}
+    }
+    if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem(archiveRetryKey)
+    return {metadata}
 }
 
 /** 下载 OneDrive 当前账本及其元数据。 */
