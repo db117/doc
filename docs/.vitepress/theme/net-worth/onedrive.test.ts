@@ -38,10 +38,7 @@ describe('backupToOneDrive', () => {
             new Response('{}', {status: 404}), new Response('{}', {status: 201}),
             new Response('{}', {status: 201}),
         ]
-        vi.stubGlobal('fetch', vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
-            if (typeof init?.body === 'string' && init.body.includes('conflictBehavior')) return new Response('{}', {status: 400})
-            return responses.shift()!
-        }))
+        vi.stubGlobal('fetch', vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => responses.shift()!))
 
         await expect(backupToOneDrive(file)).resolves.toMatchObject({
             warning: '当前账本已保存，但 OneDrive README.txt 写入失败（HTTP 415）。',
@@ -71,6 +68,7 @@ describe('backupToOneDrive', () => {
         const result = await backupToOneDrive(file, false)
         expect(result.warning).toBeUndefined()
         expect(fetchMock).toHaveBeenCalledTimes(8)
-        expect(fetchMock.mock.calls.some(([, init]) => init?.method === 'POST')).toBe(true)
+        expect(fetchMock.mock.calls.some(([, init]) => init?.method === 'PUT'
+            && typeof init?.body === 'string' && init.body.includes('"folder"'))).toBe(true)
     })
 })

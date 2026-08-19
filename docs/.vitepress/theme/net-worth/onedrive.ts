@@ -146,12 +146,10 @@ async function putContent(relativePath: string, content: string, contentType: st
 async function ensureFolder(parentPath: string, name: string): Promise<void> {
     const relativePath = parentPath ? `${parentPath}/${name}` : name
     if (await optionalItem(relativePath)) return
-    const childrenPath = parentPath
-        ? itemPath(parentPath, ':/children')
-        : '/me/drive/special/approot/children'
     try {
-        await graph(childrenPath, {
-            method: 'POST',
+        // AppFolder 支持按路径创建 DriveItem；避免 POST /approot/children 在个人账户上返回 400。
+        await graph(itemPath(relativePath), {
+            method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({name, folder: {}}),
         })
