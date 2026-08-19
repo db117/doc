@@ -105,6 +105,8 @@ export function googleDriveConnected(): boolean {
 
 /** 发起 Google OAuth 授权并保存会话访问令牌。 */
 export async function beginGoogleDriveLogin(): Promise<string> {
+    restoreSession()
+    if (accessToken) return 'Google 账户'
     if (pendingLogin) throw new Error('Google Drive 登录窗口已经打开。')
     await loadGoogleIdentity()
     tokenClient ??= window.google!.accounts.oauth2.initTokenClient({
@@ -126,7 +128,7 @@ export async function beginGoogleDriveLogin(): Promise<string> {
     })
     return new Promise((resolve, reject) => {
         pendingLogin = {resolve, reject}
-        tokenClient!.requestAccessToken({prompt: 'consent'})
+        tokenClient!.requestAccessToken({prompt: ''})
     })
 }
 
