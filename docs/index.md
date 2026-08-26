@@ -106,6 +106,8 @@ outline: false
 > - [美元流动性](https://dollarliquidity.com/zh)
 > - [市场温度](https://www.marketgrep.com/zh)
 > - [IB Dashboard](https://moneychen.com/)
+> - [OpenClue](https://openclue.net/)
+>   加密市场研究与每日风险判断
 
 > ## 学习
 >
