@@ -13,28 +13,15 @@ title: Mermaid 图美化配置
 
 ```ts
 {
-    theme: 'base',
-        flowchart
-:
-    {
-        curve: 'basis',
-            nodeSpacing
-    :
-        45,
-            rankSpacing
-    :
-        60,
-            padding
-    :
-        15,
-            htmlLabels
-    :
-        true,
-            useMaxWidth
-    :
-        true,
-    }
-,
+  theme: 'base',
+  flowchart: {
+    curve: 'basis',
+    nodeSpacing: 45,
+    rankSpacing: 60,
+    padding: 15,
+    htmlLabels: true,
+    useMaxWidth: true,
+  },
 }
 ```
 
@@ -68,12 +55,58 @@ Mermaid 固定使用 `base` 主题，颜色随 VitePress 当前主题切换：
 - 复杂关系用 `subgraph` 分组，并控制颜色数量。
 - 优先调整节点间距和层级间距，再调整颜色。
 
-示例：
+## 实际使用的 CSS
 
-```mermaid
-flowchart LR
-    A[请求] --> B[处理]
-    B --> C[响应]
+以下样式与 `docs/.vitepress/theme/style.css` 中的 Mermaid 样式保持一致：
+
+```css
+.mermaid {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  line-height: 1.5;
+}
+
+.mermaid .node rect,
+.mermaid .node polygon,
+.mermaid .node path {
+  rx: 8px;
+  ry: 8px;
+  stroke-width: 1px;
+}
+
+.mermaid .nodeLabel {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.mermaid .flowchart-link {
+  stroke-width: 1.4px;
+}
+
+.mermaid marker path {
+  stroke-width: 1px;
+}
+
+.mermaid .cluster rect {
+  rx: 10px;
+  ry: 10px;
+  stroke-width: 1px;
+}
+
+.mermaid .cluster-label text,
+.mermaid .cluster-label span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mermaid .edgeLabel {
+  font-size: 13px;
+}
+
+.mermaid .edgeLabel rect {
+  opacity: 0.95;
+  rx: 4px;
+  ry: 4px;
+}
 ```
 
 ## 维护位置
