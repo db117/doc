@@ -18,6 +18,7 @@ title: 其他
 - [Wireshark](./wireshark.md)：过滤表达式和报文分析。
 - [Privoxy](./privoxy.md)：HTTP 代理前置配置。
 - [giffgaff eSIM](./giffgaff.md)：Android 设备写入 eSIM、开通与保号记录。
+- [Mermaid 图美化配置](./mermaid.md)：统一 Mermaid 图的布局、配色和 CSS 样式。
 
 ### 零散工具
 

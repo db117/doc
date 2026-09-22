@@ -1,0 +1,739 @@
+# Mermaid 美化配置整理
+
+Mermaid 图是否好看，通常不只是由配色决定，更重要的是：
+
+* 节点间距
+* 层级间距
+* 连线曲线
+* 字体
+* 圆角
+* 边框粗细
+* Subgraph 样式
+* 页面容器宽度
+
+对于技术文档，建议整体保持：
+
+> 简洁、浅色、低对比度、留白充足，不使用过多颜色。
+
+---
+
+## 1. 推荐 Mermaid 初始化配置
+
+如果项目可以直接调用 Mermaid JS，推荐统一初始化：
+
+```javascript
+mermaid.initialize({
+  startOnLoad: true,
+  theme: "base",
+
+  flowchart: {
+    curve: "basis",
+    nodeSpacing: 45,
+    rankSpacing: 60,
+    padding: 15,
+    htmlLabels: true,
+    useMaxWidth: true
+  },
+
+  themeVariables: {
+    fontFamily:
+      "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+
+    fontSize: "15px",
+
+    background: "#ffffff",
+
+    primaryColor: "#f7f7f8",
+    primaryTextColor: "#202123",
+    primaryBorderColor: "#d9d9e3",
+
+    secondaryColor: "#f1f5f9",
+    secondaryTextColor: "#202123",
+    secondaryBorderColor: "#cbd5e1",
+
+    tertiaryColor: "#fafafa",
+    tertiaryTextColor: "#202123",
+    tertiaryBorderColor: "#e5e7eb",
+
+    lineColor: "#8e8ea0",
+    textColor: "#202123",
+
+    clusterBkg: "#fafafa",
+    clusterBorder: "#d9d9e3",
+
+    edgeLabelBackground: "#ffffff"
+  }
+});
+```
+
+---
+
+## 2. 最重要的布局参数
+
+相比颜色，下面几个参数对 Mermaid 图的观感影响更大：
+
+```javascript
+flowchart: {
+  curve: "basis",
+  nodeSpacing: 45,
+  rankSpacing: 60,
+  padding: 15
+}
+```
+
+### `nodeSpacing`
+
+控制同一层节点之间的距离：
+
+```javascript
+nodeSpacing: 45
+```
+
+太小：
+
+```text
+[A] [B] [C]
+```
+
+节点容易挤在一起。
+
+适当放大：
+
+```text
+[A]     [B]     [C]
+```
+
+复杂架构图通常建议：
+
+```text
+40 ~ 60
+```
+
+---
+
+### `rankSpacing`
+
+控制不同层级之间的距离：
+
+```javascript
+rankSpacing: 60
+```
+
+例如：
+
+```text
+Jandex
+   ↓
+
+  ArC
+   ↓
+
+BeanInfo
+```
+
+相比：
+
+```text
+Jandex
+   ↓
+ ArC
+   ↓
+BeanInfo
+```
+
+前一种通常更容易阅读。
+
+技术架构图建议：
+
+```text
+50 ~ 80
+```
+
+---
+
+### `curve`
+
+推荐：
+
+```javascript
+curve: "basis"
+```
+
+它会让连线更加柔和。
+
+默认直线：
+
+```text
+A ──────→ B
+```
+
+复杂图容易显得生硬。
+
+`basis` 更适合：
+
+```text
+A ─────╮
+       ╰────→ B
+```
+
+尤其适用于：
+
+* 架构图
+* 数据流
+* Build Pipeline
+* Agent Workflow
+* 模块关系图
+
+---
+
+## 3. 推荐 CSS
+
+除了 Mermaid 的 `themeVariables`，建议在网站层面增加 CSS。
+
+```css
+.mermaid {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans SC",
+        "PingFang SC",
+        "Microsoft YaHei",
+        sans-serif;
+
+    line-height: 1.5;
+}
+
+/* 普通节点 */
+.mermaid .node rect,
+.mermaid .node polygon,
+.mermaid .node path {
+    rx: 8px;
+    ry: 8px;
+    stroke-width: 1px;
+}
+
+/* 节点文字 */
+.mermaid .nodeLabel {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* 连线 */
+.mermaid .flowchart-link {
+    stroke-width: 1.4px;
+}
+
+/* 箭头 */
+.mermaid marker path {
+    stroke-width: 1px;
+}
+
+/* Subgraph */
+.mermaid .cluster rect {
+    rx: 10px;
+    ry: 10px;
+    stroke-width: 1px;
+}
+
+/* Subgraph 标题 */
+.mermaid .cluster-label text,
+.mermaid .cluster-label span {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* 连线文字 */
+.mermaid .edgeLabel {
+    font-size: 13px;
+}
+
+.mermaid .edgeLabel rect {
+    opacity: 0.95;
+    rx: 4px;
+    ry: 4px;
+}
+```
+
+---
+
+# 4. 推荐 Light Theme
+
+Light 模式推荐采用非常浅的灰色背景，而不是大量使用蓝色、绿色等强颜色。
+
+```javascript
+const lightTheme = {
+  fontFamily:
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', 'PingFang SC', sans-serif",
+
+  fontSize: "15px",
+
+  background: "#ffffff",
+
+  primaryColor: "#f7f7f8",
+  primaryTextColor: "#202123",
+  primaryBorderColor: "#d9d9e3",
+
+  secondaryColor: "#f1f5f9",
+  secondaryTextColor: "#202123",
+  secondaryBorderColor: "#cbd5e1",
+
+  tertiaryColor: "#fafafa",
+  tertiaryTextColor: "#202123",
+  tertiaryBorderColor: "#e5e7eb",
+
+  lineColor: "#8e8ea0",
+  textColor: "#202123",
+
+  clusterBkg: "#fafafa",
+  clusterBorder: "#d9d9e3",
+
+  edgeLabelBackground: "#ffffff"
+};
+```
+
+整体效果：
+
+```text
+背景        白色
+节点        浅灰
+边框        灰色细线
+文字        深灰
+连线        中灰
+Subgraph    极浅灰
+```
+
+这种配色特别适合：
+
+* Java 文档
+* 架构设计
+* 源码分析
+* 学习笔记
+* API 文档
+
+---
+
+# 5. 推荐 Dark Theme
+
+如果网站支持 Dark Mode，可以使用：
+
+```javascript
+const darkTheme = {
+  fontFamily:
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', 'PingFang SC', sans-serif",
+
+  fontSize: "15px",
+
+  background: "#1e1e1e",
+
+  primaryColor: "#2a2a2e",
+  primaryTextColor: "#ececf1",
+  primaryBorderColor: "#4a4a52",
+
+  secondaryColor: "#252a30",
+  secondaryTextColor: "#ececf1",
+  secondaryBorderColor: "#475569",
+
+  tertiaryColor: "#242424",
+  tertiaryTextColor: "#ececf1",
+  tertiaryBorderColor: "#3f3f46",
+
+  lineColor: "#8e8e9f",
+  textColor: "#ececf1",
+
+  clusterBkg: "#232323",
+  clusterBorder: "#44444c",
+
+  edgeLabelBackground: "#1e1e1e"
+};
+```
+
+Dark 模式同样不建议使用纯黑：
+
+```text
+#000000
+```
+
+更推荐：
+
+```text
+#1e1e1e
+#202020
+#242424
+```
+
+这样长时间阅读不会太刺眼。
+
+---
+
+# 6. 自动适配 Light / Dark
+
+如果网站支持：
+
+```css
+prefers-color-scheme
+```
+
+可以根据系统主题动态初始化 Mermaid。
+
+例如：
+
+```javascript
+const isDark = window.matchMedia(
+  "(prefers-color-scheme: dark)"
+).matches;
+
+mermaid.initialize({
+  startOnLoad: true,
+  theme: "base",
+
+  flowchart: {
+    curve: "basis",
+    nodeSpacing: 45,
+    rankSpacing: 60,
+    padding: 15,
+    htmlLabels: true,
+    useMaxWidth: true
+  },
+
+  themeVariables: isDark
+    ? darkTheme
+    : lightTheme
+});
+```
+
+如果网站本身有自己的主题切换机制，则更建议直接读取网站当前主题，而不是使用：
+
+```text
+prefers-color-scheme
+```
+
+---
+
+# 7. Mermaid 图本身也要控制结构
+
+即使 CSS 很好，如果图的结构设计得不好，一样会很乱。
+
+例如不要把：
+
+```text
+Jandex
+ArC
+CDI
+BuildStep
+BuildItem
+BeanInfo
+Recorder
+Gizmo
+ArcContainer
+Runtime
+Native Image
+Extension
+Deployment
+```
+
+全部无层次地放到一张图。
+
+更推荐按问题拆分。
+
+---
+
+## 图 1：总体架构
+
+```mermaid
+flowchart LR
+
+    APP["Application"]
+        --> BUILD["Build Time"]
+
+    BUILD --> RUNTIME["Runtime"]
+
+    BUILD --> NATIVE["Native Image"]
+```
+
+---
+
+## 图 2：ArC Bean Discovery
+
+```mermaid
+flowchart LR
+
+    CLASS["Java Class"]
+        --> JANDEX["Jandex"]
+
+    JANDEX --> ARC["ArC"]
+
+    ARC --> DISCOVERY["Bean Discovery"]
+
+    DISCOVERY --> BEAN["BeanInfo"]
+```
+
+---
+
+## 图 3：BuildStep Pipeline
+
+```mermaid
+flowchart LR
+
+    A["BuildStep A"]
+        --> I1["BuildItem"]
+
+    I1 --> B["BuildStep B"]
+
+    B --> I2["BuildItem"]
+
+    I2 --> C["BuildStep C"]
+```
+
+---
+
+## 图 4：Build Time 到 Runtime
+
+```mermaid
+flowchart LR
+
+    BUILD["BuildStep"]
+        --> RECORDER["Recorder"]
+
+    RECORDER --> BYTECODE["Generated Bytecode"]
+
+    BYTECODE --> RUNTIME["Runtime"]
+```
+
+这样比做成一个巨大的：
+
+```text
+Everything Diagram
+```
+
+可读性高很多。
+
+---
+
+# 8. 节点文字不要过长
+
+不推荐：
+
+```mermaid
+flowchart LR
+
+A["Jandex 是 Quarkus 构建阶段用于扫描所有 Java Class 并建立 Java 类型元数据索引的组件"]
+```
+
+更推荐：
+
+```mermaid
+flowchart LR
+
+A["Jandex<br/>Java 元数据索引"]
+```
+
+原则：
+
+```text
+第一行：概念名称
+第二行：一句话说明
+```
+
+例如：
+
+```mermaid
+flowchart LR
+
+A["Jandex<br/>Java 元数据索引"]
+B["ArC<br/>CDI Container"]
+C["Gizmo<br/>Bytecode Generation"]
+
+A --> B --> C
+```
+
+这样非常适合技术文档。
+
+---
+
+# 9. 尽量控制颜色数量
+
+技术架构图不应该像 PPT。
+
+推荐：
+
+```text
+主节点：浅灰
+次节点：稍微不同的浅灰
+Subgraph：更浅的灰
+线：灰色
+文字：深灰
+```
+
+只有在需要表达语义时才增加颜色，例如：
+
+```text
+Build Time    一种颜色
+Runtime       一种颜色
+Error         红色
+External      灰色
+```
+
+不要：
+
+```text
+Jandex       蓝
+ArC          红
+BuildStep    黄
+BuildItem    紫
+Recorder     绿
+Gizmo        橙
+```
+
+这会让读者开始关注颜色，而不是架构本身。
+
+---
+
+# 10. 推荐的 Mermaid 编写规范
+
+对于技术文档，可以统一采用：
+
+```text
+flowchart TD
+```
+
+适合：
+
+```text
+流程
+生命周期
+构建过程
+```
+
+使用：
+
+```text
+flowchart LR
+```
+
+适合：
+
+```text
+源码调用链
+Pipeline
+模块关系
+数据流
+```
+
+节点统一：
+
+```mermaid
+A["名称<br/>一句话解释"]
+```
+
+Subgraph：
+
+```mermaid
+flowchart LR
+
+subgraph BUILD["Build Time"]
+    A["Jandex"]
+    B["ArC"]
+end
+```
+
+连线有必要时才加描述：
+
+```mermaid
+A -->|"扫描"| B
+```
+
+不要每一条线都写文字。
+
+---
+
+# 11. 推荐最终参数
+
+如果不想折腾太多，直接使用这一组即可：
+
+```javascript
+flowchart: {
+  curve: "basis",
+  nodeSpacing: 45,
+  rankSpacing: 60,
+  padding: 15,
+  htmlLabels: true,
+  useMaxWidth: true
+}
+```
+
+CSS：
+
+```css
+.mermaid .node rect {
+    rx: 8px;
+    ry: 8px;
+    stroke-width: 1px;
+}
+
+.mermaid .cluster rect {
+    rx: 10px;
+    ry: 10px;
+    stroke-width: 1px;
+}
+
+.mermaid .flowchart-link {
+    stroke-width: 1.4px;
+}
+
+.mermaid .nodeLabel {
+    font-size: 14px;
+    line-height: 1.5;
+}
+```
+
+再配合几个原则：
+
+```text
+一张图表达一个问题
+
+节点文字控制在 1~2 行
+
+避免过多颜色
+
+增加 nodeSpacing / rankSpacing
+
+源码链路优先 LR
+
+生命周期优先 TD
+
+复杂模块使用 subgraph 分组
+```
+
+最终效果通常就会比 Mermaid 默认样式明显舒服很多。
+
+---
+
+# 推荐默认风格
+
+对于 Java / Quarkus / Spring 这类源码学习文档，推荐统一采用：
+
+```text
+Theme        base
+
+方向
+源码链路     LR
+流程         TD
+
+curve        basis
+nodeSpacing  45
+rankSpacing  60
+padding      15
+
+节点圆角     8px
+Subgraph     10px
+
+节点文字     14px
+边文字       13px
+
+配色         中性灰
+```
+
+核心原则：
+
+> Mermaid 美化的重点不是“加颜色”，而是通过合理的结构、留白、字体、曲线和层级，让读者快速理解关系。
