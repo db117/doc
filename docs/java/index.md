@@ -15,6 +15,7 @@ Java 相关笔记按主题整理为基础语法、JDK/JVM、并发、Spring 生�
 
 ## 框架与生态
 
+- [Quarkus](./Quarkus/index.md)：核心概念、构建运行流程与 ArC 实现。
 - [Spring](./spring/index.md)：IOC、AOP、事件、WebFlux、MVC 请求处理、扩展接口。
 - [Spring Boot](./spring-boot/index.md)：启动流程、Actuator 与运行时能力。
 - [Spring Cloud](./spring-cloud/index.md)：Gateway、OpenFeign、Sentinel、Context。
